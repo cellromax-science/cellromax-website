@@ -1232,3 +1232,27 @@ hr {
     box-shadow: 0 0 0 8px rgba(197, 165, 90, 0);
   }
 }
+
+/* --------------------------------------------------------------------------
+   Toast Animations — 토스트 알림 전용 키프레임
+   -------------------------------------------------------------------------- */
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shrinkWidth {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
