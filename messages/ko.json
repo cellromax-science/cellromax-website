@@ -1,0 +1,212 @@
+{
+  "nav": {
+    "home": "홈",
+    "about": "회사소개",
+    "brand": "브랜드",
+    "products": "제품",
+    "ir": "IR",
+    "newsroom": "뉴스룸",
+    "contact": "문의하기",
+    "language": "언어"
+  },
+  "hero": {
+    "title": "건강한 삶을\n위한 선택",
+    "subtitle": "셀로맥스사이언스는 최고의 건강기능식품으로\n당신의 건강한 삶을 응원합니다.",
+    "ctaPrimary": "제품 보기",
+    "ctaSecondary": "회사 소개",
+    "scrollHint": "스크롤하여 더 보기"
+  },
+  "about": {
+    "title": "회사소개",
+    "subtitle": "셀로맥스사이언스",
+    "mission": {
+      "title": "미션",
+      "description": "최고의 품질로 고객의 건강한 삶에 기여한다."
+    },
+    "vision": {
+      "title": "비전",
+      "description": "글로벌 건강기능식품 전문기업으로 도약한다."
+    },
+    "values": {
+      "title": "경영철학",
+      "best": {
+        "title": "The Best",
+        "description": "최고의 품질과 서비스를 제공합니다."
+      },
+      "trust": {
+        "title": "The Trust",
+        "description": "고객과의 신뢰를 최우선으로 합니다."
+      },
+      "pride": {
+        "title": "The Pride",
+        "description": "우리의 제품에 자부심을 갖습니다."
+      }
+    },
+    "stats": {
+      "years": "업력",
+      "products": "제품 수",
+      "partners": "파트너사",
+      "countries": "수출 국가"
+    }
+  },
+  "brand": {
+    "title": "브랜드소개",
+    "ceoGreeting": {
+      "title": "CEO 인사말",
+      "name": "대표이사",
+      "message": "셀로맥스사이언스는 건강한 삶을 위한 최고의 파트너가 되겠습니다."
+    },
+    "certifications": {
+      "title": "보유 인증"
+    }
+  },
+  "history": {
+    "title": "연혁",
+    "subtitle": "셀로맥스사이언스의 발자취"
+  },
+  "products": {
+    "title": "제품소개",
+    "subtitle": "셀로맥스사이언스의 건강기능식품",
+    "viewAll": "전체 보기",
+    "viewDetail": "상세 보기",
+    "categories": {
+      "all": "전체",
+      "health": "건강식품",
+      "beauty": "뷰티",
+      "diet": "다이어트",
+      "immunity": "면역"
+    },
+    "detail": {
+      "ingredients": "주요 성분",
+      "functionality": "기능성",
+      "howToUse": "복용 방법",
+      "storage": "보관 방법",
+      "nearbyPharmacy": "주변 약국"
+    },
+    "noProducts": "등록된 제품이 없습니다.",
+    "loadMore": "더 보기"
+  },
+  "ir": {
+    "title": "IR 자료실",
+    "subtitle": "투자자 정보",
+    "dart": {
+      "title": "DART 공시",
+      "description": "전자공시시스템(DART)에서 공식 공시자료를 확인하세요.",
+      "link": "DART 바로가기"
+    },
+    "files": {
+      "title": "IR 자료",
+      "download": "다운로드",
+      "year": "연도",
+      "category": "분류",
+      "noFiles": "등록된 자료가 없습니다."
+    },
+    "categories": {
+      "all": "전체",
+      "annual": "연간보고서",
+      "presentation": "IR 발표자료",
+      "financial": "재무제표",
+      "other": "기타"
+    }
+  },
+  "newsroom": {
+    "title": "뉴스룸",
+    "tabs": {
+      "notice": "공지사항",
+      "news": "회사소식",
+      "video": "홍보영상"
+    },
+    "notice": {
+      "title": "공지사항",
+      "noItems": "등록된 공지사항이 없습니다."
+    },
+    "news": {
+      "title": "회사소식",
+      "noItems": "등록된 소식이 없습니다."
+    },
+    "video": {
+      "title": "홍보영상",
+      "noItems": "등록된 영상이 없습니다."
+    },
+    "readMore": "자세히 보기",
+    "postedAt": "작성일"
+  },
+  "partners": {
+    "title": "파트너스",
+    "subtitle": "글로벌 파트너사"
+  },
+  "location": {
+    "title": "오시는 길",
+    "address": "주소",
+    "phone": "전화",
+    "fax": "팩스",
+    "email": "이메일",
+    "transport": {
+      "title": "교통편",
+      "subway": "지하철",
+      "bus": "버스",
+      "car": "승용차",
+      "parking": "주차"
+    }
+  },
+  "contact": {
+    "title": "온라인 문의",
+    "subtitle": "궁금하신 사항을 문의해 주세요.",
+    "form": {
+      "name": "이름",
+      "namePlaceholder": "이름을 입력해 주세요",
+      "company": "회사명",
+      "companyPlaceholder": "회사명을 입력해 주세요",
+      "email": "이메일",
+      "emailPlaceholder": "이메일을 입력해 주세요",
+      "phone": "연락처",
+      "phonePlaceholder": "연락처를 입력해 주세요",
+      "category": "문의 유형",
+      "categoryPlaceholder": "문의 유형을 선택해 주세요",
+      "message": "문의 내용",
+      "messagePlaceholder": "문의 내용을 입력해 주세요",
+      "privacy": "개인정보 수집 및 이용에 동의합니다.",
+      "submit": "문의 보내기",
+      "submitting": "전송 중..."
+    },
+    "categories": {
+      "product": "제품 문의",
+      "partnership": "파트너십 문의",
+      "ir": "IR 문의",
+      "other": "기타"
+    },
+    "success": {
+      "title": "문의가 접수되었습니다.",
+      "message": "빠른 시일 내에 답변 드리겠습니다."
+    },
+    "error": {
+      "title": "전송에 실패했습니다.",
+      "message": "잠시 후 다시 시도해 주세요."
+    }
+  },
+  "footer": {
+    "company": "셀로맥스사이언스",
+    "ceo": "대표이사",
+    "businessNumber": "사업자등록번호",
+    "address": "주소",
+    "phone": "전화",
+    "email": "이메일",
+    "copyright": "© {year} 셀로맥스사이언스. All rights reserved.",
+    "links": {
+      "privacy": "개인정보처리방침",
+      "terms": "이용약관"
+    }
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다.",
+    "retry": "다시 시도",
+    "close": "닫기",
+    "back": "뒤로",
+    "next": "다음",
+    "prev": "이전",
+    "search": "검색",
+    "noResults": "검색 결과가 없습니다.",
+    "page": "페이지"
+  }
+}

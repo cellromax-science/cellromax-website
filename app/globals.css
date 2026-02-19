@@ -154,7 +154,7 @@
 
   /* Legacy tokens — layout.tsx의 Geist 폰트 변수와 호환 유지 */
   --color-background: #ffffff;
-  --color-foreground: #0a1628;
+  --color-foreground: #111111;
 
   /* --------------------------------------------------------------------------
      Squircle Radius Tokens — 스쿼클 반경 디자인 토큰
@@ -350,13 +350,13 @@
 :root {
   /* 런타임 배경/전경 (다크 모드 분기용) */
   --background: #ffffff;
-  --foreground: #0a1628;
+  --foreground: #111111;
 
   /* 네이티브 스크롤바 너비 (스크롤바 보정에 사용) */
   --scrollbar-width: 6px;
   --scrollbar-track: #f0f2f5;
-  --scrollbar-thumb: #c5a55a;
-  --scrollbar-thumb-hover: #a8893f;
+  --scrollbar-thumb: #0a1628;
+  --scrollbar-thumb-hover: #1a2d4a;
 }
 
 /* 다크 모드 — 시스템 설정 기반 */
@@ -365,8 +365,8 @@
     --background: #0a1628;
     --foreground: #f4f6f9;
     --scrollbar-track: #1a2d4a;
-    --scrollbar-thumb: #c5a55a;
-    --scrollbar-thumb-hover: #d4b87a;
+    --scrollbar-thumb: #e5e7eb;
+    --scrollbar-thumb-hover: #ffffff;
   }
 }
 
@@ -412,13 +412,13 @@ body {
    ========================================================================== */
 
 ::selection {
-  background-color: rgba(197, 165, 90, 0.3);
-  color: #0a1628;
+  background-color: rgba(10, 22, 40, 0.12);
+  color: #111111;
 }
 
 ::-moz-selection {
-  background-color: rgba(197, 165, 90, 0.3);
-  color: #0a1628;
+  background-color: rgba(10, 22, 40, 0.12);
+  color: #111111;
 }
 
 /* ==========================================================================
@@ -497,7 +497,7 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 2px solid var(--color-secondary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: var(--radius-squircle-xs);
 }
@@ -549,8 +549,8 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px rgba(197, 165, 90, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(10, 22, 40, 0.12);
 }
 
 button {
@@ -561,7 +561,7 @@ button {
 }
 
 button:focus-visible {
-  outline: 2px solid var(--color-secondary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: var(--radius-squircle-sm);
 }
@@ -726,7 +726,7 @@ hr {
   }
 
   .btn:focus-visible {
-    outline: 2px solid var(--color-secondary);
+    outline: 2px solid var(--color-primary);
     outline-offset: 3px;
   }
 
@@ -736,17 +736,17 @@ hr {
     transform: none;
   }
 
-  /* Primary Button — 골드 CTA */
+  /* Primary Button — 딥 네이비 CTA */
   .btn-primary {
-    background-color: var(--color-secondary);
-    color: var(--color-primary-dark);
-    border-color: var(--color-secondary);
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
   }
 
   .btn-primary:hover {
-    background-color: var(--color-secondary-dark);
-    border-color: var(--color-secondary-dark);
-    box-shadow: var(--shadow-gold);
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-primary);
   }
 
   /* Secondary Button — 아웃라인 네이비 */
@@ -784,6 +784,31 @@ hr {
     background-color: var(--color-accent);
     border-color: var(--color-accent);
     box-shadow: var(--shadow-lg);
+  }
+
+  /* Gold Button — 골드 CTA (보조 강조용) */
+  .btn-gold {
+    background-color: var(--color-secondary);
+    color: var(--color-primary-dark);
+    border-color: var(--color-secondary);
+  }
+
+  .btn-gold:hover {
+    background-color: var(--color-secondary-dark);
+    border-color: var(--color-secondary-dark);
+    box-shadow: var(--shadow-gold);
+  }
+
+  /* Small Size Modifier */
+  .btn-sm {
+    font-size: var(--text-xs);
+    padding: 0.5rem 1rem;
+  }
+
+  /* Large Size Modifier */
+  .btn-lg {
+    font-size: var(--text-base);
+    padding: 1rem 2rem;
   }
 
   /* --------------------------------------------------------------------------
@@ -843,13 +868,29 @@ hr {
   }
 
   .badge-secondary {
+    background-color: rgba(10, 22, 40, 0.08);
+    color: var(--color-primary);
+  }
+
+  .badge-gold {
     background-color: rgba(197, 165, 90, 0.15);
     color: var(--color-secondary-dark);
+    border: 1px solid rgba(197, 165, 90, 0.3);
   }
 
   .badge-accent {
     background-color: var(--color-accent);
     color: var(--color-primary);
+  }
+
+  .badge-success {
+    background-color: rgba(34, 197, 94, 0.12);
+    color: var(--color-success-dark);
+  }
+
+  .badge-error {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: var(--color-error-dark);
   }
 
   /* --------------------------------------------------------------------------
@@ -1104,7 +1145,7 @@ hr {
      -------------------------------------------------------------------------- */
 
   .focus-ring:focus-visible {
-    outline: 2px solid var(--color-secondary);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
     border-radius: var(--radius-squircle-xs);
   }

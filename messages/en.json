@@ -1,0 +1,212 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "brand": "Brand",
+    "products": "Products",
+    "ir": "IR",
+    "newsroom": "Newsroom",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Your Choice for\na Healthy Life",
+    "subtitle": "Cellromax Science supports your healthy life\nwith the finest health functional foods.",
+    "ctaPrimary": "View Products",
+    "ctaSecondary": "About Us",
+    "scrollHint": "Scroll to explore"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Cellromax Science",
+    "mission": {
+      "title": "Mission",
+      "description": "Contribute to our customers' healthy lives with the highest quality."
+    },
+    "vision": {
+      "title": "Vision",
+      "description": "To become a leading global health functional food company."
+    },
+    "values": {
+      "title": "Core Values",
+      "best": {
+        "title": "The Best",
+        "description": "We provide the best quality and service."
+      },
+      "trust": {
+        "title": "The Trust",
+        "description": "We put trust with customers first."
+      },
+      "pride": {
+        "title": "The Pride",
+        "description": "We take pride in our products."
+      }
+    },
+    "stats": {
+      "years": "Years",
+      "products": "Products",
+      "partners": "Partners",
+      "countries": "Countries"
+    }
+  },
+  "brand": {
+    "title": "Brand",
+    "ceoGreeting": {
+      "title": "CEO Message",
+      "name": "CEO",
+      "message": "Cellromax Science will be the best partner for a healthy life."
+    },
+    "certifications": {
+      "title": "Certifications"
+    }
+  },
+  "history": {
+    "title": "History",
+    "subtitle": "The Journey of Cellromax Science"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Health Functional Foods by Cellromax Science",
+    "viewAll": "View All",
+    "viewDetail": "View Details",
+    "categories": {
+      "all": "All",
+      "health": "Health",
+      "beauty": "Beauty",
+      "diet": "Diet",
+      "immunity": "Immunity"
+    },
+    "detail": {
+      "ingredients": "Key Ingredients",
+      "functionality": "Functionality",
+      "howToUse": "How to Use",
+      "storage": "Storage",
+      "nearbyPharmacy": "Nearby Pharmacy"
+    },
+    "noProducts": "No products available.",
+    "loadMore": "Load More"
+  },
+  "ir": {
+    "title": "IR Library",
+    "subtitle": "Investor Information",
+    "dart": {
+      "title": "DART Disclosure",
+      "description": "Check official disclosures on the DART electronic disclosure system.",
+      "link": "Go to DART"
+    },
+    "files": {
+      "title": "IR Materials",
+      "download": "Download",
+      "year": "Year",
+      "category": "Category",
+      "noFiles": "No files available."
+    },
+    "categories": {
+      "all": "All",
+      "annual": "Annual Report",
+      "presentation": "IR Presentation",
+      "financial": "Financial Statements",
+      "other": "Other"
+    }
+  },
+  "newsroom": {
+    "title": "Newsroom",
+    "tabs": {
+      "notice": "Notice",
+      "news": "News",
+      "video": "Video"
+    },
+    "notice": {
+      "title": "Notice",
+      "noItems": "No notices available."
+    },
+    "news": {
+      "title": "Company News",
+      "noItems": "No news available."
+    },
+    "video": {
+      "title": "Promotional Videos",
+      "noItems": "No videos available."
+    },
+    "readMore": "Read More",
+    "postedAt": "Posted"
+  },
+  "partners": {
+    "title": "Partners",
+    "subtitle": "Global Partners"
+  },
+  "location": {
+    "title": "Location",
+    "address": "Address",
+    "phone": "Phone",
+    "fax": "Fax",
+    "email": "Email",
+    "transport": {
+      "title": "Transportation",
+      "subway": "Subway",
+      "bus": "Bus",
+      "car": "By Car",
+      "parking": "Parking"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Feel free to ask us anything.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Enter your name",
+      "company": "Company",
+      "companyPlaceholder": "Enter your company name",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "phone": "Phone",
+      "phonePlaceholder": "Enter your phone number",
+      "category": "Inquiry Type",
+      "categoryPlaceholder": "Select inquiry type",
+      "message": "Message",
+      "messagePlaceholder": "Enter your message",
+      "privacy": "I agree to the collection and use of personal information.",
+      "submit": "Send Message",
+      "submitting": "Sending..."
+    },
+    "categories": {
+      "product": "Product Inquiry",
+      "partnership": "Partnership",
+      "ir": "IR Inquiry",
+      "other": "Other"
+    },
+    "success": {
+      "title": "Your inquiry has been received.",
+      "message": "We will get back to you as soon as possible."
+    },
+    "error": {
+      "title": "Failed to send.",
+      "message": "Please try again later."
+    }
+  },
+  "footer": {
+    "company": "Cellromax Science",
+    "ceo": "CEO",
+    "businessNumber": "Business Registration No.",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "copyright": "© {year} Cellromax Science. All rights reserved.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred.",
+    "retry": "Retry",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "prev": "Previous",
+    "search": "Search",
+    "noResults": "No results found.",
+    "page": "Page"
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "nav": {
+    "home": "首页",
+    "about": "公司介绍",
+    "brand": "品牌",
+    "products": "产品",
+    "ir": "投资者关系",
+    "newsroom": "新闻室",
+    "contact": "联系我们",
+    "language": "语言"
+  },
+  "hero": {
+    "title": "健康生活\n的最佳选择",
+    "subtitle": "赛络迈科学以最优质的健康功能食品\n助力您的健康生活。",
+    "ctaPrimary": "查看产品",
+    "ctaSecondary": "公司介绍",
+    "scrollHint": "向下滚动"
+  },
+  "about": {
+    "title": "公司介绍",
+    "subtitle": "赛络迈科学",
+    "mission": {
+      "title": "使命",
+      "description": "以最高品质为顾客的健康生活作出贡献。"
+    },
+    "vision": {
+      "title": "愿景",
+      "description": "成为全球领先的健康功能食品专业企业。"
+    },
+    "values": {
+      "title": "经营理念",
+      "best": {
+        "title": "The Best",
+        "description": "提供最高品质的产品和服务。"
+      },
+      "trust": {
+        "title": "The Trust",
+        "description": "将与客户的信任放在首位。"
+      },
+      "pride": {
+        "title": "The Pride",
+        "description": "对我们的产品感到自豪。"
+      }
+    },
+    "stats": {
+      "years": "年历史",
+      "products": "产品数",
+      "partners": "合作伙伴",
+      "countries": "出口国家"
+    }
+  },
+  "brand": {
+    "title": "品牌介绍",
+    "ceoGreeting": {
+      "title": "CEO致辞",
+      "name": "总裁",
+      "message": "赛络迈科学将成为您健康生活的最佳合作伙伴。"
+    },
+    "certifications": {
+      "title": "认证资质"
+    }
+  },
+  "history": {
+    "title": "发展历程",
+    "subtitle": "赛络迈科学的发展足迹"
+  },
+  "products": {
+    "title": "产品介绍",
+    "subtitle": "赛络迈科学健康功能食品",
+    "viewAll": "查看全部",
+    "viewDetail": "查看详情",
+    "categories": {
+      "all": "全部",
+      "health": "健康食品",
+      "beauty": "美容",
+      "diet": "减肥",
+      "immunity": "免疫"
+    },
+    "detail": {
+      "ingredients": "主要成分",
+      "functionality": "功能性",
+      "howToUse": "服用方法",
+      "storage": "保存方法",
+      "nearbyPharmacy": "附近药店"
+    },
+    "noProducts": "暂无产品。",
+    "loadMore": "加载更多"
+  },
+  "ir": {
+    "title": "投资者关系资料",
+    "subtitle": "投资者信息",
+    "dart": {
+      "title": "DART公示",
+      "description": "请在电子公示系统(DART)查看官方公示资料。",
+      "link": "前往DART"
+    },
+    "files": {
+      "title": "IR资料",
+      "download": "下载",
+      "year": "年度",
+      "category": "分类",
+      "noFiles": "暂无资料。"
+    },
+    "categories": {
+      "all": "全部",
+      "annual": "年度报告",
+      "presentation": "IR演示资料",
+      "financial": "财务报表",
+      "other": "其他"
+    }
+  },
+  "newsroom": {
+    "title": "新闻室",
+    "tabs": {
+      "notice": "公告",
+      "news": "公司新闻",
+      "video": "宣传视频"
+    },
+    "notice": {
+      "title": "公告",
+      "noItems": "暂无公告。"
+    },
+    "news": {
+      "title": "公司新闻",
+      "noItems": "暂无新闻。"
+    },
+    "video": {
+      "title": "宣传视频",
+      "noItems": "暂无视频。"
+    },
+    "readMore": "查看更多",
+    "postedAt": "发布日期"
+  },
+  "partners": {
+    "title": "合作伙伴",
+    "subtitle": "全球合作伙伴"
+  },
+  "location": {
+    "title": "交通指南",
+    "address": "地址",
+    "phone": "电话",
+    "fax": "传真",
+    "email": "邮箱",
+    "transport": {
+      "title": "交通方式",
+      "subway": "地铁",
+      "bus": "公交",
+      "car": "自驾",
+      "parking": "停车"
+    }
+  },
+  "contact": {
+    "title": "在线咨询",
+    "subtitle": "欢迎随时向我们咨询。",
+    "form": {
+      "name": "姓名",
+      "namePlaceholder": "请输入姓名",
+      "company": "公司名称",
+      "companyPlaceholder": "请输入公司名称",
+      "email": "邮箱",
+      "emailPlaceholder": "请输入邮箱",
+      "phone": "联系方式",
+      "phonePlaceholder": "请输入联系方式",
+      "category": "咨询类型",
+      "categoryPlaceholder": "请选择咨询类型",
+      "message": "咨询内容",
+      "messagePlaceholder": "请输入咨询内容",
+      "privacy": "我同意收集和使用个人信息。",
+      "submit": "发送咨询",
+      "submitting": "发送中..."
+    },
+    "categories": {
+      "product": "产品咨询",
+      "partnership": "合作咨询",
+      "ir": "IR咨询",
+      "other": "其他"
+    },
+    "success": {
+      "title": "咨询已受理。",
+      "message": "我们将尽快回复您。"
+    },
+    "error": {
+      "title": "发送失败。",
+      "message": "请稍后再试。"
+    }
+  },
+  "footer": {
+    "company": "赛络迈科学",
+    "ceo": "总裁",
+    "businessNumber": "营业执照号",
+    "address": "地址",
+    "phone": "电话",
+    "email": "邮箱",
+    "copyright": "© {year} 赛络迈科学. All rights reserved.",
+    "links": {
+      "privacy": "隐私政策",
+      "terms": "使用条款"
+    }
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "发生错误。",
+    "retry": "重试",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一页",
+    "prev": "上一页",
+    "search": "搜索",
+    "noResults": "未找到结果。",
+    "page": "页"
+  }
+}

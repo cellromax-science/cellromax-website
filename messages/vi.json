@@ -1,0 +1,212 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "brand": "Thương hiệu",
+    "products": "Sản phẩm",
+    "ir": "Quan hệ nhà đầu tư",
+    "newsroom": "Phòng tin tức",
+    "contact": "Liên hệ",
+    "language": "Ngôn ngữ"
+  },
+  "hero": {
+    "title": "Lựa chọn cho\ncuộc sống khỏe mạnh",
+    "subtitle": "Cellromax Science đồng hành cùng cuộc sống\nkhỏe mạnh của bạn với thực phẩm chức năng tốt nhất.",
+    "ctaPrimary": "Xem sản phẩm",
+    "ctaSecondary": "Giới thiệu công ty",
+    "scrollHint": "Cuộn để khám phá"
+  },
+  "about": {
+    "title": "Giới thiệu công ty",
+    "subtitle": "Cellromax Science",
+    "mission": {
+      "title": "Sứ mệnh",
+      "description": "Đóng góp cho cuộc sống khỏe mạnh của khách hàng với chất lượng tốt nhất."
+    },
+    "vision": {
+      "title": "Tầm nhìn",
+      "description": "Trở thành doanh nghiệp thực phẩm chức năng hàng đầu toàn cầu."
+    },
+    "values": {
+      "title": "Triết lý kinh doanh",
+      "best": {
+        "title": "The Best",
+        "description": "Cung cấp sản phẩm và dịch vụ tốt nhất."
+      },
+      "trust": {
+        "title": "The Trust",
+        "description": "Đặt sự tin tưởng của khách hàng lên hàng đầu."
+      },
+      "pride": {
+        "title": "The Pride",
+        "description": "Tự hào về sản phẩm của chúng tôi."
+      }
+    },
+    "stats": {
+      "years": "Năm hoạt động",
+      "products": "Sản phẩm",
+      "partners": "Đối tác",
+      "countries": "Quốc gia xuất khẩu"
+    }
+  },
+  "brand": {
+    "title": "Giới thiệu thương hiệu",
+    "ceoGreeting": {
+      "title": "Thư CEO",
+      "name": "Tổng Giám đốc",
+      "message": "Cellromax Science sẽ là người bạn đồng hành tốt nhất cho cuộc sống khỏe mạnh của bạn."
+    },
+    "certifications": {
+      "title": "Chứng nhận"
+    }
+  },
+  "history": {
+    "title": "Lịch sử phát triển",
+    "subtitle": "Hành trình của Cellromax Science"
+  },
+  "products": {
+    "title": "Giới thiệu sản phẩm",
+    "subtitle": "Thực phẩm chức năng Cellromax Science",
+    "viewAll": "Xem tất cả",
+    "viewDetail": "Xem chi tiết",
+    "categories": {
+      "all": "Tất cả",
+      "health": "Thực phẩm sức khỏe",
+      "beauty": "Làm đẹp",
+      "diet": "Giảm cân",
+      "immunity": "Miễn dịch"
+    },
+    "detail": {
+      "ingredients": "Thành phần chính",
+      "functionality": "Công dụng",
+      "howToUse": "Cách dùng",
+      "storage": "Cách bảo quản",
+      "nearbyPharmacy": "Nhà thuốc gần đây"
+    },
+    "noProducts": "Chưa có sản phẩm nào.",
+    "loadMore": "Xem thêm"
+  },
+  "ir": {
+    "title": "Thư viện IR",
+    "subtitle": "Thông tin nhà đầu tư",
+    "dart": {
+      "title": "Công bố DART",
+      "description": "Xem tài liệu công bố chính thức trên hệ thống DART.",
+      "link": "Đến DART"
+    },
+    "files": {
+      "title": "Tài liệu IR",
+      "download": "Tải xuống",
+      "year": "Năm",
+      "category": "Phân loại",
+      "noFiles": "Chưa có tài liệu nào."
+    },
+    "categories": {
+      "all": "Tất cả",
+      "annual": "Báo cáo thường niên",
+      "presentation": "Tài liệu trình bày IR",
+      "financial": "Báo cáo tài chính",
+      "other": "Khác"
+    }
+  },
+  "newsroom": {
+    "title": "Phòng tin tức",
+    "tabs": {
+      "notice": "Thông báo",
+      "news": "Tin tức công ty",
+      "video": "Video quảng cáo"
+    },
+    "notice": {
+      "title": "Thông báo",
+      "noItems": "Chưa có thông báo nào."
+    },
+    "news": {
+      "title": "Tin tức công ty",
+      "noItems": "Chưa có tin tức nào."
+    },
+    "video": {
+      "title": "Video quảng cáo",
+      "noItems": "Chưa có video nào."
+    },
+    "readMore": "Đọc thêm",
+    "postedAt": "Ngày đăng"
+  },
+  "partners": {
+    "title": "Đối tác",
+    "subtitle": "Đối tác toàn cầu"
+  },
+  "location": {
+    "title": "Hướng dẫn đến công ty",
+    "address": "Địa chỉ",
+    "phone": "Điện thoại",
+    "fax": "Fax",
+    "email": "Email",
+    "transport": {
+      "title": "Phương tiện đi lại",
+      "subway": "Tàu điện ngầm",
+      "bus": "Xe buýt",
+      "car": "Xe riêng",
+      "parking": "Bãi đỗ xe"
+    }
+  },
+  "contact": {
+    "title": "Liên hệ trực tuyến",
+    "subtitle": "Hãy liên hệ với chúng tôi nếu bạn có thắc mắc.",
+    "form": {
+      "name": "Họ tên",
+      "namePlaceholder": "Nhập họ tên",
+      "company": "Tên công ty",
+      "companyPlaceholder": "Nhập tên công ty",
+      "email": "Email",
+      "emailPlaceholder": "Nhập địa chỉ email",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "category": "Loại yêu cầu",
+      "categoryPlaceholder": "Chọn loại yêu cầu",
+      "message": "Nội dung",
+      "messagePlaceholder": "Nhập nội dung liên hệ",
+      "privacy": "Tôi đồng ý với việc thu thập và sử dụng thông tin cá nhân.",
+      "submit": "Gửi liên hệ",
+      "submitting": "Đang gửi..."
+    },
+    "categories": {
+      "product": "Hỏi về sản phẩm",
+      "partnership": "Hợp tác",
+      "ir": "IR",
+      "other": "Khác"
+    },
+    "success": {
+      "title": "Yêu cầu của bạn đã được tiếp nhận.",
+      "message": "Chúng tôi sẽ phản hồi trong thời gian sớm nhất."
+    },
+    "error": {
+      "title": "Gửi thất bại.",
+      "message": "Vui lòng thử lại sau."
+    }
+  },
+  "footer": {
+    "company": "Cellromax Science",
+    "ceo": "Tổng Giám đốc",
+    "businessNumber": "Số đăng ký kinh doanh",
+    "address": "Địa chỉ",
+    "phone": "Điện thoại",
+    "email": "Email",
+    "copyright": "© {year} Cellromax Science. All rights reserved.",
+    "links": {
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản sử dụng"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi.",
+    "retry": "Thử lại",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "prev": "Trước đó",
+    "search": "Tìm kiếm",
+    "noResults": "Không tìm thấy kết quả.",
+    "page": "Trang"
+  }
+}
