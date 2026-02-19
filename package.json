@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed-admin": "tsx scripts/seed-admin.ts",
+    "db:types": "supabase gen types typescript --project-id mculngtmdbsfcjfotydz > types/database.types.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
@@ -17,6 +19,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.9.2",
+    "server-only": "^0.0.1",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"
   },
@@ -28,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
