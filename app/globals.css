@@ -1,17 +1,17 @@
 /* ==========================================================================
-   Cellromax Science — Global Design System
-   Tailwind CSS v4 + Custom Design Tokens
-   ========================================================================== */
-
-@import "tailwindcss";
-
-/* ==========================================================================
    Google Fonts Import
    Inter (영어), Noto Sans SC (중국어), Be Vietnam Pro (베트남어)
    Pretendard는 로컬 폰트로 @font-face에서 별도 선언
    ========================================================================== */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap");
+
+/* ==========================================================================
+   Cellromax Science — Global Design System
+   Tailwind CSS v4 + Custom Design Tokens
+   ========================================================================== */
+
+@import "tailwindcss";
 
 /* ==========================================================================
    Pretendard Local Font (@font-face)

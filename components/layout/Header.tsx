@@ -19,8 +19,6 @@ import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 // ---------------------------------------------------------------------------
 
 export const NAV_ITEMS = [
-  { key: "about", href: "/about" },
-  { key: "brand", href: "/brand" },
   { key: "products", href: "/products" },
   { key: "ir", href: "/ir" },
   { key: "newsroom", href: "/newsroom" },
@@ -38,7 +36,7 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
       {/* 상단 줄 */}
       <span
         className={[
-          "absolute h-[2px] w-full rounded-full bg-white",
+          "absolute h-[2px] w-full rounded-full bg-primary",
           "transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           isOpen
             ? "translate-y-0 rotate-45"
@@ -48,7 +46,7 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
       {/* 중앙 줄 */}
       <span
         className={[
-          "absolute h-[2px] w-full rounded-full bg-white",
+          "absolute h-[2px] w-full rounded-full bg-primary",
           "transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           isOpen ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100",
         ].join(" ")}
@@ -56,7 +54,7 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
       {/* 하단 줄 */}
       <span
         className={[
-          "absolute h-[2px] w-full rounded-full bg-white",
+          "absolute h-[2px] w-full rounded-full bg-primary",
           "transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           isOpen
             ? "translate-y-0 -rotate-45"
@@ -117,7 +115,7 @@ export function Header() {
           "fixed top-0 inset-x-0 z-[200]",
           "transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           isScrolled
-            ? "bg-primary/92 backdrop-blur-2xl shadow-primary"
+            ? "bg-white/95 backdrop-blur-2xl shadow-lg"
             : "bg-transparent",
         ].join(" ")}
       >
@@ -127,10 +125,10 @@ export function Header() {
               ---------------------------------------------------------------- */}
           <Link
             href="/"
-            className="relative font-display font-bold text-xl tracking-widest text-white transition-colors duration-300 hover:text-secondary hover:opacity-100"
+            className="relative font-display font-bold text-xl tracking-widest text-primary transition-colors duration-300 hover:text-secondary hover:opacity-100"
             aria-label={t("home")}
           >
-            CELLROMAX
+            CELLROMAX SCIENCE
           </Link>
 
           {/* ----------------------------------------------------------------
@@ -147,7 +145,7 @@ export function Header() {
                     "hover:text-secondary hover:opacity-100",
                     isActive(item.href)
                       ? "text-secondary"
-                      : "text-white/85",
+                      : "text-primary/85",
                   ].join(" ")}
                 >
                   {t(item.key)}
@@ -164,7 +162,7 @@ export function Header() {
               우측 영역: LanguageSwitcher + CTA + 햄버거
               ---------------------------------------------------------------- */}
           <div className="flex items-center gap-3">
-            <LanguageSwitcher variant="dark" />
+            <LanguageSwitcher variant="light" />
 
             {/* CTA 버튼 — 데스크탑에서만 표시 */}
             <Link href="/contact" className="hidden lg:block">
@@ -180,8 +178,8 @@ export function Header() {
                 "relative lg:hidden flex items-center justify-center",
                 "w-10 h-10 rounded-lg",
                 "transition-colors duration-200",
-                "hover:bg-white/10",
-                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                "hover:bg-primary/10",
+                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
               ].join(" ")}
               onClick={toggleMobileMenu}
               aria-label={

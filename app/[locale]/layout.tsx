@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: "셀로맥스사이언스",
     template: "%s | 셀로맥스사이언스",
   },
-  description: "최고의 건강기능식품으로 당신의 건강한 삶을 응원합니다.",
+  description: "프리미엄 솔루션으로 당신의 건강한 삶을 응원합니다.",
 };
 
 export default async function LocaleLayout({
