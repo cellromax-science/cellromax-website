@@ -54,7 +54,11 @@
     "ceoGreeting": {
       "title": "Thư CEO",
       "name": "Tổng Giám đốc",
-      "message": "Cellromax Science sẽ là người bạn đồng hành tốt nhất cho cuộc sống khỏe mạnh của bạn."
+      "ceoName": "Seo Jeongmin",
+      "message": "Cellromax Science sẽ là người bạn đồng hành tốt nhất cho cuộc sống khỏe mạnh của bạn.",
+      "paragraph1": "Sau khi trải nghiệm cả nhà thuốc và công ty dược phẩm,\ntôi nhận ra rằng khoảng cách giữa dược sĩ, người tiêu dùng mong muốn sản phẩm chất lượng\nvà nhà cung cấp muốn cắt giảm chi phí là quá lớn.\nTôi đã thành lập Cellromax để thu hẹp khoảng cách đó.",
+      "paragraph2": "Chúng tôi chỉ sử dụng nguyên liệu tốt nhất thế giới.\nChúng tôi chỉ ra mắt công thức không thể sao chép.\nKết quả là chúng tôi trở thành thương hiệu tăng trưởng không cần quảng cáo,\nsản phẩm mà dược sĩ tìm đến đầu tiên.",
+      "paragraph3": "Với việc niêm yết trên KOSDAQ làm bệ phóng, chúng tôi tiến ra thị trường toàn cầu.\nTiêu chuẩn cao cấp mới cho thực phẩm chức năng sức khỏe —\nCellromax Science sẽ dẫn đầu con đường đó."
     },
     "certifications": {
       "title": "Chứng nhận"
@@ -62,7 +66,31 @@
   },
   "history": {
     "title": "Lịch sử phát triển",
-    "subtitle": "Hành trình của Cellromax Science"
+    "subtitle": "Hành trình của Cellromax Science",
+    "2014": "Thành lập Công ty Yaksa & Health (Pyeongtaek, Gyeonggi-do)",
+    "2015": "Đăng ký kinh doanh bán thực phẩm chức năng sức khỏe",
+    "2016": "Thành lập Phòng thí nghiệm Nutraceutical Lab",
+    "2017": "Công nhận Trung tâm R&D doanh nghiệp (KOITA)",
+    "2018": "Chứng nhận doanh nghiệp đầu tư mạo hiểm / Giải thưởng tạo việc làm xuất sắc TP Yongin",
+    "2019": "Chứng nhận ISO 9001·ISO 14001 / Được chọn là Doanh nghiệp đổi mới công nghệ (Inno-Biz)",
+    "2020": "Được chọn là 'Doanh nghiệp nhỏ mạnh' (Bộ Lao động) / Đổi tên thành Cellromax Co., Ltd.",
+    "2021": "Đổi tên công ty từ Yaksa & Health thành Cellromax",
+    "2022": "Sáp nhập công ty con / Đăng ký nhiều bằng sáng chế",
+    "2023": "Được chỉ định là cơ sở đạt chuẩn KGSP",
+    "2024": "Niêm yết trên KOSDAQ / Đổi tên thành Cellromax Science Co., Ltd.",
+    "2025": "Thành lập công ty con Cellromax Creative",
+    "detail2014": "· Thành lập Công ty Yaksa & Health (Pyeongtaek, Gyeonggi-do)",
+    "detail2015": "· Đăng ký kinh doanh thực phẩm chức năng (Số 2015-0308048)\n· Đăng ký kinh doanh bán hàng qua thư (Số 2015-Gyeonggi Songtan-83)",
+    "detail2016": "· Tham gia Lễ hội Học thuật Hội Dược sĩ Gyeonggi-do lần thứ 11\n· Thành lập Phòng thí nghiệm Nutraceutical Lab",
+    "detail2017": "· Ra mắt Nhóm giảng viên hỗ trợ kỳ 1 của Yaksa & Health\n· Lớp học mở Yaksa & Health 2017 toàn quốc (6 tỉnh/thành phố)\n· Ký MOU độc quyền thực phẩm chức năng Jangsengoraji\n· Ký hợp đồng logistics 3PL với Yongma Logis\n· Tổ chức buổi ra mắt và hội nghị mỹ phẩm chức năng\n· Ra mắt hơn 50 sản phẩm mỹ phẩm chức năng\n· Nội dung video tự sản xuất đầu tiên: Cellromax CF\n· Thành lập Trung tâm R&D doanh nghiệp\n· Mở hệ thống VOD bài giảng Yaksa & Health",
+    "detail2018": "· Lớp học mở 2018 toàn quốc (8 thành phố)\n· Tham gia Lễ hội Học thuật Hội Dược sĩ Gyeonggi-do lần thứ 13\n· Di dời trụ sở chính\n· Ra mắt 8 sản phẩm Cellromax Seven Signature\n· Mở cửa hàng thương hiệu Cellromax tại Doota Duty Free\n· Chứng nhận doanh nghiệp đầu tư mạo hiểm (Quỹ Bảo lãnh Công nghệ)\n· Làm mới trang web\n· Được chọn là doanh nghiệp tạo việc làm xuất sắc TP Yongin\n· Nhận 24 giấy phép y tế Trung Quốc",
+    "detail2019": "· Chứng nhận INNOBIZ (Doanh nghiệp đổi mới công nghệ)\n· Tham gia Triển lãm Thiết bị Y tế Quốc tế KIMES\n· Tổ chức Học viện Cosmeceutical (các thành phố lớn toàn quốc)\n· Ra mắt Hệ thống Cellfix D (hệ thống phát video DID)\n· Tham gia Triển lãm Công nghiệp Mỹ phẩm & Làm đẹp Quốc tế Seoul\n· Tham gia Lễ hội Học thuật Hội Dược sĩ Gyeonggi-do lần thứ 14\n· Nhận 9 giấy phép y tế Trung Quốc",
+    "detail2020": "· Được Bộ Lao động chọn là Doanh nghiệp nhỏ mạnh 2020\n· Tiến vào thị trường Việt Nam (ra mắt sản phẩm Cellromax)\n· Gửi vật tư cứu trợ COVID-19\n· Mở Cellromax Store (thương mại điện tử B2C)\n· Tham gia Hội chợ Đông Á do Chính quyền tỉnh Sơn Đông tổ chức\n· Tham gia Hội chợ Đầu tư & Thương mại Hàn-Trung (Thẩm Dương, Trung Quốc)\n· Nhận 24 giấy phép y tế Trung Quốc\n· Công nhận Trung tâm Nghiên cứu Thiết kế KOITA",
+    "detail2021": "· Đổi tên từ Yaksa & Health thành 'Cellromax'\n· Được chọn là doanh nghiệp SME xuất khẩu triển vọng (Bộ Doanh nghiệp vừa và nhỏ)\n· Ra mắt 11 loại thuốc không kê đơn\n· Ra mắt AI Smart Media Board\n· Bổ sung 6 giấy phép y tế Trung Quốc mới\n· Xuất khẩu sang 5 quốc gia bao gồm Nga, Kazakhstan, Thái Lan\n· Ký hợp đồng cung cấp sản phẩm với Bệnh viện Bạch Mai, Việt Nam",
+    "detail2022": "· Được chọn là Doanh nghiệp đổi mới quản lý (Main-Biz)\n· Bằng khen của Tỉnh trưởng Gyeonggi-do — Đóng góp tạo việc làm và kích hoạt kinh tế địa phương\n· Ra mắt 2 sản phẩm chức năng sức khỏe NutraPet\n· Hoàn thành đăng ký 2 bằng sáng chế\n· Ký hợp đồng tài trợ chính thức đội hockey trên băng Solar Bears\n· Tổ chức Giải Golf Mời Cellromax lần thứ 1\n· Xuất khẩu thực phẩm chức năng và mỹ phẩm chức năng sang Việt Nam",
+    "detail2023": "· Ra mắt nền tảng OTT dành riêng cho dược sĩ 'CellFlix'\n· Tổ chức Lễ hội ban nhạc rock toàn quốc các trường dược 'Rock Pharm Festa lần 1'\n· Tổ chức Lễ hội nhảy toàn quốc các trường dược 'Dance Pharm Festa lần 1'\n· Khai trương Cellromax Lab\n· Được chỉ định là cơ sở đạt chuẩn KGSP\n· Hoàn thành đăng ký 1 bằng sáng chế\n· Tuyên bố quản trị ESG\n· Lắp đặt AI Media Board vượt 500 đơn vị",
+    "detail2024": "· Niêm yết trên KOSDAQ\n· Tổng số AI Media Board lắp đặt vượt 800 đơn vị\n· Tổ chức Lễ hội ban nhạc rock toàn quốc các trường dược 'Rock Pharm Festa lần 2'\n· Tổ chức Lễ hội nhảy toàn quốc các trường dược 'Dance Pharm Festa lần 2'\n· Tổ chức Hội thảo Học thuật Cellromax Science lần 1 (SETEC)\n· Chiến dịch Thử thách Danh sách Ước mơ Sinh viên lần 1\n· Tổ chức Lễ hội Nhạc kịch Cellromax lần 3",
+    "detail2025": "· Mở nhóm học tập dành riêng cho dược sĩ 'Cellrowatt'\n· Tổ chức Lễ hội ban nhạc rock toàn quốc các trường dược 'Rock Pharm Festa lần 3'"
   },
   "products": {
     "title": "Giới thiệu sản phẩm",

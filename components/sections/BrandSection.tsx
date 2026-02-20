@@ -212,6 +212,11 @@ export function BrandSection() {
             </p>
           </div>
 
+          {/* 닫는 따옴표 장식 아이콘 */}
+          <div className="mt-8 flex justify-end">
+            <QuoteIcon className="text-secondary/60 rotate-180" />
+          </div>
+
           {/* 서명 영역 */}
           <div ref={signatureRef} className="mt-10 md:mt-12 pt-8 border-t border-white/10">
             <div className="flex flex-col items-end">

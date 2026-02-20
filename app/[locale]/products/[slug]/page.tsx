@@ -50,7 +50,7 @@ function getLocalizedField(
   // ko 폴백
   if (localeCode !== "ko") {
     const fallbackKey = `${field}_ko` as keyof Product;
-    return product[fallbackKey] as string | null;
+    return (product[fallbackKey] as string | null) || null;
   }
   return null;
 }

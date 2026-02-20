@@ -54,7 +54,11 @@
     "ceoGreeting": {
       "title": "CEO Message",
       "name": "CEO",
-      "message": "Cellromax Science will be the best partner for a healthy life."
+      "ceoName": "Jeongmin Seo",
+      "message": "Cellromax Science will be the best partner for a healthy life.",
+      "paragraph1": "Having experienced both pharmacies and pharmaceutical companies,\nI realized that the gap between pharmacists and consumers who want quality products\nand suppliers trying to cut costs was far too wide.\nI started Cellromax to bridge that gap.",
+      "paragraph2": "We only use the world's finest ingredients.\nWe only launch formulas that cannot be imitated.\nAs a result, we became a brand that grows without advertising,\na product that pharmacists seek out first.",
+      "paragraph3": "With our KOSDAQ listing as a springboard, we now advance into the global market.\nA new standard of excellence in health functional foods —\nCellromax Science will lead the way."
     },
     "certifications": {
       "title": "Certifications"
@@ -62,7 +66,31 @@
   },
   "history": {
     "title": "History",
-    "subtitle": "The Journey of Cellromax Science"
+    "subtitle": "The Journey of Cellromax Science",
+    "2014": "Established Yaksa & Health Co., Ltd. (Pyeongtaek, Gyeonggi-do)",
+    "2015": "Health functional food sales business registration",
+    "2016": "Established Nutraceutical Lab",
+    "2017": "Corporate R&D center accredited (KOITA)",
+    "2018": "Venture company certification / Yongin City job creation excellence award",
+    "2019": "ISO 9001 · ISO 14001 certification / Inno-Biz (Innovative SME) designation",
+    "2020": "Selected as 'Strong Small Business' (Ministry of Employment and Labor) / Name changed to Cellromax Co., Ltd.",
+    "2021": "Corporate name changed from Yaksa & Health to Cellromax",
+    "2022": "Subsidiary merger / Multiple patents registered",
+    "2023": "KGSP (Good Pharmaceutical Distribution Practice) certified facility designation",
+    "2024": "Listed on KOSDAQ / Name changed to Cellromax Science Co., Ltd.",
+    "2025": "Established subsidiary Cellromax Creative",
+    "detail2014": "· Established Yaksa & Health Co., Ltd. (Pyeongtaek, Gyeonggi-do)",
+    "detail2015": "· Health functional food sales registration (No. 2015-0308048)\n· Mail-order sales registration (No. 2015-Gyeonggi Songtan-83)",
+    "detail2016": "· Participated in 11th Gyeonggi-do Pharmacist Association Academic Festival\n· Established Nutraceutical Lab",
+    "detail2017": "· Launched Yaksa & Health 1st Supporters Instructor Group\n· 2017 Yaksa & Health Open Class nationwide (6 provinces/cities)\n· Signed exclusive MOU for Jangsengoraji health functional foods\n· 3PL logistics contract with Yongma Logis\n· Functional cosmetics launch show and conference\n· Released over 50 functional cosmetics products\n· First in-house video content: Cellromax CF\n· Established corporate R&D center\n· Launched Yaksa & Health lecture VOD system",
+    "detail2018": "· 2018 Open Class nationwide (8 cities)\n· Participated in 13th Gyeonggi-do Pharmacist Association Academic Festival\n· Relocated headquarters\n· Launched Cellromax Seven Signature 8 products\n· Opened Cellromax brand shop in Doota Duty Free\n· Venture company certification (Korea Technology Finance Corporation)\n· Website renewal\n· Selected as Yongin City job creation excellence company\n· Obtained 24 China health permits",
+    "detail2019": "· INNOBIZ (Innovative SME) certification\n· Participated in KIMES International Medical Device Exhibition\n· Cosmeceutical Academy sessions (major cities nationwide)\n· Launched Cellfix D System (DID video broadcasting system)\n· Participated in Seoul International Cosmetics & Beauty Industry Expo\n· Participated in 14th Gyeonggi-do Pharmacist Association Academic Festival\n· Obtained 9 China health permits",
+    "detail2020": "· Selected as 2020 'Strong Small Business' by Ministry of Employment and Labor\n· Entered Vietnam market (Cellromax product launch)\n· Delivered COVID-19 relief supplies\n· Opened Cellromax Store (B2C e-commerce)\n· Participated in Shandong Provincial Government East Asia Expo\n· Participated in Korea-China Investment & Trade Fair (Shenyang, China)\n· Obtained 24 China health permits\n· KOITA corporate design research center accredited",
+    "detail2021": "· Corporate name changed from Yaksa & Health to 'Cellromax'\n· Selected as promising export SME (Ministry of SMEs and Startups)\n· Launched 11 OTC pharmaceutical products\n· Launched AI Smart Media Board\n· Added 6 new China health permits\n· Exports to 5 countries including Russia, Kazakhstan, Thailand\n· Signed product supply contract with Bach Mai Hospital, Vietnam",
+    "detail2022": "· Selected as Management Innovation SME (Main-Biz)\n· Gyeonggi-do Governor's commendation for job creation and regional economy\n· Launched 2 NutraPet health functional products\n· Completed 2 patent registrations\n· Official sponsorship of Solar Bears ice hockey team\n· Hosted 1st Cellromax Invitational Golf Tournament\n· Exported health functional foods and functional cosmetics to Vietnam",
+    "detail2023": "· Launched pharmacist-exclusive OTT platform 'CellFlix'\n· Hosted 1st nationwide pharmacy school rock band festival 'Rock Pharm Festa'\n· Hosted 1st nationwide pharmacy school dance festival 'Dance Pharm Festa'\n· Opened Cellromax Lab\n· Designated as KGSP certified facility\n· Completed 1 patent registration\n· Declared ESG management\n· AI Media Board installations exceeded 500 units",
+    "detail2024": "· Listed on KOSDAQ\n· Cumulative AI Media Board installations exceeded 800 units\n· Hosted 2nd nationwide pharmacy school rock band festival 'Rock Pharm Festa'\n· Hosted 2nd nationwide pharmacy school dance festival 'Dance Pharm Festa'\n· Hosted 1st Cellromax Science Academic Symposium (SETEC)\n· 1st University Student Bucket List Challenge Campaign\n· Hosted 3rd Cellromax Musical Festival",
+    "detail2025": "· Launched pharmacist-exclusive study group 'Cellrowatt'\n· Hosted 3rd nationwide pharmacy school rock band festival 'Rock Pharm Festa'"
   },
   "products": {
     "title": "Products",
