@@ -171,7 +171,7 @@ export function AboutSection() {
 
   // ----- useScrollFadeIn refs -----
   const headerRef = useScrollFadeIn({ direction: "up" });
-  const missionVisionRef = useScrollFadeIn({ direction: "up", stagger: 0.15 });
+  const missionVisionRef = useScrollFadeIn({ direction: "up" });
   const valuesHeaderRef = useScrollFadeIn({ direction: "up" });
   const valuesRef = useScrollFadeIn({ direction: "up", stagger: 0.12 });
   const statsRef = useScrollFadeIn({ direction: "up", stagger: 0.1 });
