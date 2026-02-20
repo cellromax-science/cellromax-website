@@ -46,6 +46,12 @@ export interface Product {
   how_to_use_vi: string | null;
   caution_ko: string | null;
   caution_en: string | null;
+  caution_zh: string | null;
+  caution_vi: string | null;
+  storage_ko: string | null;
+  storage_en: string | null;
+  storage_zh: string | null;
+  storage_vi: string | null;
   is_active: boolean;
   is_new: boolean;
   sort_order: number;
@@ -81,6 +87,12 @@ export interface ProductInsert {
   how_to_use_vi?: string | null;
   caution_ko?: string | null;
   caution_en?: string | null;
+  caution_zh?: string | null;
+  caution_vi?: string | null;
+  storage_ko?: string | null;
+  storage_en?: string | null;
+  storage_zh?: string | null;
+  storage_vi?: string | null;
   is_active?: boolean;
   is_new?: boolean;
   sort_order?: number;

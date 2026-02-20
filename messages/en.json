@@ -81,9 +81,19 @@
     "detail": {
       "ingredients": "Key Ingredients",
       "functionality": "Functionality",
+      "efficacy": "Efficacy",
       "howToUse": "How to Use",
+      "intakeMethod": "Intake & Dosage",
+      "usageMethod": "How to Use",
+      "dosage": "Dosage & Administration",
+      "recommendedFeeding": "Recommended Feeding",
       "storage": "Storage",
-      "nearbyPharmacy": "Nearby Pharmacy"
+      "caution": "Caution",
+      "nearbyPharmacy": "Nearby Pharmacy",
+      "findPharmacy": "Find Nearby Pharmacy",
+      "pharmacyModalTitle": "Nearby Pharmacies",
+      "backToList": "Back to Products",
+      "noInfo": "No information available"
     },
     "noProducts": "No products available.",
     "loadMore": "Load More",

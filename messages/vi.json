@@ -81,9 +81,19 @@
     "detail": {
       "ingredients": "Thành phần chính",
       "functionality": "Công dụng",
+      "efficacy": "Hiệu quả",
       "howToUse": "Cách dùng",
+      "intakeMethod": "Liều lượng & cách dùng",
+      "usageMethod": "Cách sử dụng",
+      "dosage": "Liều lượng & cách dùng",
+      "recommendedFeeding": "Lượng cho ăn khuyến nghị",
       "storage": "Cách bảo quản",
-      "nearbyPharmacy": "Nhà thuốc gần đây"
+      "caution": "Lưu ý",
+      "nearbyPharmacy": "Nhà thuốc gần đây",
+      "findPharmacy": "Tìm nhà thuốc gần đây",
+      "pharmacyModalTitle": "Nhà thuốc gần đây",
+      "backToList": "Quay lại danh sách",
+      "noInfo": "Không có thông tin"
     },
     "noProducts": "Chưa có sản phẩm nào.",
     "loadMore": "Xem thêm",

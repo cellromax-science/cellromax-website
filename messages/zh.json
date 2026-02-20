@@ -81,9 +81,19 @@
     "detail": {
       "ingredients": "主要成分",
       "functionality": "功能性",
+      "efficacy": "功效",
       "howToUse": "服用方法",
+      "intakeMethod": "摄入量及方法",
+      "usageMethod": "使用方法",
+      "dosage": "用法用量",
+      "recommendedFeeding": "推荐喂食量",
       "storage": "保存方法",
-      "nearbyPharmacy": "附近药店"
+      "caution": "注意事项",
+      "nearbyPharmacy": "附近药店",
+      "findPharmacy": "查找附近药店",
+      "pharmacyModalTitle": "附近药店",
+      "backToList": "返回产品列表",
+      "noInfo": "暂无信息"
     },
     "noProducts": "暂无产品。",
     "loadMore": "加载更多",

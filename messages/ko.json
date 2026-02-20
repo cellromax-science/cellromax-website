@@ -119,9 +119,19 @@
     "detail": {
       "ingredients": "주요 성분",
       "functionality": "기능성",
+      "efficacy": "효능효과",
       "howToUse": "복용 방법",
+      "intakeMethod": "섭취량 및 섭취방법",
+      "usageMethod": "사용방법",
+      "dosage": "용법용량",
+      "recommendedFeeding": "권장급여량",
       "storage": "보관 방법",
-      "nearbyPharmacy": "주변 약국"
+      "caution": "주의사항",
+      "nearbyPharmacy": "주변 약국",
+      "findPharmacy": "주변 약국 찾기",
+      "pharmacyModalTitle": "주변 약국",
+      "backToList": "제품 목록으로",
+      "noInfo": "정보가 없습니다."
     },
     "noProducts": "등록된 제품이 없습니다.",
     "loadMore": "더 보기",
