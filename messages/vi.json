@@ -66,15 +66,17 @@
   },
   "products": {
     "title": "Giới thiệu sản phẩm",
-    "subtitle": "Thực phẩm chức năng Cellromax Science",
+    "subtitle": "Dòng sản phẩm cao cấp của Cellromax Science",
     "viewAll": "Xem tất cả",
     "viewDetail": "Xem chi tiết",
     "categories": {
       "all": "Tất cả",
-      "health": "Thực phẩm sức khỏe",
-      "beauty": "Làm đẹp",
-      "diet": "Giảm cân",
-      "immunity": "Miễn dịch"
+      "health_functional": "Thực phẩm chức năng",
+      "general_food": "Thực phẩm chung",
+      "cosmetic": "Mỹ phẩm",
+      "medicine": "Thuốc",
+      "nutra_pet": "Nutra Pet",
+      "other": "Khác"
     },
     "detail": {
       "ingredients": "Thành phần chính",
@@ -84,7 +86,9 @@
       "nearbyPharmacy": "Nhà thuốc gần đây"
     },
     "noProducts": "Chưa có sản phẩm nào.",
-    "loadMore": "Xem thêm"
+    "loadMore": "Xem thêm",
+    "newBadge": "NEW",
+    "totalCount": "Tổng cộng {count} sản phẩm"
   },
   "ir": {
     "title": "Thư viện IR",
@@ -137,6 +141,7 @@
   },
   "location": {
     "title": "Hướng dẫn đến công ty",
+    "subtitle": "Hướng dẫn đường đi",
     "address": "Địa chỉ",
     "phone": "Điện thoại",
     "fax": "Fax",

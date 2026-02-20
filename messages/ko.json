@@ -104,15 +104,17 @@
   },
   "products": {
     "title": "제품소개",
-    "subtitle": "셀로맥스사이언스의 건강기능식품",
+    "subtitle": "셀로맥스사이언스의 프리미엄 제품 라인업",
     "viewAll": "전체 보기",
     "viewDetail": "상세 보기",
     "categories": {
       "all": "전체",
-      "health": "건강식품",
-      "beauty": "뷰티",
-      "diet": "다이어트",
-      "immunity": "면역"
+      "health_functional": "건강기능식품",
+      "general_food": "일반식품",
+      "cosmetic": "화장품",
+      "medicine": "일반의약품",
+      "nutra_pet": "뉴트라펫",
+      "other": "기타"
     },
     "detail": {
       "ingredients": "주요 성분",
@@ -122,7 +124,9 @@
       "nearbyPharmacy": "주변 약국"
     },
     "noProducts": "등록된 제품이 없습니다.",
-    "loadMore": "더 보기"
+    "loadMore": "더 보기",
+    "newBadge": "NEW",
+    "totalCount": "총 {count}개 제품"
   },
   "ir": {
     "title": "IR 자료실",
@@ -175,6 +179,7 @@
   },
   "location": {
     "title": "오시는 길",
+    "subtitle": "찾아오시는 길",
     "address": "주소",
     "phone": "전화",
     "fax": "팩스",

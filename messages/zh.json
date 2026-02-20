@@ -66,15 +66,17 @@
   },
   "products": {
     "title": "产品介绍",
-    "subtitle": "赛络迈科学健康功能食品",
+    "subtitle": "赛络迈科学优质产品阵容",
     "viewAll": "查看全部",
     "viewDetail": "查看详情",
     "categories": {
       "all": "全部",
-      "health": "健康食品",
-      "beauty": "美容",
-      "diet": "减肥",
-      "immunity": "免疫"
+      "health_functional": "健康功能食品",
+      "general_food": "一般食品",
+      "cosmetic": "化妆品",
+      "medicine": "药品",
+      "nutra_pet": "宠物营养",
+      "other": "其他"
     },
     "detail": {
       "ingredients": "主要成分",
@@ -84,7 +86,9 @@
       "nearbyPharmacy": "附近药店"
     },
     "noProducts": "暂无产品。",
-    "loadMore": "加载更多"
+    "loadMore": "加载更多",
+    "newBadge": "NEW",
+    "totalCount": "共{count}个产品"
   },
   "ir": {
     "title": "投资者关系资料",
@@ -137,6 +141,7 @@
   },
   "location": {
     "title": "交通指南",
+    "subtitle": "交通指南",
     "address": "地址",
     "phone": "电话",
     "fax": "传真",

@@ -66,15 +66,17 @@
   },
   "products": {
     "title": "Products",
-    "subtitle": "Health Functional Foods by Cellromax Science",
+    "subtitle": "Premium Product Lineup by Cellromax Science",
     "viewAll": "View All",
     "viewDetail": "View Details",
     "categories": {
       "all": "All",
-      "health": "Health",
-      "beauty": "Beauty",
-      "diet": "Diet",
-      "immunity": "Immunity"
+      "health_functional": "Health Functional",
+      "general_food": "General Food",
+      "cosmetic": "Cosmetics",
+      "medicine": "Medicine",
+      "nutra_pet": "Nutra Pet",
+      "other": "Other"
     },
     "detail": {
       "ingredients": "Key Ingredients",
@@ -84,7 +86,9 @@
       "nearbyPharmacy": "Nearby Pharmacy"
     },
     "noProducts": "No products available.",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "newBadge": "NEW",
+    "totalCount": "{count} products total"
   },
   "ir": {
     "title": "IR Library",
@@ -137,6 +141,7 @@
   },
   "location": {
     "title": "Location",
+    "subtitle": "How to Find Us",
     "address": "Address",
     "phone": "Phone",
     "fax": "Fax",

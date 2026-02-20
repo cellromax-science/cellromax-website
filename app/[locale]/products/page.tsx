@@ -1,0 +1,130 @@
+import { getLocale, getTranslations } from "next-intl/server";
+import { createClient } from "@/lib/supabase/server";
+import { ProductFilter } from "@/components/products/ProductFilter";
+import { ProductGrid } from "@/components/products/ProductGrid";
+import { ProductPagination } from "@/components/products/ProductPagination";
+import type { ProductCategory, Product } from "@/types/product";
+import type { Metadata } from "next";
+
+/* ==========================================================================
+   Products Page — /[locale]/products
+
+   제품 목록 페이지 (서버 컴포넌트).
+   - URL searchParams로 카테고리 필터 및 페이지네이션 상태 관리
+   - Supabase에서 활성 제품 목록 패칭 (12개씩)
+   - 카테고리 탭 필터 + 제품 그리드 + 페이지네이션
+   ========================================================================== */
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const PRODUCTS_PER_PAGE = 12;
+
+const VALID_CATEGORIES: ProductCategory[] = [
+  "health_functional",
+  "general_food",
+  "cosmetic",
+  "medicine",
+  "nutra_pet",
+  "other",
+];
+
+// ---------------------------------------------------------------------------
+// Metadata
+// ---------------------------------------------------------------------------
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("products");
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Page Component
+// ---------------------------------------------------------------------------
+
+interface ProductsPageProps {
+  searchParams: Promise<{
+    category?: string;
+    page?: string;
+  }>;
+}
+
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+  const resolvedParams = await searchParams;
+  const locale = await getLocale();
+  const t = await getTranslations("products");
+
+  /* ---- Parse search params ---- */
+  const rawCategory = resolvedParams.category;
+  const activeCategory: ProductCategory | "all" =
+    rawCategory && VALID_CATEGORIES.includes(rawCategory as ProductCategory)
+      ? (rawCategory as ProductCategory)
+      : "all";
+
+  const currentPage = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
+
+  /* ---- Fetch products from Supabase ---- */
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("products")
+    .select("*, product_subcategories(*)", { count: "exact" })
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (activeCategory !== "all") {
+    query = query.eq("category", activeCategory);
+  }
+
+  /* Pagination range */
+  const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const to = from + PRODUCTS_PER_PAGE - 1;
+
+  const { data: products, count } = await query.range(from, to);
+
+  const totalCount = count ?? 0;
+  const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
+
+  return (
+    <section className="section bg-surface">
+      <div className="container-site">
+        {/* ---- Page Header ---- */}
+        <div className="text-center mb-12">
+          <h1 className="text-heading text-primary">{t("title")}</h1>
+          <div className="divider-gold mx-auto mt-4 mb-4" />
+          <p className="text-lead text-gray-600">{t("subtitle")}</p>
+        </div>
+
+        {/* ---- Category Filter ---- */}
+        <div className="flex flex-col items-center gap-4 mb-10">
+          <ProductFilter activeCategory={activeCategory} />
+          <p className="text-sm text-gray-500">
+            {t("totalCount", { count: totalCount })}
+          </p>
+        </div>
+
+        {/* ---- Product Grid ---- */}
+        <ProductGrid
+          products={(products as Product[]) ?? []}
+          locale={locale}
+          emptyMessage={t("noProducts")}
+        />
+
+        {/* ---- Pagination ---- */}
+        {totalPages > 1 && (
+          <div className="mt-12">
+            <ProductPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

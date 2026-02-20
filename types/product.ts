@@ -6,6 +6,20 @@ export type ProductCategory =
   | 'nutra_pet'
   | 'other';
 
+export interface ProductSubcategory {
+  id: string;
+  parent_category: ProductCategory;
+  slug: string;
+  name_ko: string;
+  name_en: string | null;
+  name_zh: string | null;
+  name_vi: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -14,6 +28,7 @@ export interface Product {
   name_zh: string | null;
   name_vi: string | null;
   category: ProductCategory;
+  subcategory_id: string | null;
   thumbnail_url: string | null;
   images: string[];
   detail_image_url: string | null;
@@ -37,6 +52,8 @@ export interface Product {
   created_at: string;
   updated_at: string;
   created_by: string | null;
+  // JOIN으로 가져올 때 포함되는 서브카테고리 정보
+  product_subcategories?: ProductSubcategory | null;
 }
 
 export interface ProductInsert {
@@ -46,6 +63,7 @@ export interface ProductInsert {
   name_zh?: string | null;
   name_vi?: string | null;
   category: ProductCategory;
+  subcategory_id?: string | null;
   thumbnail_url?: string | null;
   images?: string[];
   detail_image_url?: string | null;
