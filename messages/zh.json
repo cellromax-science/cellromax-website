@@ -176,28 +176,46 @@
   "contact": {
     "title": "在线咨询",
     "subtitle": "欢迎随时向我们咨询。",
+    "tabs": {
+      "consumer": "消费者咨询",
+      "pharmacist": "药师咨询",
+      "business": "商务咨询"
+    },
     "form": {
       "name": "姓名",
       "namePlaceholder": "请输入姓名",
-      "company": "公司名称",
-      "companyPlaceholder": "请输入公司名称",
       "email": "邮箱",
       "emailPlaceholder": "请输入邮箱",
       "phone": "联系方式",
       "phonePlaceholder": "请输入联系方式",
-      "category": "咨询类型",
-      "categoryPlaceholder": "请选择咨询类型",
-      "message": "咨询内容",
+      "subject": "标题",
+      "subjectPlaceholder": "请输入标题",
+      "message": "内容",
       "messagePlaceholder": "请输入咨询内容",
+      "company": "公司名称",
+      "companyPlaceholder": "请输入公司名称",
+      "country": "国家",
+      "countryPlaceholder": "请选择国家",
+      "departmentPosition": "部门及职位",
+      "departmentPositionPlaceholder": "请输入部门及职位",
+      "pharmacyName": "药店名称",
+      "pharmacyNamePlaceholder": "请输入药店名称",
+      "pharmacyAddress": "药店地址",
+      "pharmacyAddressPlaceholder": "请输入药店地址",
       "privacy": "我同意收集和使用个人信息。",
       "submit": "发送咨询",
       "submitting": "发送中..."
     },
-    "categories": {
-      "product": "产品咨询",
-      "partnership": "合作咨询",
-      "ir": "IR咨询",
-      "other": "其他"
+    "countries": {
+      "KR": "韩国",
+      "US": "美国",
+      "CN": "中国",
+      "JP": "日本",
+      "VN": "越南",
+      "TH": "泰国",
+      "RU": "俄罗斯",
+      "KZ": "哈萨克斯坦",
+      "OTHER": "其他"
     },
     "success": {
       "title": "咨询已受理。",
@@ -206,6 +224,12 @@
     "error": {
       "title": "发送失败。",
       "message": "请稍后再试。"
+    },
+    "validation": {
+      "required": "此为必填项。",
+      "invalidEmail": "请输入有效的邮箱地址。",
+      "privacyRequired": "请同意个人信息收集和使用。",
+      "tooLong": "超过最大字符限制。"
     }
   },
   "footer": {

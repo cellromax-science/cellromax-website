@@ -176,28 +176,46 @@
   "contact": {
     "title": "Liên hệ trực tuyến",
     "subtitle": "Hãy liên hệ với chúng tôi nếu bạn có thắc mắc.",
+    "tabs": {
+      "consumer": "Yêu cầu người tiêu dùng",
+      "pharmacist": "Yêu cầu dược sĩ",
+      "business": "Yêu cầu kinh doanh"
+    },
     "form": {
       "name": "Họ tên",
       "namePlaceholder": "Nhập họ tên",
-      "company": "Tên công ty",
-      "companyPlaceholder": "Nhập tên công ty",
       "email": "Email",
       "emailPlaceholder": "Nhập địa chỉ email",
       "phone": "Số điện thoại",
       "phonePlaceholder": "Nhập số điện thoại",
-      "category": "Loại yêu cầu",
-      "categoryPlaceholder": "Chọn loại yêu cầu",
+      "subject": "Tiêu đề",
+      "subjectPlaceholder": "Nhập tiêu đề",
       "message": "Nội dung",
       "messagePlaceholder": "Nhập nội dung liên hệ",
+      "company": "Tên công ty",
+      "companyPlaceholder": "Nhập tên công ty",
+      "country": "Quốc gia",
+      "countryPlaceholder": "Chọn quốc gia",
+      "departmentPosition": "Phòng ban & chức vụ",
+      "departmentPositionPlaceholder": "Nhập phòng ban và chức vụ",
+      "pharmacyName": "Tên nhà thuốc",
+      "pharmacyNamePlaceholder": "Nhập tên nhà thuốc",
+      "pharmacyAddress": "Địa chỉ nhà thuốc",
+      "pharmacyAddressPlaceholder": "Nhập địa chỉ nhà thuốc",
       "privacy": "Tôi đồng ý với việc thu thập và sử dụng thông tin cá nhân.",
       "submit": "Gửi liên hệ",
       "submitting": "Đang gửi..."
     },
-    "categories": {
-      "product": "Hỏi về sản phẩm",
-      "partnership": "Hợp tác",
-      "ir": "IR",
-      "other": "Khác"
+    "countries": {
+      "KR": "Hàn Quốc",
+      "US": "Hoa Kỳ",
+      "CN": "Trung Quốc",
+      "JP": "Nhật Bản",
+      "VN": "Việt Nam",
+      "TH": "Thái Lan",
+      "RU": "Nga",
+      "KZ": "Kazakhstan",
+      "OTHER": "Khác"
     },
     "success": {
       "title": "Yêu cầu của bạn đã được tiếp nhận.",
@@ -206,6 +224,12 @@
     "error": {
       "title": "Gửi thất bại.",
       "message": "Vui lòng thử lại sau."
+    },
+    "validation": {
+      "required": "Trường này là bắt buộc.",
+      "invalidEmail": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "privacyRequired": "Bạn phải đồng ý với chính sách bảo mật.",
+      "tooLong": "Vượt quá giới hạn ký tự tối đa."
     }
   },
   "footer": {

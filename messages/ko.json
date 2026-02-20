@@ -214,28 +214,46 @@
   "contact": {
     "title": "온라인 문의",
     "subtitle": "궁금하신 사항을 문의해 주세요.",
+    "tabs": {
+      "consumer": "소비자 문의",
+      "pharmacist": "약사 문의",
+      "business": "비즈니스 문의"
+    },
     "form": {
-      "name": "이름",
-      "namePlaceholder": "이름을 입력해 주세요",
-      "company": "회사명",
-      "companyPlaceholder": "회사명을 입력해 주세요",
+      "name": "성함",
+      "namePlaceholder": "성함을 입력해 주세요",
       "email": "이메일",
       "emailPlaceholder": "이메일을 입력해 주세요",
       "phone": "연락처",
       "phonePlaceholder": "연락처를 입력해 주세요",
-      "category": "문의 유형",
-      "categoryPlaceholder": "문의 유형을 선택해 주세요",
-      "message": "문의 내용",
+      "subject": "제목",
+      "subjectPlaceholder": "제목을 입력해 주세요",
+      "message": "내용",
       "messagePlaceholder": "문의 내용을 입력해 주세요",
+      "company": "회사명",
+      "companyPlaceholder": "회사명을 입력해 주세요",
+      "country": "국가",
+      "countryPlaceholder": "국가를 선택해 주세요",
+      "departmentPosition": "부서 및 직급",
+      "departmentPositionPlaceholder": "부서 및 직급을 입력해 주세요",
+      "pharmacyName": "약국명",
+      "pharmacyNamePlaceholder": "약국명을 입력해 주세요",
+      "pharmacyAddress": "약국 주소",
+      "pharmacyAddressPlaceholder": "약국 주소를 입력해 주세요",
       "privacy": "개인정보 수집 및 이용에 동의합니다.",
       "submit": "문의 보내기",
       "submitting": "전송 중..."
     },
-    "categories": {
-      "product": "제품 문의",
-      "partnership": "파트너십 문의",
-      "ir": "IR 문의",
-      "other": "기타"
+    "countries": {
+      "KR": "대한민국",
+      "US": "미국",
+      "CN": "중국",
+      "JP": "일본",
+      "VN": "베트남",
+      "TH": "태국",
+      "RU": "러시아",
+      "KZ": "카자흐스탄",
+      "OTHER": "기타"
     },
     "success": {
       "title": "문의가 접수되었습니다.",
@@ -244,6 +262,12 @@
     "error": {
       "title": "전송에 실패했습니다.",
       "message": "잠시 후 다시 시도해 주세요."
+    },
+    "validation": {
+      "required": "필수 입력 항목입니다.",
+      "invalidEmail": "올바른 이메일 형식을 입력해 주세요.",
+      "privacyRequired": "개인정보 수집 및 이용에 동의해 주세요.",
+      "tooLong": "입력 가능한 글자 수를 초과했습니다."
     }
   },
   "footer": {

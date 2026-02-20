@@ -176,28 +176,46 @@
   "contact": {
     "title": "Contact Us",
     "subtitle": "Feel free to ask us anything.",
+    "tabs": {
+      "consumer": "Consumer Inquiry",
+      "pharmacist": "Pharmacist Inquiry",
+      "business": "Business Inquiry"
+    },
     "form": {
       "name": "Name",
       "namePlaceholder": "Enter your name",
-      "company": "Company",
-      "companyPlaceholder": "Enter your company name",
       "email": "Email",
       "emailPlaceholder": "Enter your email",
       "phone": "Phone",
       "phonePlaceholder": "Enter your phone number",
-      "category": "Inquiry Type",
-      "categoryPlaceholder": "Select inquiry type",
+      "subject": "Subject",
+      "subjectPlaceholder": "Enter subject",
       "message": "Message",
       "messagePlaceholder": "Enter your message",
+      "company": "Company",
+      "companyPlaceholder": "Enter your company name",
+      "country": "Country",
+      "countryPlaceholder": "Select your country",
+      "departmentPosition": "Department & Position",
+      "departmentPositionPlaceholder": "Enter your department and position",
+      "pharmacyName": "Pharmacy Name",
+      "pharmacyNamePlaceholder": "Enter pharmacy name",
+      "pharmacyAddress": "Pharmacy Address",
+      "pharmacyAddressPlaceholder": "Enter pharmacy address",
       "privacy": "I agree to the collection and use of personal information.",
       "submit": "Send Message",
       "submitting": "Sending..."
     },
-    "categories": {
-      "product": "Product Inquiry",
-      "partnership": "Partnership",
-      "ir": "IR Inquiry",
-      "other": "Other"
+    "countries": {
+      "KR": "South Korea",
+      "US": "United States",
+      "CN": "China",
+      "JP": "Japan",
+      "VN": "Vietnam",
+      "TH": "Thailand",
+      "RU": "Russia",
+      "KZ": "Kazakhstan",
+      "OTHER": "Other"
     },
     "success": {
       "title": "Your inquiry has been received.",
@@ -206,6 +224,12 @@
     "error": {
       "title": "Failed to send.",
       "message": "Please try again later."
+    },
+    "validation": {
+      "required": "This field is required.",
+      "invalidEmail": "Please enter a valid email address.",
+      "privacyRequired": "You must agree to the privacy policy.",
+      "tooLong": "Exceeds maximum character limit."
     }
   },
   "footer": {
