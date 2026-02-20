@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProductFilter } from "@/components/products/ProductFilter";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductPagination } from "@/components/products/ProductPagination";
-import type { ProductCategory, Product } from "@/types/product";
+import type { ProductCategory, Product, ProductSubcategory } from "@/types/product";
 import type { Metadata } from "next";
 
 /* ==========================================================================
@@ -49,6 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
 interface ProductsPageProps {
   searchParams: Promise<{
     category?: string;
+    subcategory?: string;
     page?: string;
   }>;
 }
@@ -60,25 +61,43 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   /* ---- Parse search params ---- */
   const rawCategory = resolvedParams.category;
-  const activeCategory: ProductCategory | "all" =
+  const activeCategory: ProductCategory =
     rawCategory && VALID_CATEGORIES.includes(rawCategory as ProductCategory)
       ? (rawCategory as ProductCategory)
-      : "all";
+      : "health_functional";
 
+  const activeSubcategory = resolvedParams.subcategory ?? null;
   const currentPage = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
 
   /* ---- Fetch products from Supabase ---- */
   const supabase = await createClient();
 
+  /* ---- Fetch subcategories for active category ---- */
+  const { data: subcategoryData } = await supabase
+    .from("product_subcategories")
+    .select("*")
+    .eq("parent_category", activeCategory)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  const subcategories: ProductSubcategory[] =
+    (subcategoryData as ProductSubcategory[]) ?? [];
+
   let query = supabase
     .from("products")
     .select("*, product_subcategories(*)", { count: "exact" })
     .eq("is_active", true)
+    .eq("category", activeCategory)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
-  if (activeCategory !== "all") {
-    query = query.eq("category", activeCategory);
+  if (activeSubcategory) {
+    const matchedSubcategory = subcategories.find(
+      (sc) => sc.slug === activeSubcategory
+    );
+    if (matchedSubcategory) {
+      query = query.eq("subcategory_id", matchedSubcategory.id);
+    }
   }
 
   /* Pagination range */
@@ -102,7 +121,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         {/* ---- Category Filter ---- */}
         <div className="flex flex-col items-center gap-4 mb-10">
-          <ProductFilter activeCategory={activeCategory} />
+          <ProductFilter
+            activeCategory={activeCategory}
+            activeSubcategory={activeSubcategory}
+            subcategories={subcategories}
+          />
           <p className="text-sm text-gray-500">
             {t("totalCount", { count: totalCount })}
           </p>
