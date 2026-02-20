@@ -19,13 +19,14 @@
   "about": {
     "title": "About Us",
     "subtitle": "Cellromax Science",
+    "description": "Cellromax Science is a KOSDAQ-listed company founded with the mission of creating products that contribute to the health and well-being of people. Under the belief of making only the world's best products, we use only carefully selected quality ingredients through partnerships with globally recognized companies.",
     "mission": {
       "title": "Mission",
       "description": "Contribute to our customers' healthy lives with the highest quality."
     },
     "vision": {
       "title": "Vision",
-      "description": "To become a leading global health functional food company."
+      "description": "To become a leading global healthcare company."
     },
     "values": {
       "title": "Core Values",
@@ -43,10 +44,9 @@
       }
     },
     "stats": {
-      "years": "Years",
-      "products": "Products",
-      "partners": "Partners",
-      "countries": "Countries"
+      "partners": "Pharmacy Members",
+      "products": "PRODUCTS",
+      "years": "YEARS"
     }
   },
   "brand": {

@@ -19,13 +19,14 @@
   "about": {
     "title": "회사소개",
     "subtitle": "셀로맥스사이언스",
+    "description": "셀로맥스사이언스는\n국민의 건강과 삶에 기여하는 제품을 만들겠다는\n사명감으로 설립된 코스닥 상장 기업입니다.\n세계 최고의 제품만을 만들겠다는 신념 아래\n글로벌 시장에서 인정받는 기업들과의 파트너십으로\n엄선된 품질의 원료만을 사용하여 만듭니다.",
     "mission": {
       "title": "미션",
-      "description": "최고의 품질로 고객의 건강한 삶에 기여한다."
+      "description": "최고의 품질로 고객의 건강한 삶에 기여합니다."
     },
     "vision": {
       "title": "비전",
-      "description": "글로벌 건강기능식품 전문기업으로 도약한다."
+      "description": "글로벌 헬스케어 전문기업으로 도약합니다."
     },
     "values": {
       "title": "경영철학",
@@ -43,10 +44,9 @@
       }
     },
     "stats": {
-      "years": "업력",
-      "products": "제품 수",
-      "partners": "파트너사",
-      "countries": "수출 국가"
+      "partners": "회원약국수",
+      "products": "PRODUCTS",
+      "years": "YEARS"
     }
   },
   "brand": {

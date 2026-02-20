@@ -19,13 +19,14 @@
   "about": {
     "title": "Giới thiệu công ty",
     "subtitle": "Cellromax Science",
+    "description": "Cellromax Science là công ty niêm yết trên KOSDAQ được thành lập với sứ mệnh tạo ra các sản phẩm đóng góp cho sức khỏe và cuộc sống của người dân. Với niềm tin chỉ sản xuất những sản phẩm tốt nhất thế giới, chúng tôi chỉ sử dụng nguyên liệu chất lượng được tuyển chọn kỹ lưỡng thông qua quan hệ đối tác với các công ty được công nhận trên toàn cầu.",
     "mission": {
       "title": "Sứ mệnh",
       "description": "Đóng góp cho cuộc sống khỏe mạnh của khách hàng với chất lượng tốt nhất."
     },
     "vision": {
       "title": "Tầm nhìn",
-      "description": "Trở thành doanh nghiệp thực phẩm chức năng hàng đầu toàn cầu."
+      "description": "Trở thành doanh nghiệp chăm sóc sức khỏe hàng đầu toàn cầu."
     },
     "values": {
       "title": "Triết lý kinh doanh",
@@ -43,10 +44,9 @@
       }
     },
     "stats": {
-      "years": "Năm hoạt động",
-      "products": "Sản phẩm",
-      "partners": "Đối tác",
-      "countries": "Quốc gia xuất khẩu"
+      "partners": "Nhà thuốc thành viên",
+      "products": "PRODUCTS",
+      "years": "YEARS"
     }
   },
   "brand": {

@@ -5,9 +5,8 @@ import { Link } from "@/lib/i18n/navigation";
    Navigation routes — Header와 동일한 경로 체계
    -------------------------------------------------------------------------- */
 const quickLinks = [
-  { labelKey: "about" as const, href: "/about" },
-  { labelKey: "brand" as const, href: "/brand" },
   { labelKey: "products" as const, href: "/products" },
+  { labelKey: "ir" as const, href: "/ir" },
   { labelKey: "newsroom" as const, href: "/newsroom" },
 ] as const;
 

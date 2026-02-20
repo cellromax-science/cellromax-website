@@ -19,13 +19,14 @@
   "about": {
     "title": "公司介绍",
     "subtitle": "赛络迈科学",
+    "description": "赛络迈科学是一家以为国民健康和生活做出贡献为使命而成立的科创板上市企业。秉承只生产世界顶级产品的信念，通过与全球市场认可的企业合作，只使用精选优质原料进行生产。",
     "mission": {
       "title": "使命",
       "description": "以最高品质为顾客的健康生活作出贡献。"
     },
     "vision": {
       "title": "愿景",
-      "description": "成为全球领先的健康功能食品专业企业。"
+      "description": "成为全球领先的医疗保健专业企业。"
     },
     "values": {
       "title": "经营理念",
@@ -43,10 +44,9 @@
       }
     },
     "stats": {
-      "years": "年历史",
-      "products": "产品数",
-      "partners": "合作伙伴",
-      "countries": "出口国家"
+      "partners": "会员药店数",
+      "products": "PRODUCTS",
+      "years": "YEARS"
     }
   },
   "brand": {
