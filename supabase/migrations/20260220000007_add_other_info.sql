@@ -1,0 +1,5 @@
+ALTER TABLE products
+  ADD COLUMN IF NOT EXISTS other_info_ko TEXT,
+  ADD COLUMN IF NOT EXISTS other_info_en TEXT,
+  ADD COLUMN IF NOT EXISTS other_info_zh TEXT,
+  ADD COLUMN IF NOT EXISTS other_info_vi TEXT;

@@ -93,7 +93,8 @@
       "findPharmacy": "Find Nearby Pharmacy",
       "pharmacyModalTitle": "Nearby Pharmacies",
       "backToList": "Back to Products",
-      "noInfo": "No information available"
+      "noInfo": "No information available",
+      "otherInfo": "Other Information"
     },
     "noProducts": "No products available.",
     "loadMore": "Load More",

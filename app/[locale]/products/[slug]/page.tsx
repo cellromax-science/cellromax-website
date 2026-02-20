@@ -32,7 +32,8 @@ type LocalizedFieldPrefix =
   | "functionality"
   | "how_to_use"
   | "caution"
-  | "storage";
+  | "storage"
+  | "other_info";
 
 /**
  * 로케일별 필드 값 반환. 해당 로케일 값이 없으면 _ko 폴백.
@@ -135,6 +136,13 @@ function buildTabs(
     key: "caution",
     label: t("caution"),
     content: getLocalizedField(product, "caution", locale),
+  });
+
+  // 6. 기타 정보 (모든 카테고리)
+  tabs.push({
+    key: "otherInfo",
+    label: t("otherInfo"),
+    content: getLocalizedField(product, "other_info", locale),
   });
 
   return tabs;

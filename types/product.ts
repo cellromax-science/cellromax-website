@@ -52,6 +52,10 @@ export interface Product {
   storage_en: string | null;
   storage_zh: string | null;
   storage_vi: string | null;
+  other_info_ko: string | null;
+  other_info_en: string | null;
+  other_info_zh: string | null;
+  other_info_vi: string | null;
   is_active: boolean;
   is_new: boolean;
   sort_order: number;
@@ -93,6 +97,10 @@ export interface ProductInsert {
   storage_en?: string | null;
   storage_zh?: string | null;
   storage_vi?: string | null;
+  other_info_ko?: string | null;
+  other_info_en?: string | null;
+  other_info_zh?: string | null;
+  other_info_vi?: string | null;
   is_active?: boolean;
   is_new?: boolean;
   sort_order?: number;

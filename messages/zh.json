@@ -93,7 +93,8 @@
       "findPharmacy": "查找附近药店",
       "pharmacyModalTitle": "附近药店",
       "backToList": "返回产品列表",
-      "noInfo": "暂无信息"
+      "noInfo": "暂无信息",
+      "otherInfo": "其他信息"
     },
     "noProducts": "暂无产品。",
     "loadMore": "加载更多",

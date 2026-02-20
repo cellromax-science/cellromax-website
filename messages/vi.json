@@ -93,7 +93,8 @@
       "findPharmacy": "Tìm nhà thuốc gần đây",
       "pharmacyModalTitle": "Nhà thuốc gần đây",
       "backToList": "Quay lại danh sách",
-      "noInfo": "Không có thông tin"
+      "noInfo": "Không có thông tin",
+      "otherInfo": "Thông tin khác"
     },
     "noProducts": "Chưa có sản phẩm nào.",
     "loadMore": "Xem thêm",
