@@ -31,7 +31,6 @@ type LocalizedFieldPrefix =
   | "ingredients"
   | "functionality"
   | "how_to_use"
-  | "caution"
   | "storage"
   | "other_info";
 
@@ -131,14 +130,7 @@ function buildTabs(
     content: getLocalizedField(product, "storage", locale),
   });
 
-  // 5. 주의사항 (모든 카테고리)
-  tabs.push({
-    key: "caution",
-    label: t("caution"),
-    content: getLocalizedField(product, "caution", locale),
-  });
-
-  // 6. 기타 정보 (모든 카테고리)
+  // 5. 기타 정보 (모든 카테고리)
   tabs.push({
     key: "otherInfo",
     label: t("otherInfo"),

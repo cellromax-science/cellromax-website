@@ -88,7 +88,6 @@
       "dosage": "Dosage & Administration",
       "recommendedFeeding": "Recommended Feeding",
       "storage": "Storage",
-      "caution": "Caution",
       "nearbyPharmacy": "Nearby Pharmacy",
       "findPharmacy": "Find Nearby Pharmacy",
       "pharmacyModalTitle": "Nearby Pharmacies",
@@ -118,14 +117,15 @@
     },
     "categories": {
       "all": "All",
-      "annual": "Annual Report",
+      "announcement": "Disclosure",
+      "annual_report": "Annual Report",
       "presentation": "IR Presentation",
-      "financial": "Financial Statements",
       "other": "Other"
     }
   },
   "newsroom": {
     "title": "Newsroom",
+    "subtitle": "Latest News from Cellromax Science",
     "tabs": {
       "notice": "Notice",
       "news": "News",
@@ -136,15 +136,23 @@
       "noItems": "No notices available."
     },
     "news": {
-      "title": "Company News",
+      "title": "News",
       "noItems": "No news available."
     },
     "video": {
       "title": "Promotional Videos",
       "noItems": "No videos available."
     },
+    "pinnedBadge": "Pinned",
     "readMore": "Read More",
-    "postedAt": "Posted"
+    "postedAt": "Posted",
+    "totalCount": "{count} posts total",
+    "backToList": "Back to List",
+    "detail": {
+      "title": "Post Detail",
+      "notFound": "Post not found.",
+      "relatedPosts": "Related Posts"
+    }
   },
   "partners": {
     "title": "Partners",

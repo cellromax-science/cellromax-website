@@ -88,7 +88,6 @@
       "dosage": "Liều lượng & cách dùng",
       "recommendedFeeding": "Lượng cho ăn khuyến nghị",
       "storage": "Cách bảo quản",
-      "caution": "Lưu ý",
       "nearbyPharmacy": "Nhà thuốc gần đây",
       "findPharmacy": "Tìm nhà thuốc gần đây",
       "pharmacyModalTitle": "Nhà thuốc gần đây",
@@ -118,17 +117,18 @@
     },
     "categories": {
       "all": "Tất cả",
-      "annual": "Báo cáo thường niên",
+      "announcement": "Tài liệu công bố",
+      "annual_report": "Báo cáo thường niên",
       "presentation": "Tài liệu trình bày IR",
-      "financial": "Báo cáo tài chính",
       "other": "Khác"
     }
   },
   "newsroom": {
     "title": "Phòng tin tức",
+    "subtitle": "Tin tức mới nhất từ Cellromax Science",
     "tabs": {
       "notice": "Thông báo",
-      "news": "Tin tức công ty",
+      "news": "Tin tức",
       "video": "Video quảng cáo"
     },
     "notice": {
@@ -136,15 +136,23 @@
       "noItems": "Chưa có thông báo nào."
     },
     "news": {
-      "title": "Tin tức công ty",
+      "title": "Tin tức",
       "noItems": "Chưa có tin tức nào."
     },
     "video": {
       "title": "Video quảng cáo",
       "noItems": "Chưa có video nào."
     },
+    "pinnedBadge": "Ghim",
     "readMore": "Đọc thêm",
-    "postedAt": "Ngày đăng"
+    "postedAt": "Ngày đăng",
+    "totalCount": "Tổng cộng {count} bài",
+    "backToList": "Quay lại danh sách",
+    "detail": {
+      "title": "Chi tiết bài viết",
+      "notFound": "Không tìm thấy bài viết.",
+      "relatedPosts": "Bài viết liên quan"
+    }
   },
   "partners": {
     "title": "Đối tác",

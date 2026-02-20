@@ -88,7 +88,6 @@
       "dosage": "用法用量",
       "recommendedFeeding": "推荐喂食量",
       "storage": "保存方法",
-      "caution": "注意事项",
       "nearbyPharmacy": "附近药店",
       "findPharmacy": "查找附近药店",
       "pharmacyModalTitle": "附近药店",
@@ -118,17 +117,18 @@
     },
     "categories": {
       "all": "全部",
-      "annual": "年度报告",
+      "announcement": "公示资料",
+      "annual_report": "年度报告",
       "presentation": "IR演示资料",
-      "financial": "财务报表",
       "other": "其他"
     }
   },
   "newsroom": {
     "title": "新闻室",
+    "subtitle": "赛络迈科学的最新消息",
     "tabs": {
       "notice": "公告",
-      "news": "公司新闻",
+      "news": "新闻",
       "video": "宣传视频"
     },
     "notice": {
@@ -136,15 +136,23 @@
       "noItems": "暂无公告。"
     },
     "news": {
-      "title": "公司新闻",
+      "title": "新闻",
       "noItems": "暂无新闻。"
     },
     "video": {
       "title": "宣传视频",
       "noItems": "暂无视频。"
     },
+    "pinnedBadge": "置顶",
     "readMore": "查看更多",
-    "postedAt": "发布日期"
+    "postedAt": "发布日期",
+    "totalCount": "共{count}条",
+    "backToList": "返回列表",
+    "detail": {
+      "title": "文章详情",
+      "notFound": "未找到文章。",
+      "relatedPosts": "相关文章"
+    }
   },
   "partners": {
     "title": "合作伙伴",

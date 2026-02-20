@@ -4,7 +4,7 @@ import type { ProductCategory } from "@/types/product";
    Badge Variant Types
    -------------------------------------------------------------------------- */
 
-type BadgeVariant =
+export type BadgeVariant =
   | "primary"
   | "secondary"
   | "gold"

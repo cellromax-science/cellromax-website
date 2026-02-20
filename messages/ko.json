@@ -126,7 +126,6 @@
       "dosage": "용법용량",
       "recommendedFeeding": "권장급여량",
       "storage": "보관 방법",
-      "caution": "주의사항",
       "nearbyPharmacy": "주변 약국",
       "findPharmacy": "주변 약국 찾기",
       "pharmacyModalTitle": "주변 약국",
@@ -156,33 +155,42 @@
     },
     "categories": {
       "all": "전체",
-      "annual": "연간보고서",
+      "announcement": "공시자료",
+      "annual_report": "연간보고서",
       "presentation": "IR 발표자료",
-      "financial": "재무제표",
       "other": "기타"
     }
   },
   "newsroom": {
     "title": "뉴스룸",
+    "subtitle": "셀로맥스사이언스의 최신 소식",
     "tabs": {
       "notice": "공지사항",
-      "news": "회사소식",
-      "video": "홍보영상"
+      "news": "뉴스",
+      "video": "영상컨텐츠"
     },
     "notice": {
       "title": "공지사항",
       "noItems": "등록된 공지사항이 없습니다."
     },
     "news": {
-      "title": "회사소식",
-      "noItems": "등록된 소식이 없습니다."
+      "title": "뉴스",
+      "noItems": "등록된 뉴스가 없습니다."
     },
     "video": {
-      "title": "홍보영상",
+      "title": "영상컨텐츠",
       "noItems": "등록된 영상이 없습니다."
     },
+    "pinnedBadge": "고정",
     "readMore": "자세히 보기",
-    "postedAt": "작성일"
+    "postedAt": "작성일",
+    "totalCount": "총 {count}건",
+    "backToList": "목록으로",
+    "detail": {
+      "title": "게시글 상세",
+      "notFound": "게시글을 찾을 수 없습니다.",
+      "relatedPosts": "관련 게시글"
+    }
   },
   "partners": {
     "title": "파트너스",
