@@ -43,7 +43,7 @@ async function main() {
 
   const { data, error } = await supabase
     .from("products")
-    .select("slug, name_ko, is_active, caution_ko, other_info_ko")
+    .select("slug, name_ko, is_active, other_info_ko")
     .eq("slug", "myungpum-joint-care-premium")
     .single();
 

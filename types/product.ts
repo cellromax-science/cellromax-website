@@ -32,6 +32,7 @@ export interface Product {
   thumbnail_url: string | null;
   images: string[];
   detail_image_url: string | null;
+  nutrition_image_url: string | null;
   ingredients_ko: string | null;
   ingredients_en: string | null;
   ingredients_zh: string | null;
@@ -44,14 +45,6 @@ export interface Product {
   how_to_use_en: string | null;
   how_to_use_zh: string | null;
   how_to_use_vi: string | null;
-  caution_ko: string | null;
-  caution_en: string | null;
-  caution_zh: string | null;
-  caution_vi: string | null;
-  storage_ko: string | null;
-  storage_en: string | null;
-  storage_zh: string | null;
-  storage_vi: string | null;
   other_info_ko: string | null;
   other_info_en: string | null;
   other_info_zh: string | null;
@@ -77,6 +70,7 @@ export interface ProductInsert {
   thumbnail_url?: string | null;
   images?: string[];
   detail_image_url?: string | null;
+  nutrition_image_url?: string | null;
   ingredients_ko?: string | null;
   ingredients_en?: string | null;
   ingredients_zh?: string | null;
@@ -89,14 +83,6 @@ export interface ProductInsert {
   how_to_use_en?: string | null;
   how_to_use_zh?: string | null;
   how_to_use_vi?: string | null;
-  caution_ko?: string | null;
-  caution_en?: string | null;
-  caution_zh?: string | null;
-  caution_vi?: string | null;
-  storage_ko?: string | null;
-  storage_en?: string | null;
-  storage_zh?: string | null;
-  storage_vi?: string | null;
   other_info_ko?: string | null;
   other_info_en?: string | null;
   other_info_zh?: string | null;

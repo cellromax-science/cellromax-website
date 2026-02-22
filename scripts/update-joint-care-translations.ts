@@ -80,9 +80,6 @@ async function main() {
       other_info_vi:
         "Loại thực phẩm: Thực phẩm chức năng sức khỏe\nNhà sản xuất: Novarex Co., Ltd. / 80, Osong Saengmyeong 14-ro, Osong-eup, Heungdeok-gu, Cheongju-si, Chungbuk\nQuy cách đóng gói: 1.100 mg x 120 viên x 2 ea (264 g)",
 
-      // --- 주의사항 (Caution) ---
-      caution_en:
-        "Those with specific diseases, sensitive constitutions, allergies, or pregnant women may experience hypersensitivity reactions. Please check the ingredients and consult a specialist before consumption.\nConsult a specialist if you have hypercalcemia or are taking medications.\nDiscontinue use and consult a specialist if adverse effects occur.\nThose with kidney disease should consult a specialist before consumption.",
     })
     .eq("slug", "myungpum-joint-care-premium")
     .select("slug, name_ko");

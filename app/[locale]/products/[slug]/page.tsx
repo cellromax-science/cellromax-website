@@ -31,7 +31,6 @@ type LocalizedFieldPrefix =
   | "ingredients"
   | "functionality"
   | "how_to_use"
-  | "storage"
   | "other_info";
 
 /**
@@ -123,14 +122,7 @@ function buildTabs(
     content: getLocalizedField(product, "how_to_use", locale),
   });
 
-  // 4. 보관방법 (모든 카테고리)
-  tabs.push({
-    key: "storage",
-    label: t("storage"),
-    content: getLocalizedField(product, "storage", locale),
-  });
-
-  // 5. 기타 정보 (모든 카테고리)
+  // 4. 기타 정보 (모든 카테고리)
   tabs.push({
     key: "otherInfo",
     label: t("otherInfo"),
@@ -279,12 +271,26 @@ export default async function ProductDetailPage({ params }: PageProps) {
             <NearbyPharmacyModal />
           </div>
 
-          {/* Detail Design Image */}
+          {/* Detail Page Image (상세페이지) */}
           {product.detail_image_url && (
             <div className="w-full squircle-xl overflow-hidden">
               <Image
                 src={product.detail_image_url}
                 alt={`${productName} - detail`}
+                width={1200}
+                height={1600}
+                className="w-full h-auto"
+                sizes="(max-width: 1280px) 100vw, 1200px"
+              />
+            </div>
+          )}
+
+          {/* Nutrition Image (영양정보) */}
+          {product.nutrition_image_url && (
+            <div className="w-full squircle-xl overflow-hidden">
+              <Image
+                src={product.nutrition_image_url}
+                alt={`${productName} - nutrition`}
                 width={1200}
                 height={1600}
                 className="w-full h-auto"
