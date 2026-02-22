@@ -11,7 +11,23 @@ import {
   recordLoginAttempt,
   updateLastLogin,
 } from '@/lib/auth/login'
+import { routing } from '@/lib/i18n/routing'
 import type { AuthResult } from '@/lib/auth/types'
+
+/**
+ * 미들웨어에서 설정한 x-pathname 헤더로부터 현재 로케일을 추출합니다.
+ */
+async function getLocale(): Promise<string> {
+  const headerStore = await headers()
+  const pathname = headerStore.get('x-pathname') ?? ''
+  const segments = pathname.split('/')
+  const maybeLocale = segments[1]
+
+  if (routing.locales.includes(maybeLocale as (typeof routing.locales)[number])) {
+    return maybeLocale
+  }
+  return routing.defaultLocale
+}
 
 // ---------------------------------------------------------------------------
 // loginAction
@@ -19,7 +35,7 @@ import type { AuthResult } from '@/lib/auth/types'
 // - 관리자 로그인 처리: 입력 검증 -> 잠금 확인 -> 인증 -> 관리자 프로필 확인
 // ---------------------------------------------------------------------------
 export async function loginAction(
-  _prevState: AuthResult,
+  _prevState: AuthResult | null,
   formData: FormData
 ): Promise<AuthResult> {
   // 1. formData에서 값 추출
@@ -90,8 +106,9 @@ export async function loginAction(
 
   // 10. 관리자 대시보드로 리다이렉트
   // - redirect()는 내부적으로 에러를 throw하므로 try-catch 밖에서 호출
-  revalidatePath('/admin', 'layout')
-  redirect('/admin/dashboard')
+  const locale = await getLocale()
+  revalidatePath(`/${locale}/admin`, 'layout')
+  redirect(`/${locale}/admin/dashboard`)
 }
 
 // ---------------------------------------------------------------------------
@@ -102,6 +119,7 @@ export async function logoutAction(): Promise<void> {
   const supabase = await createClient()
   await supabase.auth.signOut()
 
-  revalidatePath('/admin', 'layout')
-  redirect('/admin/login')
+  const locale = await getLocale()
+  revalidatePath(`/${locale}/admin`, 'layout')
+  redirect(`/${locale}/admin/login`)
 }

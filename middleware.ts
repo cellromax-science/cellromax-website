@@ -105,6 +105,14 @@ export default async function middleware(request: NextRequest) {
     intlResponse.cookies.set(cookie.name, cookie.value)
   })
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // 5단계: 레이아웃 힌트 헤더 설정
+  //   서버 컴포넌트(layout.tsx)에서 현재 pathname을 참조할 수 있도록
+  //   커스텀 헤더에 pathname을 전달합니다.
+  //   (admin 경로에서 Header/Footer를 숨기는 데 사용)
+  // ─────────────────────────────────────────────────────────────────────────
+  intlResponse.headers.set('x-pathname', pathname)
+
   return intlResponse
 }
 
