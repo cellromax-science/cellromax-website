@@ -6,23 +6,62 @@ import { INQUIRY_EMAIL_MAP, INQUIRY_TYPE_LABEL } from "@/lib/contact/config";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY ?? "";
 
 interface ActionResult {
   success: boolean;
   error?: string;
 }
 
-export async function submitInquiry(data: ContactFormInput): Promise<ActionResult> {
+async function verifyRecaptcha(token: string): Promise<{ success: boolean; score: number }> {
+  if (!RECAPTCHA_SECRET_KEY) {
+    return { success: true, score: 1.0 };
+  }
+
+  try {
+    const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: RECAPTCHA_SECRET_KEY,
+        response: token,
+      }),
+    });
+
+    const data = await res.json();
+    return { success: data.success === true, score: data.score ?? 0 };
+  } catch {
+    console.error("reCAPTCHA verification failed");
+    return { success: false, score: 0 };
+  }
+}
+
+export async function submitInquiry(
+  data: ContactFormInput,
+  recaptchaToken?: string,
+): Promise<ActionResult> {
   // 1. Zod 검증
   const parsed = contactFormSchema.safeParse(data);
   if (!parsed.success) {
     return { success: false, error: "입력값이 올바르지 않습니다." };
   }
 
+  // 2. reCAPTCHA 검증
+  let recaptchaScore: number | null = null;
+
+  if (recaptchaToken) {
+    const recaptchaResult = await verifyRecaptcha(recaptchaToken);
+    recaptchaScore = recaptchaResult.score;
+
+    if (!recaptchaResult.success || recaptchaResult.score < 0.3) {
+      return { success: false, error: "스팸으로 감지되었습니다. 다시 시도해주세요." };
+    }
+  }
+
   const validated = parsed.data;
   const recipientEmail = INQUIRY_EMAIL_MAP[validated.inquiryType];
 
-  // 2. Supabase INSERT
+  // 3. Supabase INSERT
   const supabase = await createClient();
 
   const insertData: Record<string, unknown> = {
@@ -31,6 +70,7 @@ export async function submitInquiry(data: ContactFormInput): Promise<ActionResul
     subject: validated.subject,
     message: validated.message,
     recipient_email: recipientEmail,
+    recaptcha_score: recaptchaScore,
   };
 
   if (validated.inquiryType === "consumer") {
@@ -55,7 +95,7 @@ export async function submitInquiry(data: ContactFormInput): Promise<ActionResul
     return { success: false, error: "문의 저장에 실패했습니다." };
   }
 
-  // 3. Resend 이메일 전송
+  // 4. Resend 이메일 전송
   try {
     const typeLabel = INQUIRY_TYPE_LABEL[validated.inquiryType];
 
