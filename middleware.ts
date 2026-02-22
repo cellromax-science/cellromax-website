@@ -61,6 +61,15 @@ export default async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // ─────────────────────────────────────────────────────────────────────────
+  // API 라우트 조기 반환
+  //   /api/* 경로는 세션 갱신만 수행하고 intl/admin 미들웨어를 건너뜁니다.
+  //   (API route handler가 자체적으로 인증/인가를 처리합니다)
+  // ─────────────────────────────────────────────────────────────────────────
+  if (pathname.startsWith('/api/')) {
+    return supabaseResponse()
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // 2단계: Admin 경로 인증 보호
   // ─────────────────────────────────────────────────────────────────────────
   const locale = extractLocale(pathname)
@@ -117,5 +126,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|_vercel|api|.*\\..*).*)',],
+  matcher: ['/((?!_next|_vercel|.*\\..*).*)',],
 }
