@@ -49,6 +49,7 @@ export interface Product {
   other_info_en: string | null;
   other_info_zh: string | null;
   other_info_vi: string | null;
+  price: number;
   is_active: boolean;
   is_new: boolean;
   sort_order: number;
@@ -87,6 +88,7 @@ export interface ProductInsert {
   other_info_en?: string | null;
   other_info_zh?: string | null;
   other_info_vi?: string | null;
+  price?: number;
   is_active?: boolean;
   is_new?: boolean;
   sort_order?: number;

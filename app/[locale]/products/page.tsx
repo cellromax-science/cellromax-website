@@ -88,7 +88,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     .select("*, product_subcategories(*)", { count: "exact" })
     .eq("is_active", true)
     .eq("category", activeCategory)
-    .order("sort_order", { ascending: true })
+    .order("price", { ascending: false })
     .order("created_at", { ascending: false });
 
   if (activeSubcategory) {

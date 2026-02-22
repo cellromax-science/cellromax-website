@@ -30,7 +30,7 @@ export default async function ProductsPage() {
   const { data: products, count } = await supabase
     .from("products")
     .select("*, product_subcategories(*)", { count: "exact" })
-    .order("sort_order", { ascending: true })
+    .order("price", { ascending: false })
     .order("created_at", { ascending: false })
     .range(0, 19);
 

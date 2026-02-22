@@ -161,8 +161,8 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   const [isSlugManual, setIsSlugManual] = useState(mode === "edit");
   const [isNew, setIsNew] = useState(initialData?.is_new ?? false);
   const [isActive, setIsActive] = useState(initialData?.is_active ?? true);
-  const [sortOrder, setSortOrder] = useState(
-    String(initialData?.sort_order ?? 0)
+  const [price, setPrice] = useState(
+    String(initialData?.price ?? 0)
   );
 
   // 이미지
@@ -437,7 +437,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         other_info_vi: emptyToNull(otherInfoVi),
         is_active: overrideActive ?? isActive,
         is_new: isNew,
-        sort_order: parseInt(sortOrder, 10) || 0,
+        price: parseInt(price, 10) || 0,
       };
     },
     [
@@ -470,7 +470,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       otherInfoVi,
       isActive,
       isNew,
-      sortOrder,
+      price,
     ]
   );
 
@@ -679,7 +679,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
           </div>
         </div>
 
-        {/* 토글 스위치 + 노출 순서 */}
+        {/* 토글 스위치 + 가격 */}
         <div className="flex flex-wrap items-center gap-8">
           <ToggleSwitch label="신제품 여부" value={isNew} onChange={setIsNew} />
           <ToggleSwitch
@@ -687,12 +687,12 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
             value={isActive}
             onChange={setIsActive}
           />
-          <div className="w-32">
+          <div className="w-40">
             <Input
-              label="노출 순서"
+              label="가격 (원)"
               type="number"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               placeholder="0"
             />
           </div>

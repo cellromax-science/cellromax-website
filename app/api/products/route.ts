@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     const to = from + limit - 1
 
     query = query
-      .order('sort_order', { ascending: true })
+      .order('price', { ascending: false })
       .order('created_at', { ascending: false })
       .range(from, to)
 
