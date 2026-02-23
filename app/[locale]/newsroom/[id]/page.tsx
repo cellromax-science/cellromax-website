@@ -1,4 +1,5 @@
 import { getTranslations, getLocale } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
@@ -105,9 +106,17 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: {
+      canonical: `/${locale}/newsroom/${id}`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/newsroom/${id}`])
+      ),
+    },
     openGraph: {
       title,
       description,
+      locale,
+      type: "website",
       ...(post.thumbnail_url ? { images: [post.thumbnail_url] } : {}),
     },
   };

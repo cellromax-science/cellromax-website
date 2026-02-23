@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { DartBanner } from "@/components/ir/DartBanner";
@@ -36,9 +37,23 @@ const VALID_CATEGORIES: IrCategory[] = [
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ir");
+  const locale = await getLocale();
+
   return {
     title: t("title"),
     description: t("subtitle"),
+    alternates: {
+      canonical: `/${locale}/ir`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/ir`])
+      ),
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("subtitle"),
+      locale,
+      type: "website",
+    },
   };
 }
 

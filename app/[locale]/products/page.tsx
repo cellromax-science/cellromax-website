@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { ProductFilter } from "@/components/products/ProductFilter";
 import { ProductGrid } from "@/components/products/ProductGrid";
@@ -36,9 +37,23 @@ const VALID_CATEGORIES: ProductCategory[] = [
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("products");
+  const locale = await getLocale();
+
   return {
     title: t("title"),
     description: t("subtitle"),
+    alternates: {
+      canonical: `/${locale}/products`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/products`])
+      ),
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("subtitle"),
+      locale,
+      type: "website",
+    },
   };
 }
 

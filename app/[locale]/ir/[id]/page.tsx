@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
@@ -101,6 +102,7 @@ export async function generateMetadata({
 }: PageParams): Promise<Metadata> {
   const { id } = await params;
   const t = await getTranslations("ir");
+  const locale = await getLocale();
 
   if (!UUID_REGEX.test(id)) {
     return { title: t("detail.notFound") };
@@ -124,9 +126,17 @@ export async function generateMetadata({
   return {
     title: file.title,
     description,
+    alternates: {
+      canonical: `/${locale}/ir/${id}`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/ir/${id}`])
+      ),
+    },
     openGraph: {
       title: file.title,
       description,
+      locale,
+      type: "website",
       ...(file.thumbnail_url ? { images: [file.thumbnail_url] } : {}),
     },
   };

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations, getLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { routing } from "@/lib/i18n/routing";
@@ -9,13 +9,32 @@ import { Footer } from "@/components/layout/Footer";
 import { ToastContainer } from "@/components/ui/Toast";
 import "../globals.css";
 
-export const metadata: Metadata = {
-  title: {
-    default: "셀로맥스사이언스",
-    template: "%s | 셀로맥스사이언스",
-  },
-  description: "프리미엄 솔루션으로 당신의 건강한 삶을 응원합니다.",
-};
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cellromax.kr";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  const locale = await getLocale();
+
+  return {
+    title: {
+      default: t("siteName"),
+      template: `%s | ${t("siteName")}`,
+    },
+    description: t("siteDescription"),
+    metadataBase: new URL(BASE_URL),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}`])
+      ),
+    },
+    openGraph: {
+      siteName: t("siteName"),
+      locale,
+      type: "website",
+    },
+  };
+}
 
 export default async function LocaleLayout({
   children,

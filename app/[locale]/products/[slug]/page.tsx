@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge, getCategoryBadgeVariant, getCategoryLabel } from "@/components/ui/Badge";
@@ -157,8 +158,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: name,
+    alternates: {
+      canonical: `/${locale}/products/${slug}`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/products/${slug}`])
+      ),
+    },
     openGraph: {
       title: name,
+      locale,
+      type: "website",
       ...(product.thumbnail_url ? { images: [{ url: product.thumbnail_url }] } : {}),
     },
   };

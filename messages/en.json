@@ -1,4 +1,10 @@
 {
+  "meta": {
+    "siteName": "Cellromax Science",
+    "siteDescription": "Supporting your healthy life with premium solutions.",
+    "homeTitle": "Cellromax Science | Premium Solutions for a Healthy Life",
+    "homeDescription": "Cellromax Science is a KOSDAQ-listed company offering health functional foods, general foods, and cosmetics made with the world's finest ingredients."
+  },
   "nav": {
     "home": "Home",
     "about": "About Us",
@@ -61,7 +67,17 @@
       "paragraph3": "With our KOSDAQ listing as a springboard, we now advance into the global market.\nA new standard of excellence in health functional foods —\nCellromax Science will lead the way."
     },
     "certifications": {
-      "title": "Certifications"
+      "title": "Certifications",
+      "iso9001": "ISO 9001",
+      "iso14001": "ISO 14001",
+      "kgsp": "KGSP",
+      "venture": "Venture Company",
+      "innobiz": "Inno-Biz",
+      "iso9001Desc": "Quality Management System",
+      "iso14001Desc": "Environmental Management System",
+      "kgspDesc": "Good Pharmaceutical Distribution Practice",
+      "ventureDesc": "Certified Venture Company",
+      "innobizDesc": "Innovative Technology SME"
     }
   },
   "history": {

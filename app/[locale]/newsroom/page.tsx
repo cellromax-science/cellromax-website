@@ -1,4 +1,5 @@
 import { getTranslations, getLocale } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { NewsroomTabs } from "@/components/newsroom/NewsroomTabs";
@@ -32,9 +33,23 @@ const VALID_TABS: PostType[] = ["notice", "news", "video"];
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("newsroom");
+  const locale = await getLocale();
+
   return {
     title: t("title"),
     description: t("subtitle"),
+    alternates: {
+      canonical: `/${locale}/newsroom`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/newsroom`])
+      ),
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("subtitle"),
+      locale,
+      type: "website",
+    },
   };
 }
 

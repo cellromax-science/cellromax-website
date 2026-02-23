@@ -1,4 +1,10 @@
 {
+  "meta": {
+    "siteName": "Cellromax Science",
+    "siteDescription": "Đồng hành cùng cuộc sống khỏe mạnh của bạn với các giải pháp cao cấp.",
+    "homeTitle": "Cellromax Science | Giải pháp cao cấp cho cuộc sống khỏe mạnh",
+    "homeDescription": "Cellromax Science là công ty niêm yết trên KOSDAQ, cung cấp thực phẩm chức năng, thực phẩm chung và mỹ phẩm được sản xuất từ nguyên liệu tốt nhất thế giới."
+  },
   "nav": {
     "home": "Trang chủ",
     "about": "Giới thiệu",
@@ -61,7 +67,17 @@
       "paragraph3": "Với việc niêm yết trên KOSDAQ làm bệ phóng, chúng tôi tiến ra thị trường toàn cầu.\nTiêu chuẩn cao cấp mới cho thực phẩm chức năng sức khỏe —\nCellromax Science sẽ dẫn đầu con đường đó."
     },
     "certifications": {
-      "title": "Chứng nhận"
+      "title": "Chứng nhận",
+      "iso9001": "ISO 9001",
+      "iso14001": "ISO 14001",
+      "kgsp": "KGSP",
+      "venture": "Doanh nghiệp đầu tư mạo hiểm",
+      "innobiz": "Inno-Biz",
+      "iso9001Desc": "Hệ thống quản lý chất lượng",
+      "iso14001Desc": "Hệ thống quản lý môi trường",
+      "kgspDesc": "Tiêu chuẩn phân phối dược phẩm tốt",
+      "ventureDesc": "Chứng nhận doanh nghiệp đầu tư mạo hiểm",
+      "innobizDesc": "Doanh nghiệp vừa và nhỏ đổi mới công nghệ"
     }
   },
   "history": {

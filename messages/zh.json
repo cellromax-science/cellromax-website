@@ -1,4 +1,10 @@
 {
+  "meta": {
+    "siteName": "赛络迈科学",
+    "siteDescription": "以优质解决方案助力您的健康生活。",
+    "homeTitle": "赛络迈科学 | 健康生活的优质解决方案",
+    "homeDescription": "赛络迈科学是一家KOSDAQ上市企业，提供以世界顶级原料制造的健康功能食品、一般食品和化妆品。"
+  },
   "nav": {
     "home": "首页",
     "about": "公司介绍",
@@ -61,7 +67,17 @@
       "paragraph3": "以科斯达克上市为跳板，我们现在迈向世界市场。\n健康功能食品的全新高端标准，\n赛络迈科学将引领前行。"
     },
     "certifications": {
-      "title": "认证资质"
+      "title": "认证资质",
+      "iso9001": "ISO 9001",
+      "iso14001": "ISO 14001",
+      "kgsp": "KGSP",
+      "venture": "风险企业",
+      "innobiz": "Inno-Biz",
+      "iso9001Desc": "质量管理体系",
+      "iso14001Desc": "环境管理体系",
+      "kgspDesc": "医药品流通管理标准",
+      "ventureDesc": "风险企业认证",
+      "innobizDesc": "技术创新型中小企业"
     }
   },
   "history": {

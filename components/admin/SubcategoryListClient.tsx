@@ -300,21 +300,85 @@ export function SubcategoryListClient({
                     {sc.product_count}개
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
+                    <div className="inline-flex items-center gap-2">
+                      {/* 수정 버튼 */}
+                      <Button
+                        variant="ghost"
+                        size="xs"
                         onClick={() => handleEdit(sc)}
-                        className="text-xs font-medium text-primary hover:underline"
                       >
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M9.5 2.5L11.5 4.5L5 11H3V9L9.5 2.5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M8 4L10 6"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                          />
+                        </svg>
                         수정
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+
+                      {/* 삭제 버튼 */}
+                      <Button
+                        variant="ghost"
+                        size="xs"
                         onClick={() => setDeleteTarget(sc)}
-                        className="text-xs font-medium text-error hover:underline"
+                        className="!text-error hover:!bg-error/8"
                       >
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M3 4H11L10.3 12.1C10.2724 12.3813 10.1382 12.6409 9.92483 12.8274C9.71146 13.0139 9.43523 13.113 9.15 13.1H4.85C4.56477 13.113 4.28854 13.0139 4.07517 12.8274C3.8618 12.6409 3.72764 12.3813 3.7 12.1L3 4Z"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M2 4H12"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M5.5 1.5H8.5"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M5.5 7V10.5"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M8.5 7V10.5"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
                         삭제
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>

@@ -1,13 +1,28 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/lib/i18n/routing";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { ContactPage } from "@/components/contact/ContactPage";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("contact");
+  const locale = await getLocale();
+
   return {
     title: t("title"),
     description: t("subtitle"),
+    alternates: {
+      canonical: `/${locale}/contact`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}/contact`])
+      ),
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("subtitle"),
+      locale,
+      type: "website",
+    },
   };
 }
 
