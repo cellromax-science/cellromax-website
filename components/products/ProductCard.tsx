@@ -77,7 +77,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
       className="group block focus-ring"
       aria-label={productName}
     >
-      <article className="squircle-xl overflow-hidden bg-surface-raised border border-gray-100 shadow-sm transition-all duration-[250ms] ease-[var(--ease-default)] group-hover:shadow-md group-hover:-translate-y-1">
+      <article className="squircle-xl overflow-hidden bg-surface-raised border border-gray-100 shadow-sm transition-all duration-300 ease-[var(--ease-default)] group-hover:shadow-lg group-hover:-translate-y-1.5 group-hover:border-secondary/20">
         {/* ----------------------------------------------------------------
             Thumbnail Area
             ---------------------------------------------------------------- */}
@@ -88,7 +88,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               alt={productName}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-[250ms] ease-[var(--ease-default)] group-hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[1.08]"
             />
           ) : (
             /* Placeholder — 이미지가 없는 경우 그라디언트 + 아이콘 */
@@ -109,6 +109,12 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               </svg>
             </div>
           )}
+
+          {/* 호버 골드 틴트 오버레이 */}
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-[1]"
+            aria-hidden="true"
+          />
 
           {/* NEW Badge — 신제품 표시 */}
           {product.is_new && (

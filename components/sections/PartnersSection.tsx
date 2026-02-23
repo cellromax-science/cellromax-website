@@ -275,10 +275,13 @@ export function PartnersSection() {
       <div
         ref={sliderRef}
         className="relative w-full overflow-hidden"
-        role="marquee"
+        role="region"
+        aria-roledescription="carousel"
         aria-label="파트너사 로고 슬라이더"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleMouseEnter}
+        onTouchEnd={handleMouseLeave}
       >
         {/* 좌우 페이드 마스크 — 시각적으로 양쪽 끝을 부드럽게 사라지게 */}
         <div

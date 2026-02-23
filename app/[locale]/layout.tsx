@@ -7,6 +7,7 @@ import { routing } from "@/lib/i18n/routing";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ToastContainer } from "@/components/ui/Toast";
+import { PageTransition } from "@/components/layout/PageTransition";
 import "../globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cellromax.kr";
@@ -62,7 +63,13 @@ export default async function LocaleLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           {!isAdmin && <Header />}
-          <main>{children}</main>
+          <main>
+            {!isAdmin ? (
+              <PageTransition>{children}</PageTransition>
+            ) : (
+              children
+            )}
+          </main>
           {!isAdmin && <Footer />}
           <ToastContainer />
         </NextIntlClientProvider>

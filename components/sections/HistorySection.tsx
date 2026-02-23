@@ -137,14 +137,14 @@ export function HistorySection() {
             start: "top 85%",
             once: true,
           },
-          delay: index * 0.03, // 미세한 지연으로 자연스러운 순차 효과
+          delay: index * 0.05, // 미세한 지연으로 자연스러운 순차 효과
         });
       });
 
       // ------------------------------------------------------------------
       // 도트 애니메이션: 스케일 팝인
       // ------------------------------------------------------------------
-      dotRefs.current.forEach((dot) => {
+      dotRefs.current.forEach((dot, index) => {
         if (!dot) return;
 
         gsap.from(dot, {
@@ -152,6 +152,7 @@ export function HistorySection() {
           opacity: 0,
           duration: 0.4,
           ease: "back.out(1.7)",
+          delay: index * 0.05,
           scrollTrigger: {
             trigger: dot,
             start: "top 85%",

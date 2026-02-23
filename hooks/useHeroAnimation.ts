@@ -48,7 +48,7 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap';
  * ```
  */
 export function useHeroAnimation() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;

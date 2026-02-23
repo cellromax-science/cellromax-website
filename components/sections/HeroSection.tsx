@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Button } from "@/components/ui/Button";
+
 import { useHeroAnimation } from "@/hooks/useHeroAnimation";
 
 /* ==========================================================================
@@ -136,9 +136,17 @@ export function HeroSection() {
               {/* Primary CTA */}
               <Link
                 href="/products"
-                className="hero-cta inline-flex items-center justify-center px-6 py-3 text-sm font-semibold tracking-wide text-white bg-primary rounded-[var(--radius-squircle-md)] transition-all duration-200 hover:bg-primary-light"
+                className="hero-cta inline-flex items-center justify-center px-6 py-3 text-sm font-semibold tracking-wide text-white bg-primary rounded-squircle-md transition-all duration-200 hover:bg-primary-light"
               >
                 {t("ctaPrimary")}
+              </Link>
+
+              {/* Secondary CTA */}
+              <Link
+                href="/about"
+                className="hero-cta inline-flex items-center justify-center px-6 py-3 text-sm font-semibold tracking-wide text-white border border-white/30 rounded-squircle-md transition-all duration-200 hover:bg-white/10 hover:border-white/50"
+              >
+                {t("ctaSecondary")}
               </Link>
 
             </div>

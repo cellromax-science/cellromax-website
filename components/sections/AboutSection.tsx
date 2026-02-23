@@ -428,6 +428,7 @@ export function AboutSection() {
                   }}
                   className="text-4xl md:text-5xl font-extrabold text-primary tabular-nums"
                   aria-label={`${stat.value}${stat.suffix}`}
+                  suppressHydrationWarning
                 >
                   {stat.value.toLocaleString()}
                 </span>
