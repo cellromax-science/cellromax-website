@@ -9,6 +9,7 @@ import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 import { ProductDetailTabs } from "@/components/products/ProductDetailTabs";
 import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
+import { detailUrl } from "@/lib/image";
 import type { Product, ProductCategory } from "@/types/product";
 import type { Metadata } from "next";
 
@@ -284,10 +285,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {product.detail_image_url && (
             <div className="w-full squircle-xl overflow-hidden">
               <Image
-                src={product.detail_image_url}
+                src={detailUrl(product.detail_image_url)}
                 alt={`${productName} - detail`}
                 width={1200}
                 height={1600}
+                quality={75}
                 className="w-full h-auto"
                 sizes="(max-width: 1280px) 100vw, 1200px"
               />
@@ -298,10 +300,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {product.nutrition_image_url && (
             <div className="w-full squircle-xl overflow-hidden">
               <Image
-                src={product.nutrition_image_url}
+                src={detailUrl(product.nutrition_image_url)}
                 alt={`${productName} - nutrition`}
                 width={1200}
                 height={1600}
+                quality={75}
                 className="w-full h-auto"
                 sizes="(max-width: 1280px) 100vw, 1200px"
               />

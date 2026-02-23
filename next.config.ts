@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '*.supabase.co',
+        pathname: '/storage/v1/render/image/public/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
       },
       {
@@ -20,6 +25,10 @@ const nextConfig: NextConfig = {
         hostname: 'img.youtube.com',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
+  },
+  experimental: {
+    optimizeCss: true,
   },
 };
 

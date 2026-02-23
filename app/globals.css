@@ -1,94 +1,15 @@
 /* ==========================================================================
-   Google Fonts Import
-   Inter (영어), Noto Sans SC (중국어), Be Vietnam Pro (베트남어)
-   Pretendard는 로컬 폰트로 @font-face에서 별도 선언
-   ========================================================================== */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap");
-
-/* ==========================================================================
    Cellromax Science — Global Design System
    Tailwind CSS v4 + Custom Design Tokens
+
+   Fonts: next/font로 자동 최적화 (layout.tsx에서 CSS 변수 주입)
+   - --font-pretendard: Pretendard (한국어)
+   - --font-inter: Inter (영어)
+   - --font-noto-sc: Noto Sans SC (중국어)
+   - --font-vietnam: Be Vietnam Pro (베트남어)
    ========================================================================== */
 
 @import "tailwindcss";
-
-/* ==========================================================================
-   Pretendard Local Font (@font-face)
-   파일 위치: /public/fonts/Pretendard-*.woff2
-   ========================================================================== */
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-Thin.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-ExtraLight.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-Light.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-Regular.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-Medium.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-SemiBold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-Bold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-ExtraBold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/Pretendard-Black.woff2") format("woff2");
-}
 
 /* ==========================================================================
    Tailwind v4 Design Tokens — @theme 블록
@@ -181,21 +102,21 @@
 
   /* --------------------------------------------------------------------------
      Font Family
-     layout.tsx에서 Geist 폰트가 CSS 변수로 주입됨 (--font-geist-sans 등)
+     next/font가 layout.tsx에서 CSS 변수를 주입 (--font-pretendard, --font-inter 등)
      -------------------------------------------------------------------------- */
 
-  /* layout.tsx의 Geist 폰트 CSS 변수 연결 (기존 동작 보존) */
-  --font-sans: var(--font-geist-sans), "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono), "Fira Code", "Consolas", monospace;
+  /* 기본 sans/mono 폰트 스택 */
+  --font-sans: var(--font-pretendard), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: "Fira Code", "Consolas", monospace;
 
   /* 멀티 언어 폰트 스택 */
-  --font-ko: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-  --font-en: "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
-  --font-zh: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-  --font-vi: "Be Vietnam Pro", "Arial", system-ui, sans-serif;
+  --font-ko: var(--font-pretendard), "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-en: var(--font-inter), "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-zh: var(--font-noto-sc), "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-vi: var(--font-vietnam), "Arial", system-ui, sans-serif;
 
   /* 디스플레이 및 시스템 폰트 */
-  --font-display: "Pretendard", "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-pretendard), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* --------------------------------------------------------------------------
@@ -396,8 +317,8 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  /* 기본 폰트: 한국어 우선, 영어 폴백 */
-  font-family: "Pretendard", "Inter", var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  /* 기본 폰트: next/font CSS 변수 기반, 한국어 우선 */
+  font-family: var(--font-pretendard), var(--font-inter), system-ui, -apple-system, sans-serif;
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   font-weight: 400;
@@ -602,26 +523,26 @@ hr {
 @layer utilities {
   /* 한국어 */
   .font-ko {
-    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    font-family: var(--font-pretendard), "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
     word-break: keep-all;
     overflow-wrap: break-word;
   }
 
   /* 영어 */
   .font-en {
-    font-family: "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+    font-family: var(--font-inter), "Helvetica Neue", Arial, system-ui, sans-serif;
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
   /* 중국어 (간체) */
   .font-zh {
-    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "WenQuanYi Micro Hei", system-ui, sans-serif;
+    font-family: var(--font-noto-sc), "PingFang SC", "Microsoft YaHei", "WenQuanYi Micro Hei", system-ui, sans-serif;
     word-break: break-all;
   }
 
   /* 베트남어 */
   .font-vi {
-    font-family: "Be Vietnam Pro", "Arial", system-ui, sans-serif;
+    font-family: var(--font-vietnam), "Arial", system-ui, sans-serif;
   }
 }
 

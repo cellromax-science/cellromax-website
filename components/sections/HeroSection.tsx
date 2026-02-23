@@ -93,11 +93,12 @@ export function HeroSection() {
           Next.js Image: fill + priority(LCP) + object-cover
           ---------------------------------------------------------------- */}
       <Image
-        src="/images/hero/hero-bg.jpg"
+        src="/images/hero/hero-bg.webp"
         alt=""
         fill
         priority
         sizes="100vw"
+        quality={85}
         className="object-cover"
         aria-hidden="true"
       />

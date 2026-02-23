@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { galleryUrl, thumbStripUrl } from "@/lib/image";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -33,10 +34,11 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
       {/* Main Image Viewer */}
       <div className="relative aspect-square w-full squircle-xl overflow-hidden bg-gray-50 border border-gray-100">
         <Image
-          src={allImages[activeIndex]}
+          src={galleryUrl(allImages[activeIndex])}
           alt={`${productName} - ${activeIndex + 1}`}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
+          quality={75}
           className="object-contain"
           priority={activeIndex === 0}
         />
@@ -59,10 +61,11 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
               }`}
             >
               <Image
-                src={src}
+                src={thumbStripUrl(src)}
                 alt={`${productName} ${idx + 1}`}
                 fill
                 sizes="64px"
+                quality={60}
                 className="object-cover"
               />
             </button>

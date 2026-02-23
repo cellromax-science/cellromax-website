@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge } from "@/components/ui/Badge";
+import { thumbnailUrl } from "@/lib/image";
 import type { Post } from "@/types/newsroom";
 
 /* ==========================================================================
@@ -95,10 +96,11 @@ export function PostCard({ post, locale }: PostCardProps) {
         <div className="relative aspect-video overflow-hidden bg-surface">
           {thumbnailSrc ? (
             <Image
-              src={thumbnailSrc}
+              src={thumbnailUrl(thumbnailSrc)}
               alt={title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              quality={75}
               className="object-cover transition-transform duration-[250ms] ease-[var(--ease-default)] group-hover:scale-105"
             />
           ) : (

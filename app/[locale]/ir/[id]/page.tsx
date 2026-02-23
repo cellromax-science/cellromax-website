@@ -7,6 +7,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { detailUrl } from "@/lib/image";
 import type { IrFile, IrCategory } from "@/types/ir";
 import type { BadgeVariant } from "@/components/ui/Badge";
 import type { Metadata } from "next";
@@ -226,10 +227,12 @@ export default async function IrDetailPage({ params }: IrDetailPageProps) {
           <AnimatedSection direction="up">
             <div className="mb-8 squircle-xl overflow-hidden">
               <Image
-                src={file.thumbnail_url}
+                src={detailUrl(file.thumbnail_url)}
                 alt={file.title}
                 width={800}
                 height={450}
+                quality={75}
+                sizes="(max-width: 800px) 100vw, 800px"
                 className="w-full h-auto object-cover"
               />
             </div>

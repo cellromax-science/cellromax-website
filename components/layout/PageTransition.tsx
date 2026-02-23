@@ -26,11 +26,10 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 
     gsap.fromTo(
       el,
-      { opacity: 0, y: 8 },
+      { opacity: 0 },
       {
         opacity: 1,
-        y: 0,
-        duration: 0.4,
+        duration: 0.3,
         ease: 'power2.out',
       }
     );
@@ -53,7 +52,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   }, [pathname, animateIn]);
 
   return (
-    <div ref={containerRef} className="will-change-[opacity,transform]">
+    <div ref={containerRef} className="will-change-[opacity]">
       {children}
     </div>
   );

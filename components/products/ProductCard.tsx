@@ -11,6 +11,7 @@
 import Image from "next/image";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge, getCategoryBadgeVariant, getCategoryLabel } from "@/components/ui/Badge";
+import { thumbnailUrl } from "@/lib/image";
 import type { Product, ProductSubcategory } from "@/types/product";
 
 // ---------------------------------------------------------------------------
@@ -84,10 +85,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         <div className="relative aspect-card overflow-hidden bg-surface">
           {product.thumbnail_url ? (
             <Image
-              src={product.thumbnail_url}
+              src={thumbnailUrl(product.thumbnail_url)}
               alt={productName}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              quality={75}
               className="object-cover transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[1.08]"
             />
           ) : (

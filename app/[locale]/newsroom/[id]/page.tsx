@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
+import { detailUrl, galleryUrl } from "@/lib/image";
 import type { Post } from "@/types/newsroom";
 import type { Metadata } from "next";
 
@@ -288,10 +289,12 @@ export default async function NewsroomDetailPage({
           <AnimatedSection direction="up">
             <div className="mb-8 squircle-xl overflow-hidden">
               <Image
-                src={thumbnailSrc}
+                src={detailUrl(thumbnailSrc)}
                 alt={title}
                 width={800}
                 height={450}
+                quality={75}
+                sizes="(max-width: 800px) 100vw, 800px"
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -314,10 +317,12 @@ export default async function NewsroomDetailPage({
               {post.images.slice(1).map((img, i) => (
                 <div key={i} className="squircle-lg overflow-hidden">
                   <Image
-                    src={img}
+                    src={galleryUrl(img)}
                     alt={`${title} ${i + 2}`}
                     width={600}
                     height={400}
+                    quality={75}
+                    sizes="(max-width: 640px) 100vw, 50vw"
                     className="w-full h-auto object-cover"
                   />
                 </div>
