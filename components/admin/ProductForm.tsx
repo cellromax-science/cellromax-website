@@ -159,6 +159,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   );
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [isSlugManual, setIsSlugManual] = useState(mode === "edit");
+  const [showSlugField, setShowSlugField] = useState(false);
   const [isNew, setIsNew] = useState(initialData?.is_new ?? false);
   const [isActive, setIsActive] = useState(initialData?.is_active ?? true);
   const [price, setPrice] = useState(
@@ -299,14 +300,17 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
 
     fetch(`/api/subcategories?category=${encodeURIComponent(category)}`)
       .then((res) => res.json())
-      .then((data: ProductSubcategory[] | { data: ProductSubcategory[] }) => {
+      .then((data: { subcategories?: ProductSubcategory[] } | ProductSubcategory[]) => {
         if (cancelled) return;
-        // API 응답 구조 호환: 배열 직접 또는 { data: [...] } 형태
-        const list = Array.isArray(data)
-          ? data
-          : Array.isArray(data.data)
-            ? data.data
-            : [];
+        // API 응답 구조 호환: 배열 직접, { subcategories: [...] }, { data: [...] }
+        let list: ProductSubcategory[] = [];
+        if (Array.isArray(data)) {
+          list = data;
+        } else if (Array.isArray(data.subcategories)) {
+          list = data.subcategories;
+        } else if (Array.isArray((data as Record<string, unknown>).data)) {
+          list = (data as { data: ProductSubcategory[] }).data;
+        }
         setSubcategories(
           list
             .filter((sc) => sc.is_active)
@@ -651,32 +655,51 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
           />
         </div>
 
-        {/* URL 슬러그 */}
+        {/* URL 슬러그 (고급 설정) */}
         <div className="mb-4">
-          <div className="flex items-end gap-2">
-            <div className="flex-1">
-              <Input
-                label="URL 슬러그"
-                required
-                value={slug}
-                onChange={handleSlugChange}
-                placeholder="제품명 입력 시 자동 생성"
-                helperText="URL에 사용되는 고유 식별자입니다. 영문, 숫자, 한글, 하이픈만 사용 가능합니다."
-                error={errors.slug}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={toggleSlugAutoGenerate}
-              className={`mb-[2px] shrink-0 px-3 py-2.5 text-xs font-medium squircle-sm transition-colors duration-150 ${
-                isSlugManual
-                  ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  : "bg-primary/10 text-primary hover:bg-primary/20"
-              }`}
+          <button
+            type="button"
+            onClick={() => setShowSlugField((prev) => !prev)}
+            className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              className={`transition-transform duration-200 ${showSlugField ? "rotate-90" : ""}`}
+              aria-hidden="true"
             >
-              {isSlugManual ? "자동 생성" : "자동 생성 중"}
-            </button>
-          </div>
+              <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            고급 설정 (URL 슬러그)
+          </button>
+
+          {showSlugField && (
+            <div className="mt-3 flex items-end gap-2">
+              <div className="flex-1">
+                <Input
+                  label="URL 슬러그"
+                  value={slug}
+                  onChange={handleSlugChange}
+                  placeholder="제품명 입력 시 자동 생성"
+                  helperText="URL에 사용되는 고유 식별자입니다. 제품명 기반으로 자동 생성됩니다."
+                  error={errors.slug}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={toggleSlugAutoGenerate}
+                className={`mb-[2px] shrink-0 px-3 py-2.5 text-xs font-medium squircle-sm transition-colors duration-150 ${
+                  isSlugManual
+                    ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-primary/10 text-primary hover:bg-primary/20"
+                }`}
+              >
+                {isSlugManual ? "자동 생성" : "자동 생성 중"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 토글 스위치 + 가격 */}

@@ -94,6 +94,10 @@ export interface ProductInsert {
   sort_order?: number;
 }
 
+export interface SubcategoryWithCount extends ProductSubcategory {
+  product_count: number;
+}
+
 export interface CategoryOption {
   id: string;
   label: string;

@@ -121,6 +121,40 @@ const MENU_ITEMS: MenuItem[] = [
     roles: ["super_admin", "marketing"],
   },
   {
+    label: "카테고리 관리",
+    path: "subcategories",
+    icon: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 5.5C3 4.67157 3.67157 4 4.5 4H8L10 6H15.5C16.3284 6 17 6.67157 17 7.5V14.5C17 15.3284 16.3284 16 15.5 16H4.5C3.67157 16 3 15.3284 3 14.5V5.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M7 10.5H13"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M7 13H11"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+    roles: ["super_admin", "marketing"],
+  },
+  {
     label: "게시판 관리",
     path: "posts",
     icon: (
