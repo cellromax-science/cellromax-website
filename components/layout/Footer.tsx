@@ -160,7 +160,7 @@ export function Footer() {
           {/* Column 2: Quick Links */}
           <div>
             <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">
-              {t("nav.home") === t("nav.home") ? "\uBC14\uB85C\uAC00\uAE30" : "Quick Links"}
+              {t("footer.quick_links")}
             </h3>
             <nav aria-label="Footer navigation">
               <ul className="flex flex-col gap-2.5">
