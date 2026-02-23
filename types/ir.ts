@@ -8,6 +8,8 @@ export interface IrFile {
   file_name: string | null;
   file_size: number | null;
   file_type: string | null;
+  content: string | null;
+  thumbnail_url: string | null;
   published_at: string;
   is_active: boolean;
   created_at: string;
@@ -22,6 +24,8 @@ export interface IrFileInsert {
   file_name?: string | null;
   file_size?: number | null;
   file_type?: string | null;
+  content?: string | null;
+  thumbnail_url?: string | null;
   published_at: string;
   is_active?: boolean;
 }

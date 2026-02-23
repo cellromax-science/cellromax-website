@@ -38,6 +38,14 @@ declare global {
             handler: () => void
           ) => void;
         };
+        services: {
+          Geocoder: new () => kakao.maps.services.Geocoder;
+          Status: {
+            OK: string;
+            ZERO_RESULT: string;
+            ERROR: string;
+          };
+        };
       };
     };
   }
@@ -59,6 +67,19 @@ declare namespace kakao.maps {
   interface InfoWindow {
     open(map: Map, marker: Marker): void;
     close(): void;
+  }
+  namespace services {
+    interface GeocodeResult {
+      x: string;
+      y: string;
+      address_name: string;
+    }
+    interface Geocoder {
+      addressSearch(
+        address: string,
+        callback: (result: GeocodeResult[], status: string) => void
+      ): void;
+    }
   }
 }
 
@@ -112,7 +133,7 @@ export function loadKakaoMap(): Promise<typeof window.kakao> {
   // 새로운 로드 Promise 생성
   kakaoMapPromise = new Promise<typeof window.kakao>((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
     script.async = true;
 
     script.onload = () => {
@@ -132,4 +153,45 @@ export function loadKakaoMap(): Promise<typeof window.kakao> {
   });
 
   return kakaoMapPromise;
+}
+
+/**
+ * 주소 문자열을 위도/경도 좌표로 변환한다.
+ *
+ * - 카카오맵 SDK의 Geocoder 서비스를 사용
+ * - SDK가 아직 로드되지 않은 경우 자동으로 로드
+ * - 변환 실패 시 null 반환
+ *
+ * @param address 변환할 주소 문자열
+ * @returns { lat, lng } 좌표 또는 null (변환 실패 시)
+ *
+ * @example
+ * ```ts
+ * const coords = await geocodeAddress("서울특별시 강남구 테헤란로 123");
+ * if (coords) {
+ *   console.log(coords.lat, coords.lng);
+ * }
+ * ```
+ */
+export async function geocodeAddress(
+  address: string
+): Promise<{ lat: number; lng: number } | null> {
+  await loadKakaoMap();
+
+  return new Promise((resolve) => {
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, (result, status) => {
+      if (
+        status === window.kakao.maps.services.Status.OK &&
+        result.length > 0
+      ) {
+        resolve({
+          lat: parseFloat(result[0].y),
+          lng: parseFloat(result[0].x),
+        });
+      } else {
+        resolve(null);
+      }
+    });
+  });
 }

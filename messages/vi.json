@@ -148,6 +148,13 @@
       "annual_report": "Báo cáo thường niên",
       "presentation": "Tài liệu trình bày IR",
       "other": "Khác"
+    },
+    "detail": {
+      "title": "Chi tiết tài liệu IR",
+      "notFound": "Không tìm thấy tài liệu IR.",
+      "backToList": "Quay lại danh sách",
+      "attachedFile": "Tệp đính kèm",
+      "download": "Tải xuống"
     }
   },
   "newsroom": {

@@ -148,6 +148,13 @@
       "annual_report": "年度报告",
       "presentation": "IR演示资料",
       "other": "其他"
+    },
+    "detail": {
+      "title": "IR资料详情",
+      "notFound": "未找到IR资料。",
+      "backToList": "返回列表",
+      "attachedFile": "附件",
+      "download": "下载"
     }
   },
   "newsroom": {

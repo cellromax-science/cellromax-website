@@ -148,6 +148,13 @@
       "annual_report": "Annual Report",
       "presentation": "IR Presentation",
       "other": "Other"
+    },
+    "detail": {
+      "title": "IR Material Detail",
+      "notFound": "IR material not found.",
+      "backToList": "Back to list",
+      "attachedFile": "Attached file",
+      "download": "Download"
     }
   },
   "newsroom": {
