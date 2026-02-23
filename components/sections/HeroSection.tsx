@@ -141,14 +141,6 @@ export function HeroSection() {
                 {t("ctaPrimary")}
               </Link>
 
-              {/* Secondary CTA */}
-              <Link
-                href="/about"
-                className="hero-cta inline-flex items-center justify-center px-6 py-3 text-sm font-semibold tracking-wide text-white border border-white/30 rounded-squircle-md transition-all duration-200 hover:bg-white/10 hover:border-white/50"
-              >
-                {t("ctaSecondary")}
-              </Link>
-
             </div>
           </div>
         </div>
