@@ -179,6 +179,12 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   const [nutritionImageUrl, setNutritionImageUrl] = useState<string | null>(
     initialData?.nutrition_image_url ?? null
   );
+  const [detailMode, setDetailMode] = useState<"image" | "html">(
+    initialData?.detail_html ? "html" : "image"
+  );
+  const [detailHtml, setDetailHtml] = useState(
+    initialData?.detail_html ?? ""
+  );
 
   // 성분 정보
   const [ingredientsKo, setIngredientsKo] = useState(
@@ -421,8 +427,9 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         subcategory_id: emptyToNull(subcategoryId),
         thumbnail_url: thumbnailUrl,
         images: validImages,
-        detail_image_url: detailImageUrl,
+        detail_image_url: detailMode === "image" ? detailImageUrl : null,
         nutrition_image_url: nutritionImageUrl,
+        detail_html: detailMode === "html" ? emptyToNull(detailHtml) : null,
         ingredients_ko: emptyToNull(ingredientsKo),
         ingredients_en: emptyToNull(ingredientsEn),
         ingredients_zh: emptyToNull(ingredientsZh),
@@ -456,6 +463,8 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       galleryImages,
       detailImageUrl,
       nutritionImageUrl,
+      detailMode,
+      detailHtml,
       ingredientsKo,
       ingredientsEn,
       ingredientsZh,
@@ -808,23 +817,85 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
           )}
         </div>
 
-        {/* 상세페이지 + 영양정보 -- 2열 그리드 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ImageUploader
-            label="상세페이지 (최대 10MB)"
-            value={detailImageUrl}
-            onChange={setDetailImageUrl}
-            bucket="products"
-            maxSize={10 * 1024 * 1024}
-          />
-          <ImageUploader
-            label="영양정보 (최대 10MB)"
-            value={nutritionImageUrl}
-            onChange={setNutritionImageUrl}
-            bucket="products"
-            maxSize={10 * 1024 * 1024}
-          />
+        {/* 상세페이지 — 이미지형 / HTML형 탭 */}
+        <div>
+          <p className="text-sm font-medium text-gray-700 mb-2">상세페이지</p>
+
+          {/* 탭 선택 */}
+          <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                setDetailMode("image");
+                setDetailHtml("");
+              }}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                detailMode === "image"
+                  ? "bg-white shadow-sm text-primary"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              이미지형
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDetailMode("html");
+                setDetailImageUrl(null);
+              }}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                detailMode === "html"
+                  ? "bg-white shadow-sm text-primary"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              HTML형
+            </button>
+          </div>
+
+          {/* 이미지형 */}
+          {detailMode === "image" && (
+            <ImageUploader
+              label="상세페이지 이미지 (긴 이미지, 최대 10MB)"
+              value={detailImageUrl}
+              onChange={setDetailImageUrl}
+              bucket="products"
+              maxSize={10 * 1024 * 1024}
+            />
+          )}
+
+          {/* HTML형 */}
+          {detailMode === "html" && (
+            <div className="space-y-2">
+              <p className="text-xs text-gray-500">
+                detailpage-agent가 생성한 HTML 코드를 붙여넣으세요.
+                GSAP 애니메이션 포함 전체 HTML 문서를 입력합니다.
+              </p>
+              <textarea
+                value={detailHtml}
+                onChange={(e) => setDetailHtml(e.target.value)}
+                placeholder="<!DOCTYPE html>..."
+                rows={12}
+                className="w-full px-3 py-2 text-sm font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"
+                spellCheck={false}
+              />
+              {detailHtml && (
+                <p className="text-xs text-green-600">
+                  ✓ HTML {detailHtml.length.toLocaleString()}자 입력됨
+                </p>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* 영양정보 */}
+        <ImageUploader
+          label="영양정보 (최대 10MB)"
+          value={nutritionImageUrl}
+          onChange={setNutritionImageUrl}
+          bucket="products"
+          maxSize={10 * 1024 * 1024}
+        />
       </FormSection>
 
       {/* ================================================================
