@@ -9,6 +9,7 @@ import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 import { ProductDetailTabs } from "@/components/products/ProductDetailTabs";
 import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
+import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
 import { detailUrl } from "@/lib/image";
 import type { Product, ProductCategory } from "@/types/product";
 import type { Metadata } from "next";
@@ -281,8 +282,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
             <NearbyPharmacyModal />
           </div>
 
-          {/* Detail Page Image (상세페이지) */}
-          {product.detail_image_url && (
+          {/* Detail Section: HTML형 우선, 없으면 이미지형 fallback */}
+          {product.detail_html ? (
+            <HtmlDetailFrame html={product.detail_html} />
+          ) : product.detail_image_url ? (
             <div className="w-full squircle-xl overflow-hidden">
               <Image
                 src={detailUrl(product.detail_image_url)}
@@ -294,7 +297,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 sizes="(max-width: 1280px) 100vw, 1200px"
               />
             </div>
-          )}
+          ) : null}
 
           {/* Nutrition Image (영양정보) */}
           {product.nutrition_image_url && (
