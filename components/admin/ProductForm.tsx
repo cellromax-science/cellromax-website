@@ -180,11 +180,15 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
     initialData?.nutrition_image_url ?? null
   );
   const [detailMode, setDetailMode] = useState<"image" | "html">(
-    initialData?.detail_html ? "html" : "image"
+    (initialData?.detail_html_ko || initialData?.detail_html) ? "html" : "image"
   );
-  const [detailHtml, setDetailHtml] = useState(
-    initialData?.detail_html ?? ""
+  const [detailHtmlLang, setDetailHtmlLang] = useState<"ko" | "en" | "zh" | "vi">("ko");
+  const [detailHtmlKo, setDetailHtmlKo] = useState(
+    initialData?.detail_html_ko ?? initialData?.detail_html ?? ""
   );
+  const [detailHtmlEn, setDetailHtmlEn] = useState(initialData?.detail_html_en ?? "");
+  const [detailHtmlZh, setDetailHtmlZh] = useState(initialData?.detail_html_zh ?? "");
+  const [detailHtmlVi, setDetailHtmlVi] = useState(initialData?.detail_html_vi ?? "");
 
   // 성분 정보
   const [ingredientsKo, setIngredientsKo] = useState(
@@ -429,7 +433,11 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         images: validImages,
         detail_image_url: detailMode === "image" ? detailImageUrl : null,
         nutrition_image_url: nutritionImageUrl,
-        detail_html: detailMode === "html" ? emptyToNull(detailHtml) : null,
+        detail_html: null,
+        detail_html_ko: detailMode === "html" ? emptyToNull(detailHtmlKo) : null,
+        detail_html_en: detailMode === "html" ? emptyToNull(detailHtmlEn) : null,
+        detail_html_zh: detailMode === "html" ? emptyToNull(detailHtmlZh) : null,
+        detail_html_vi: detailMode === "html" ? emptyToNull(detailHtmlVi) : null,
         ingredients_ko: emptyToNull(ingredientsKo),
         ingredients_en: emptyToNull(ingredientsEn),
         ingredients_zh: emptyToNull(ingredientsZh),
@@ -464,7 +472,10 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       detailImageUrl,
       nutritionImageUrl,
       detailMode,
-      detailHtml,
+      detailHtmlKo,
+      detailHtmlEn,
+      detailHtmlZh,
+      detailHtmlVi,
       ingredientsKo,
       ingredientsEn,
       ingredientsZh,
@@ -827,7 +838,6 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
               type="button"
               onClick={() => {
                 setDetailMode("image");
-                setDetailHtml("");
               }}
               className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
                 detailMode === "image"
@@ -864,25 +874,52 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
             />
           )}
 
-          {/* HTML형 */}
+          {/* HTML형 — 언어별 탭 */}
           {detailMode === "html" && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <p className="text-xs text-gray-500">
-                detailpage-agent가 생성한 HTML 코드를 붙여넣으세요.
-                GSAP 애니메이션 포함 전체 HTML 문서를 입력합니다.
+                detailpage-agent가 생성한 HTML 코드를 언어별로 붙여넣으세요.
+                한국어는 필수이며, 나머지 언어는 선택 사항입니다.
               </p>
-              <textarea
-                value={detailHtml}
-                onChange={(e) => setDetailHtml(e.target.value)}
-                placeholder="<!DOCTYPE html>..."
-                rows={12}
-                className="w-full px-3 py-2 text-sm font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"
-                spellCheck={false}
-              />
-              {detailHtml && (
-                <p className="text-xs text-green-600">
-                  ✓ HTML {detailHtml.length.toLocaleString()}자 입력됨
-                </p>
+
+              {/* 언어 탭 */}
+              <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+                {(["ko", "en", "zh", "vi"] as const).map((lang) => {
+                  const htmlMap = { ko: detailHtmlKo, en: detailHtmlEn, zh: detailHtmlZh, vi: detailHtmlVi };
+                  const labelMap = { ko: "한국어", en: "영어", zh: "중국어", vi: "베트남어" };
+                  const haContent = htmlMap[lang].trim().length > 0;
+                  return (
+                    <button
+                      key={lang}
+                      type="button"
+                      onClick={() => setDetailHtmlLang(lang)}
+                      className={`relative px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-150 ${
+                        detailHtmlLang === lang
+                          ? "bg-white shadow-sm text-primary"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      {labelMap[lang]}
+                      {haContent && (
+                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-green-500" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 현재 선택된 언어의 textarea */}
+              {detailHtmlLang === "ko" && (
+                <HtmlTextarea value={detailHtmlKo} onChange={setDetailHtmlKo} required />
+              )}
+              {detailHtmlLang === "en" && (
+                <HtmlTextarea value={detailHtmlEn} onChange={setDetailHtmlEn} />
+              )}
+              {detailHtmlLang === "zh" && (
+                <HtmlTextarea value={detailHtmlZh} onChange={setDetailHtmlZh} />
+              )}
+              {detailHtmlLang === "vi" && (
+                <HtmlTextarea value={detailHtmlVi} onChange={setDetailHtmlVi} />
               )}
             </div>
           )}
@@ -1091,6 +1128,39 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
 // ---------------------------------------------------------------------------
 // Inline Icon Components
 // ---------------------------------------------------------------------------
+
+/** HTML 상세페이지 입력 textarea (언어별 공통) */
+function HtmlTextarea({
+  value,
+  onChange,
+  required,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="<!DOCTYPE html>..."
+        rows={12}
+        className="w-full px-3 py-2 text-sm font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"
+        spellCheck={false}
+      />
+      {value ? (
+        <p className="text-xs text-green-600">
+          ✓ HTML {value.length.toLocaleString()}자 입력됨
+        </p>
+      ) : required ? (
+        <p className="text-xs text-gray-400">한국어 HTML은 필수 항목입니다.</p>
+      ) : (
+        <p className="text-xs text-gray-400">입력하지 않으면 한국어 버전이 표시됩니다.</p>
+      )}
+    </div>
+  );
+}
 
 /** + 아이콘 (갤러리 이미지 추가 버튼용) */
 function PlusIcon() {

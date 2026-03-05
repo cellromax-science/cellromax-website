@@ -150,7 +150,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { data: product } = await supabase
     .from("products")
     .select("name_ko, name_en, name_zh, name_vi, thumbnail_url")
-    .eq("slug", slug)
+    .eq("slug", decodeURIComponent(slug))
     .eq("is_active", true)
     .single();
 
@@ -187,14 +187,18 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   /* ---- Fetch product ---- */
   const supabase = await createClient();
-  const { data } = await supabase
+  const decodedSlug = decodeURIComponent(slug);
+  const { data, error } = await supabase
     .from("products")
     .select("*, product_subcategories(*)")
-    .eq("slug", slug)
+    .eq("slug", decodedSlug)
     .eq("is_active", true)
     .single();
 
-  if (!data) notFound();
+  if (error || !data) {
+    console.error("[ProductDetailPage] slug:", decodedSlug, "| error:", error);
+    notFound();
+  }
 
   const product = data as Product;
 
@@ -282,22 +286,28 @@ export default async function ProductDetailPage({ params }: PageProps) {
             <NearbyPharmacyModal />
           </div>
 
-          {/* Detail Section: HTML형 우선, 없으면 이미지형 fallback */}
-          {product.detail_html ? (
-            <HtmlDetailFrame html={product.detail_html} />
-          ) : product.detail_image_url ? (
-            <div className="w-full squircle-xl overflow-hidden">
-              <Image
-                src={detailUrl(product.detail_image_url)}
-                alt={`${productName} - detail`}
-                width={1200}
-                height={1600}
-                quality={75}
-                className="w-full h-auto"
-                sizes="(max-width: 1280px) 100vw, 1200px"
-              />
-            </div>
-          ) : null}
+          {/* Detail Section: 로케일별 HTML 우선, 없으면 ko → 구 detail_html → 이미지형 fallback */}
+          {(() => {
+            const detailHtml =
+              (product[`detail_html_${locale}` as keyof Product] as string | null) ||
+              product.detail_html_ko ||
+              product.detail_html;
+            if (detailHtml) return <HtmlDetailFrame html={detailHtml} />;
+            if (product.detail_image_url) return (
+              <div className="w-full squircle-xl overflow-hidden">
+                <Image
+                  src={detailUrl(product.detail_image_url)}
+                  alt={`${productName} - detail`}
+                  width={1200}
+                  height={1600}
+                  quality={75}
+                  className="w-full h-auto"
+                  sizes="(max-width: 1280px) 100vw, 1200px"
+                />
+              </div>
+            );
+            return null;
+          })()}
 
           {/* Nutrition Image (영양정보) */}
           {product.nutrition_image_url && (

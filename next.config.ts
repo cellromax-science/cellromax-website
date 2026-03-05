@@ -24,8 +24,25 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'img.youtube.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.notion.so',
+      },
+      {
+        protocol: 'https',
+        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'prod-files-secure.s3.*.amazonaws.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 's3.us-west-2.amazonaws.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
+    qualities: [60, 75, 85],
   },
   experimental: {
     optimizeCss: true,

@@ -34,6 +34,10 @@ export interface Product {
   detail_image_url: string | null;
   nutrition_image_url: string | null;
   detail_html: string | null;
+  detail_html_ko: string | null;
+  detail_html_en: string | null;
+  detail_html_zh: string | null;
+  detail_html_vi: string | null;
   ingredients_ko: string | null;
   ingredients_en: string | null;
   ingredients_zh: string | null;
@@ -74,6 +78,10 @@ export interface ProductInsert {
   detail_image_url?: string | null;
   nutrition_image_url?: string | null;
   detail_html?: string | null;
+  detail_html_ko?: string | null;
+  detail_html_en?: string | null;
+  detail_html_zh?: string | null;
+  detail_html_vi?: string | null;
   ingredients_ko?: string | null;
   ingredients_en?: string | null;
   ingredients_zh?: string | null;
