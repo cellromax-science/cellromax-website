@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /* ==========================================================================
    HtmlDetailFrame — 코딩형 제품 상세페이지 렌더러
@@ -18,6 +18,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
    - scroll-behavior:smooth 강제 해제 → instant scrollTo로 1:1 동기화
    - postMessage 대신 직접 contentWindow.scrollTo 호출 (비동기 제거)
    - requestAnimationFrame 배칭으로 매 프레임 1회만 업데이트
+
+   스크롤 안정성:
+   - contentHeight를 ref + DOM 직접 조작으로 관리 → 불필요한 re-render 방지
+   - srcDoc를 useMemo로 캐싱 → iframe reload 방지
+   - 스크롤 위치를 iframe 내부 스크롤 가능 범위로 클램핑
    ========================================================================== */
 
 interface HtmlDetailFrameProps {
@@ -57,27 +62,11 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
-  const [contentHeight, setContentHeight] = useState(0);
+  const contentHeightRef = useRef(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const srcDoc = injectScrollScript(html);
-
-  // iframe에서 콘텐츠 전체 높이 수신 → wrapper div 높이로 적용
-  useEffect(() => {
-    function handleMessage(event: MessageEvent) {
-      if (
-        event.data?.type === "__cellromax_content_height__" &&
-        typeof event.data.height === "number" &&
-        event.data.height > 0
-      ) {
-        setContentHeight(event.data.height);
-        setIsLoading(false);
-      }
-    }
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
+  // srcDoc를 메모이제이션하여 불필요한 iframe 재로드 방지
+  const srcDoc = useMemo(() => injectScrollScript(html), [html]);
 
   // wrapperTop 캐시 (scroll 이벤트마다 getBoundingClientRect 호출 방지)
   const wrapperTopRef = useRef(0);
@@ -89,10 +78,28 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
     }
   }, []);
 
-  // contentHeight 변경 시 wrapperTop 재계산
+  // iframe에서 콘텐츠 전체 높이 수신 → wrapper div 높이를 DOM 직접 조작으로 적용
+  // state 대신 ref + DOM 조작을 사용하여 re-render를 방지하고 iframe reload를 차단
   useEffect(() => {
-    updateWrapperTop();
-  }, [contentHeight, updateWrapperTop]);
+    function handleMessage(event: MessageEvent) {
+      if (
+        event.data?.type === "__cellromax_content_height__" &&
+        typeof event.data.height === "number" &&
+        event.data.height > 0
+      ) {
+        contentHeightRef.current = event.data.height;
+        // DOM 직접 조작 — React re-render 없이 wrapper 높이 업데이트
+        if (wrapperRef.current) {
+          wrapperRef.current.style.height = `${event.data.height}px`;
+        }
+        updateWrapperTop();
+        setIsLoading(false);
+      }
+    }
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [updateWrapperTop]);
 
   // 부모 스크롤 → iframe 내부 scrollY 직접 중계 (rAF 배칭)
   useEffect(() => {
@@ -103,9 +110,14 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
         const iframe = iframeRef.current;
         if (!iframe?.contentWindow) return;
 
-        const scrolledPastTop = Math.max(
+        // 스크롤 위치를 iframe 내부 스크롤 가능 범위로 클램핑
+        const maxScroll = Math.max(
           0,
-          window.scrollY - wrapperTopRef.current
+          contentHeightRef.current - window.innerHeight
+        );
+        const scrolledPastTop = Math.min(
+          maxScroll,
+          Math.max(0, window.scrollY - wrapperTopRef.current)
         );
 
         // 직접 iframe contentWindow.scrollTo 호출 — postMessage 비동기 지연 제거
@@ -142,7 +154,7 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
     <div
       ref={wrapperRef}
       className="relative w-full"
-      style={{ height: contentHeight > 0 ? `${contentHeight}px` : "100svh" }}
+      style={{ height: "100svh" }}
     >
       {/* 로딩 스켈레톤 */}
       {isLoading && (
