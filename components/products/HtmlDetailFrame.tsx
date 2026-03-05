@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /* ==========================================================================
    HtmlDetailFrame — 코딩형 제품 상세페이지 렌더러
@@ -13,6 +13,11 @@ import { useEffect, useRef, useState } from "react";
    - min-h-screen(100vh), GSAP ScrollTrigger, IntersectionObserver 모두 정상 동작
    - 부모 wrapper div는 iframe 콘텐츠 전체 높이만큼 스크롤 공간을 확보한다
    - 부모 스크롤을 iframe 내부 scrollY에 직접 중계하여 스크롤 애니메이션 활성화
+
+   스크롤 성능 최적화:
+   - scroll-behavior:smooth 강제 해제 → instant scrollTo로 1:1 동기화
+   - postMessage 대신 직접 contentWindow.scrollTo 호출 (비동기 제거)
+   - requestAnimationFrame 배칭으로 매 프레임 1회만 업데이트
    ========================================================================== */
 
 interface HtmlDetailFrameProps {
@@ -20,12 +25,15 @@ interface HtmlDetailFrameProps {
 }
 
 /**
- * HTML 문자열에 콘텐츠 높이 전송 + 스크롤 수신 스크립트를 주입한다.
+ * HTML 문자열에 콘텐츠 높이 전송 스크립트를 주입한다.
+ * scroll-behavior:smooth 를 강제로 auto로 오버라이드하여
+ * 부모에서 호출하는 scrollTo가 즉시 반영되도록 한다.
  */
 function injectScrollScript(html: string): string {
-  const script = `<script>
+  // scroll-behavior 오버라이드 CSS + 높이 전송 스크립트
+  const injection = `<style>html{scroll-behavior:auto!important;}</style>
+<script>
 (function() {
-  // iframe 콘텐츠 전체 높이를 부모에 전달 (wrapper div 크기 결정용)
   function sendContentHeight() {
     var h = Math.max(
       document.body.scrollHeight,
@@ -33,28 +41,22 @@ function injectScrollScript(html: string): string {
     );
     window.parent.postMessage({ type: '__cellromax_content_height__', height: h }, '*');
   }
-
   window.addEventListener('load', sendContentHeight);
   var ro = new ResizeObserver(sendContentHeight);
   ro.observe(document.body);
-
-  // 부모 스크롤 위치를 직접 수신하여 iframe 내부 scrollY에 적용
-  window.addEventListener('message', function(evt) {
-    if (!evt.data || evt.data.type !== '__cellromax_scroll__') return;
-    window.scrollTo(0, evt.data.scrollY);
-  });
 })();
 </script>`;
 
   if (html.includes("</body>")) {
-    return html.replace("</body>", script + "</body>");
+    return html.replace("</body>", injection + "</body>");
   }
-  return html + script;
+  return html + injection;
 }
 
 export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -77,26 +79,64 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
-  // 부모 스크롤 → iframe 내부 scrollY 중계
+  // wrapperTop 캐시 (scroll 이벤트마다 getBoundingClientRect 호출 방지)
+  const wrapperTopRef = useRef(0);
+  const updateWrapperTop = useCallback(() => {
+    const wrapper = wrapperRef.current;
+    if (wrapper) {
+      wrapperTopRef.current =
+        wrapper.getBoundingClientRect().top + window.scrollY;
+    }
+  }, []);
+
+  // contentHeight 변경 시 wrapperTop 재계산
+  useEffect(() => {
+    updateWrapperTop();
+  }, [contentHeight, updateWrapperTop]);
+
+  // 부모 스크롤 → iframe 내부 scrollY 직접 중계 (rAF 배칭)
   useEffect(() => {
     function handleScroll() {
-      const iframe = iframeRef.current;
-      const wrapper = wrapperRef.current;
-      if (!iframe?.contentWindow || !wrapper) return;
+      if (rafRef.current) return; // 이미 예약된 프레임이 있으면 skip
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        const iframe = iframeRef.current;
+        if (!iframe?.contentWindow) return;
 
-      const wrapperTop =
-        wrapper.getBoundingClientRect().top + window.scrollY;
-      const scrolledPastTop = Math.max(0, window.scrollY - wrapperTop);
+        const scrolledPastTop = Math.max(
+          0,
+          window.scrollY - wrapperTopRef.current
+        );
 
-      iframe.contentWindow.postMessage(
-        { type: "__cellromax_scroll__", scrollY: scrolledPastTop },
-        "*"
-      );
+        // 직접 iframe contentWindow.scrollTo 호출 — postMessage 비동기 지연 제거
+        try {
+          iframe.contentWindow.scrollTo({
+            top: scrolledPastTop,
+            behavior: "instant",
+          });
+        } catch {
+          // sandbox 정책 등으로 직접 접근 불가 시 postMessage fallback
+          iframe.contentWindow.postMessage(
+            { type: "__cellromax_scroll__", scrollY: scrolledPastTop },
+            "*"
+          );
+        }
+      });
+    }
+
+    // resize 시 wrapperTop 재계산
+    function handleResize() {
+      updateWrapperTop();
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [updateWrapperTop]);
 
   return (
     <div
@@ -125,6 +165,7 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
           overflow: "hidden",
         }}
         onLoad={() => {
+          updateWrapperTop();
           setTimeout(() => setIsLoading(false), 1500);
         }}
       />
