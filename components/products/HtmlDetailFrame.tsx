@@ -16,7 +16,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
    스크롤 입력 격리:
    - iframe 내부 html에 overflow:hidden → 사용자 직접 스크롤 완전 차단
-   - 휠/터치 이벤트를 parent.scrollBy()로 전달 → 모든 스크롤이 relay 경로로 통일
+   - 데스크톱: 휠 이벤트를 parent.scrollBy()로 전달 → relay 경로로 통일
+   - 모바일: pointer-events:none 으로 터치를 부모 페이지에 직접 전달 → 네이티브 스크롤
    - 이를 통해 iframe 독립 스크롤 ↔ relay 스크롤 간의 비동기화(점프) 방지
 
    스크롤 성능 최적화:
@@ -122,7 +123,13 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
   useEffect(() => {
     const style = document.createElement("style");
     style.setAttribute("data-htmldetailframe", "");
-    style.textContent = "html{scroll-behavior:auto!important;}";
+    // 모바일(터치 디바이스)에서는 iframe에 pointer-events:none 적용
+    // → 터치 이벤트가 iframe을 통과하여 부모 페이지의 네이티브 스크롤로 처리
+    // → JavaScript 기반 touch 포워딩(scrollBy)의 프레임 드롭/점프 문제 해소
+    // 데스크톱(pointer:fine)에서는 적용되지 않아 wheel 포워딩이 정상 동작
+    style.textContent =
+      "html{scroll-behavior:auto!important;}" +
+      "@media(pointer:coarse){[data-detail-iframe]{pointer-events:none!important;}}";
     document.head.appendChild(style);
     return () => {
       style.remove();
@@ -229,6 +236,7 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
         srcDoc={srcDoc}
         sandbox="allow-scripts allow-same-origin"
         title="제품 상세페이지"
+        data-detail-iframe=""
         className="w-full border-0 block"
         style={{
           position: "sticky",
