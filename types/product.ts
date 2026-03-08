@@ -31,6 +31,7 @@ export interface Product {
   subcategory_id: string | null;
   thumbnail_url: string | null;
   images: string[];
+  detail_images: string[];
   detail_image_url: string | null;
   nutrition_image_url: string | null;
   detail_html: string | null;
@@ -75,6 +76,7 @@ export interface ProductInsert {
   subcategory_id?: string | null;
   thumbnail_url?: string | null;
   images?: string[];
+  detail_images?: string[];
   detail_image_url?: string | null;
   nutrition_image_url?: string | null;
   detail_html?: string | null;

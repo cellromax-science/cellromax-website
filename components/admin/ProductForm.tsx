@@ -53,6 +53,9 @@ const CATEGORY_OPTIONS: { value: string; label: string }[] = [
 /** 갤러리 이미지 최대 개수 */
 const MAX_GALLERY_IMAGES = 5;
 
+/** 상세페이지용 이미지 최대 개수 */
+const MAX_DETAIL_IMAGES = 10;
+
 /** 빈 문자열을 null로 변환 */
 function emptyToNull(value: string | null | undefined): string | null {
   if (value == null) return null;
@@ -172,6 +175,9 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   );
   const [galleryImages, setGalleryImages] = useState<(string | null)[]>(
     initialData?.images?.length ? initialData.images : []
+  );
+  const [detailImages, setDetailImages] = useState<(string | null)[]>(
+    initialData?.detail_images?.length ? initialData.detail_images : []
   );
   const [detailImageUrl, setDetailImageUrl] = useState<string | null>(
     initialData?.detail_image_url ?? null
@@ -381,6 +387,31 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   }, []);
 
   // --------------------------------------------------------------------------
+  // Detail Images Handlers (상세페이지 전용 이미지)
+  // --------------------------------------------------------------------------
+
+  const addDetailImageSlot = useCallback(() => {
+    if (detailImages.length < MAX_DETAIL_IMAGES) {
+      setDetailImages((prev) => [...prev, null]);
+    }
+  }, [detailImages.length]);
+
+  const updateDetailImage = useCallback(
+    (index: number, url: string | null) => {
+      setDetailImages((prev) => {
+        const next = [...prev];
+        next[index] = url;
+        return next;
+      });
+    },
+    []
+  );
+
+  const removeDetailImageSlot = useCallback((index: number) => {
+    setDetailImages((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  // --------------------------------------------------------------------------
   // Validation
   // --------------------------------------------------------------------------
 
@@ -420,6 +451,10 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       const validImages = galleryImages.filter(
         (url): url is string => url != null && url.trim() !== ""
       );
+      // 상세페이지용 이미지: null 제거, 유효한 URL만 전송
+      const validDetailImages = detailImages.filter(
+        (url): url is string => url != null && url.trim() !== ""
+      );
 
       return {
         slug: slug.trim(),
@@ -431,6 +466,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         subcategory_id: emptyToNull(subcategoryId),
         thumbnail_url: thumbnailUrl,
         images: validImages,
+        detail_images: validDetailImages,
         detail_image_url: detailMode === "image" ? detailImageUrl : null,
         nutrition_image_url: nutritionImageUrl,
         detail_html: null,
@@ -469,6 +505,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       subcategoryId,
       thumbnailUrl,
       galleryImages,
+      detailImages,
       detailImageUrl,
       nutritionImageUrl,
       detailMode,
@@ -824,6 +861,78 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
             <p className="text-sm text-gray-400 py-4 text-center border-2 border-dashed border-gray-200 squircle-lg">
               아직 갤러리 이미지가 없습니다. &quot;이미지 추가&quot; 버튼을
               클릭하여 추가하세요.
+            </p>
+          )}
+        </div>
+
+        {/* 상세페이지용 이미지 (원료·소재 사진 등) */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                상세페이지용 이미지{" "}
+                <span className="text-gray-400 font-normal">
+                  ({detailImages.length}/{MAX_DETAIL_IMAGES})
+                </span>
+              </label>
+              <p className="text-xs text-gray-400 mt-0.5">
+                HTML 상세페이지에서만 사용되는 이미지입니다. 프론트 갤러리에는 표시되지 않습니다.
+              </p>
+            </div>
+            {detailImages.length < MAX_DETAIL_IMAGES && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="xs"
+                onClick={addDetailImageSlot}
+                disabled={isAnySubmitting}
+              >
+                <PlusIcon />
+                이미지 추가
+              </Button>
+            )}
+          </div>
+
+          {detailImages.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {detailImages.map((url, index) => (
+                <div key={index} className="relative">
+                  <ImageUploader
+                    label={`상세페이지용 ${index + 1}`}
+                    value={url}
+                    onChange={(newUrl) => updateDetailImage(index, newUrl)}
+                    bucket="products"
+                    maxSize={10 * 1024 * 1024}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeDetailImageSlot(index)}
+                    className="absolute top-0 right-0 -mt-2 -mr-2 flex items-center justify-center w-6 h-6 rounded-full bg-error text-white shadow-sm hover:bg-error-dark transition-colors duration-150 z-10"
+                    aria-label={`상세페이지용 이미지 ${index + 1} 삭제`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      width="12"
+                      height="12"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18 18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 py-4 text-center border-2 border-dashed border-gray-200 squircle-lg">
+              상세페이지에서 사용할 원료·소재 이미지를 추가하세요.
             </p>
           )}
         </div>
