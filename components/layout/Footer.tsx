@@ -192,10 +192,6 @@ export function Footer() {
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-400">
-                <span className="shrink-0 mt-0.5 text-sm text-gray-400">대표:</span>
-                <span>서정민</span>
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-400">
                 <IconPhone className="shrink-0 mt-0.5" />
                 <span>
                   {t("footer.phone")}: 031.662.1395

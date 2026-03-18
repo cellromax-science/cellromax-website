@@ -228,7 +228,7 @@ export function LanguageSwitcher({
         className={[
           "absolute right-0 top-full mt-2",
           "min-w-[160px] py-1",
-          "bg-white shadow-lg squircle-sm",
+          "bg-white shadow-lg squircle-sm overflow-hidden",
           "z-[100]",
           /* 열림/닫힘 애니메이션 */
           "transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
