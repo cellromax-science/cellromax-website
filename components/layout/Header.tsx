@@ -134,25 +134,21 @@ export function Header() {
           {/* ----------------------------------------------------------------
               데스크탑 네비게이션 (lg 이상에서 표시)
               ---------------------------------------------------------------- */}
-          <ul className="hidden lg:flex items-center gap-1">
+          <ul className="hidden lg:flex items-center gap-2">
             {NAV_ITEMS.map((item) => (
               <li key={item.key}>
                 <Link
                   href={item.href}
                   className={[
-                    "relative px-4 py-2 text-sm font-medium tracking-wide",
-                    "transition-colors duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
-                    "hover:text-secondary hover:opacity-100",
+                    "relative px-7 py-2 text-sm font-semibold tracking-wide",
+                    "squircle-sm",
+                    "transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
                     isActive(item.href)
-                      ? "text-secondary"
-                      : "text-primary/85",
+                      ? "bg-primary text-white shadow-sm"
+                      : "bg-primary/6 text-primary/85 hover:bg-primary/12 hover:text-primary",
                   ].join(" ")}
                 >
                   {t(item.key)}
-                  {/* active 표시: 하단 골드 바 */}
-                  {isActive(item.href) && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] w-5 rounded-full bg-secondary" />
-                  )}
                 </Link>
               </li>
             ))}

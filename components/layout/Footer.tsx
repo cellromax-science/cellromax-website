@@ -188,19 +188,23 @@ export function Footer() {
                 <IconMapPin className="shrink-0 mt-0.5" />
                 <span>
                   {t("footer.address")}:{" "}
-                  {"\uC11C\uC6B8\uD2B9\uBCC4\uC2DC \uC131\uB3D9\uAD6C \uC544\uCC28\uC0B0\uB85C 126, 7\uCE35"}
+                  경기 용인시 기흥구 구성로 357 용인테크노밸리 D동 710호
                 </span>
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-400">
+                <span className="shrink-0 mt-0.5 text-sm text-gray-400">대표:</span>
+                <span>서정민</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-400">
                 <IconPhone className="shrink-0 mt-0.5" />
                 <span>
-                  {t("footer.phone")}: 02-000-0000
+                  {t("footer.phone")}: 031.662.1395
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-400">
                 <IconMail className="shrink-0 mt-0.5" />
                 <span>
-                  {t("footer.email")}: info@cellromax.com
+                  {t("footer.email")}: health1395@kshp.co.kr
                 </span>
               </li>
             </ul>
