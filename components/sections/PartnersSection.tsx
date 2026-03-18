@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useScrollFadeIn } from "@/hooks/useScrollFadeIn";
@@ -11,13 +11,12 @@ import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
 
    구성:
    1. 섹션 헤더 (배지 + 제목 + 골드 디바이더)
-   2. GSAP 무한 로고 슬라이더 (16개 파트너사 로고 카드)
+   2. 스크롤 반응형 로고 그리드 (16개 파트너사 로고 카드)
 
    GSAP 애니메이션:
    - useScrollFadeIn 훅으로 헤더 스크롤 기반 순차 등장
-   - 로고 슬라이더: xPercent 0 → -50 무한 반복 (seamless loop)
-   - 마우스 호버 시 일시정지 / 마우스 나감 시 재생
-   - prefersReducedMotion 설정 시 슬라이더 정지, 모든 로고 정적 표시
+   - 로고 카드: 스크롤 시 행(row) 단위로 순차 페이드인 + 위로 등장
+   - prefersReducedMotion 설정 시 모든 애니메이션 비활성화, 즉시 표시
    ========================================================================== */
 
 // ---------------------------------------------------------------------------
@@ -139,8 +138,11 @@ const PARTNERS: PartnerItem[] = [
   },
 ];
 
-/** 슬라이더 속도 — 한 바퀴 완주 시간 (초) */
-const SLIDER_DURATION = 35;
+/** 행 단위 stagger 딜레이 (초) */
+const ROW_STAGGER = 0.15;
+
+/** 카드 개별 stagger 딜레이 (초) */
+const CARD_STAGGER = 0.06;
 
 // ---------------------------------------------------------------------------
 // Sub-Components
@@ -151,9 +153,6 @@ function PartnerCard({ partner }: { partner: PartnerItem }) {
   return (
     <div
       className="
-        flex-shrink-0
-        w-[140px] h-[100px]
-        sm:w-[180px] sm:h-[120px]
         bg-white
         squircle-lg
         border border-gray-100
@@ -199,49 +198,62 @@ export function PartnersSection() {
   // ----- useScrollFadeIn refs -----
   const headerRef = useScrollFadeIn({ direction: "up" });
 
-  // ----- 슬라이더 refs -----
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const tweenRef = useRef<gsap.core.Tween | null>(null);
+  // ----- 그리드 ref -----
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  // ----- 마우스 호버 핸들러 -----
-  const handleMouseEnter = useCallback(() => {
-    tweenRef.current?.pause();
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    tweenRef.current?.resume();
-  }, []);
-
-  // ----- GSAP 무한 슬라이더 애니메이션 -----
+  // ----- GSAP 스크롤 기반 행 단위 등장 애니메이션 -----
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
+    const grid = gridRef.current;
+    if (!grid) return;
 
-    // 접근성: 모션 감소 설정 시 슬라이더 정지
+    const cards = Array.from(grid.children) as HTMLElement[];
+    if (cards.length === 0) return;
+
+    // 접근성: 모션 감소 설정 시 즉시 표시
     if (prefersReducedMotion()) {
-      gsap.set(track, { xPercent: 0 });
+      gsap.set(cards, { opacity: 1, y: 0 });
       return;
     }
 
+    // 초기 상태: 숨김
+    gsap.set(cards, { opacity: 0, y: 30 });
+
     const ctx = gsap.context(() => {
-      // 트랙을 xPercent: 0 → -50 으로 이동 (2벌 복제이므로 -50%가 원점 복귀)
-      tweenRef.current = gsap.to(track, {
-        xPercent: -50,
-        duration: SLIDER_DURATION,
-        ease: "none",
-        repeat: -1,
+      // 행(row) 단위로 그룹핑: 같은 offsetTop을 가진 카드끼리 묶기
+      const rows: HTMLElement[][] = [];
+      let currentRowTop = -1;
+
+      cards.forEach((card) => {
+        const cardTop = card.offsetTop;
+        if (cardTop !== currentRowTop) {
+          rows.push([]);
+          currentRowTop = cardTop;
+        }
+        rows[rows.length - 1].push(card);
       });
-    });
+
+      // 각 행을 ScrollTrigger로 개별 등장
+      rows.forEach((rowCards, rowIndex) => {
+        gsap.to(rowCards, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: CARD_STAGGER,
+          ease: "power3.out",
+          delay: rowIndex * ROW_STAGGER,
+          scrollTrigger: {
+            trigger: rowCards[0],
+            start: "top 90%",
+            once: true,
+          },
+        });
+      });
+    }, grid);
 
     return () => {
-      tweenRef.current = null;
       ctx.revert();
     };
   }, []);
-
-  // 2벌 복제 배열 (seamless loop 용)
-  const duplicatedPartners = [...PARTNERS, ...PARTNERS];
 
   return (
     <section
@@ -270,39 +282,30 @@ export function PartnersSection() {
       </div>
 
       {/* ================================================================
-          2. 무한 로고 슬라이더
+          2. 스크롤 반응형 로고 그리드
           ================================================================ */}
-      <div
-        ref={sliderRef}
-        className="relative w-full overflow-hidden"
-        role="region"
-        aria-roledescription="carousel"
-        aria-label="파트너사 로고 슬라이더"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onTouchStart={handleMouseEnter}
-        onTouchEnd={handleMouseLeave}
-      >
-        {/* 좌우 페이드 마스크 — 시각적으로 양쪽 끝을 부드럽게 사라지게 */}
+      <div className="container-site">
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-24 z-10 bg-gradient-to-r from-surface to-transparent"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-24 z-10 bg-gradient-to-l from-surface to-transparent"
-          aria-hidden="true"
-        />
-
-        {/* 슬라이더 트랙 — 로고 카드 2벌 배치 */}
-        <div
-          ref={trackRef}
-          className="flex gap-5 sm:gap-7 py-4 will-change-transform"
+          ref={gridRef}
+          className="
+            grid
+            grid-cols-3
+            sm:grid-cols-4
+            md:grid-cols-5
+            lg:grid-cols-6
+            xl:grid-cols-8
+            gap-3 sm:gap-4 md:gap-5
+          "
+          role="list"
+          aria-label="파트너사 목록"
         >
-          {duplicatedPartners.map((partner, index) => (
-            <PartnerCard
+          {PARTNERS.map((partner, index) => (
+            <div
               key={`${partner.name}-${partner.description}-${index}`}
-              partner={partner}
-            />
+              role="listitem"
+            >
+              <PartnerCard partner={partner} />
+            </div>
           ))}
         </div>
       </div>
