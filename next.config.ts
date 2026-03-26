@@ -47,6 +47,20 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/ttsyrup',
+          destination: 'https://ttsyrup.vercel.app/',
+        },
+        {
+          source: '/ttsyrup/:path*',
+          destination: 'https://ttsyrup.vercel.app/:path*',
+        },
+      ],
+    };
+  },
 };
 
 export default withNextIntl(nextConfig);
