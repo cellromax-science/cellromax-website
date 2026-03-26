@@ -41,9 +41,12 @@ interface ContactInfoItem {
 // Constants
 // ---------------------------------------------------------------------------
 
-/** 회사 좌표 — 용인테크노밸리 D동 710호 (근사치) */
-const COMPANY_LAT = 37.2822;
-const COMPANY_LNG = 127.1175;
+/** 회사 주소 — Geocoder로 좌표 변환 */
+const COMPANY_ADDRESS = "경기도 용인시 기흥구 구성로 357";
+
+/** Geocoder 실패 시 폴백 좌표 */
+const FALLBACK_LAT = 37.2822;
+const FALLBACK_LNG = 127.1175;
 
 /** 카카오맵 줌 레벨 (1: 가장 가까움, 14: 가장 멀리) */
 const MAP_ZOOM_LEVEL = 3;
@@ -167,33 +170,44 @@ export function LocationSection() {
       .then((kakao) => {
         if (!isMounted) return;
 
-        // 지도 생성
-        const center = new kakao.maps.LatLng(COMPANY_LAT, COMPANY_LNG);
+        // 폴백 좌표로 먼저 지도 생성
+        const fallbackCenter = new kakao.maps.LatLng(FALLBACK_LAT, FALLBACK_LNG);
         const map = new kakao.maps.Map(container, {
-          center,
+          center: fallbackCenter,
           level: MAP_ZOOM_LEVEL,
         });
 
-        // 마커 생성
-        const marker = new kakao.maps.Marker({
-          map,
-          position: center,
-        });
+        const setupMarker = (position: kakao.maps.LatLng) => {
+          const marker = new kakao.maps.Marker({ map, position });
+          const infoWindow = new kakao.maps.InfoWindow({
+            content: `
+              <div style="padding:8px 12px;font-size:13px;line-height:1.5;font-family:Pretendard,sans-serif;">
+                <strong style="color:#0a1628;">셀로맥스사이언스</strong><br/>
+                <span style="color:#6b7280;font-size:12px;">경기도 용인시 기흥구 구성로 357<br/>용인테크노밸리 D동 710호</span>
+              </div>
+            `,
+            removable: true,
+          });
+          kakao.maps.event.addListener(marker, "click", () => {
+            infoWindow.open(map, marker);
+          });
+          map.setCenter(position);
+        };
 
-        // 인포윈도우 생성
-        const infoWindow = new kakao.maps.InfoWindow({
-          content: `
-            <div style="padding:8px 12px;font-size:13px;line-height:1.5;font-family:Pretendard,sans-serif;">
-              <strong style="color:#0a1628;">셀로맥스사이언스</strong><br/>
-              <span style="color:#6b7280;font-size:12px;">경기도 용인시 기흥구 구성로 357<br/>용인테크노밸리 D동 710호</span>
-            </div>
-          `,
-          removable: true,
-        });
-
-        // 마커 클릭 시 인포윈도우 표시
-        kakao.maps.event.addListener(marker, "click", () => {
-          infoWindow.open(map, marker);
+        // Geocoder로 주소 → 좌표 변환
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(COMPANY_ADDRESS, (result, status) => {
+          if (!isMounted) return;
+          if (status === kakao.maps.services.Status.OK && result.length > 0) {
+            const coords = new kakao.maps.LatLng(
+              parseFloat(result[0].y),
+              parseFloat(result[0].x)
+            );
+            setupMarker(coords);
+          } else {
+            // Geocoder 실패 시 폴백 좌표 사용
+            setupMarker(fallbackCenter);
+          }
         });
       })
       .catch((error) => {
