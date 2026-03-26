@@ -177,7 +177,8 @@ export function LocationSection() {
           level: MAP_ZOOM_LEVEL,
         });
 
-        const setupMarker = (position: kakao.maps.LatLng) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const setupMarker = (position: any) => {
           const marker = new kakao.maps.Marker({ map, position });
           const infoWindow = new kakao.maps.InfoWindow({
             content: `
