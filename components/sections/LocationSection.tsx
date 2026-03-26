@@ -119,8 +119,8 @@ const CONTACT_INFO: ContactInfoItem[] = [
   },
   {
     labelKey: "email",
-    value: "cellromax@naver.com",
-    href: "mailto:cellromax@naver.com",
+    value: "health1395@kshp.co.kr",
+    href: "mailto:health1395@kshp.co.kr",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

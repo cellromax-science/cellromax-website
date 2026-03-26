@@ -213,7 +213,7 @@ export function Footer() {
             </h3>
             <div className="flex items-center gap-4 mb-6">
               <a
-                href="#"
+                href="https://www.instagram.com/cellromax_official"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -222,7 +222,7 @@ export function Footer() {
                 <IconInstagram />
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@cellromaxscience"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
