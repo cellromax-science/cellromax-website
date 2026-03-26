@@ -70,6 +70,14 @@ export default async function middleware(request: NextRequest) {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  // /ttsyrup 경로 조기 반환
+  //   vercel.json의 rewrite로 처리되므로 intl 미들웨어를 건너뜁니다.
+  // ─────────────────────────────────────────────────────────────────────────
+  if (pathname === '/ttsyrup' || pathname.startsWith('/ttsyrup/')) {
+    return supabaseResponse()
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // 2단계: Admin 경로 인증 보호
   // ─────────────────────────────────────────────────────────────────────────
   const locale = extractLocale(pathname)
