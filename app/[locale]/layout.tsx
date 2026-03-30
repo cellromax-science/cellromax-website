@@ -1,15 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages, getTranslations, getLocale } from "next-intl/server";
-import { headers } from "next/headers";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Inter, Noto_Sans_SC, Be_Vietnam_Pro } from "next/font/google";
 import localFont from "next/font/local";
 import { routing } from "@/lib/i18n/routing";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { LayoutShell } from "@/components/layout/LayoutShell";
 import { ToastContainer } from "@/components/ui/Toast";
-import { PageTransition } from "@/components/layout/PageTransition";
 import "../globals.css";
 
 const inter = Inter({
@@ -53,9 +50,13 @@ export const viewport: Viewport = {
   themeColor: "#0A1628",
 };
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations("meta");
-  const locale = await getLocale();
 
   return {
     title: {
@@ -94,6 +95,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// 빌드 타임에 모든 로케일을 미리 생성
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -102,18 +108,13 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
 
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
   const messages = await getMessages();
-
-  // 미들웨어에서 설정한 x-pathname 헤더로 admin 경로 여부를 판별합니다.
-  // admin 경로에서는 공개 사이트의 Header/Footer를 렌더링하지 않습니다.
-  const headerList = await headers();
-  const pathname = headerList.get("x-pathname") ?? "";
-  const isAdmin = pathname.includes("/admin");
 
   return (
     <html
@@ -123,15 +124,7 @@ export default async function LocaleLayout({
     >
       <body>
         <NextIntlClientProvider messages={messages}>
-          {!isAdmin && <Header />}
-          <main>
-            {!isAdmin ? (
-              <PageTransition>{children}</PageTransition>
-            ) : (
-              children
-            )}
-          </main>
-          {!isAdmin && <Footer />}
+          <LayoutShell>{children}</LayoutShell>
           <ToastContainer />
         </NextIntlClientProvider>
       </body>

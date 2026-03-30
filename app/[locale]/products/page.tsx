@@ -1,6 +1,6 @@
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/server";
 import { ProductFilter } from "@/components/products/ProductFilter";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductPagination } from "@/components/products/ProductPagination";
@@ -65,6 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // ---------------------------------------------------------------------------
 
 interface ProductsPageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     category?: string;
     subcategory?: string;
@@ -72,9 +73,12 @@ interface ProductsPageProps {
   }>;
 }
 
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+export default async function ProductsPage({ params, searchParams }: ProductsPageProps) {
+  const { locale: paramLocale } = await params;
+  setRequestLocale(paramLocale);
+
   const resolvedParams = await searchParams;
-  const locale = await getLocale();
+  const locale = paramLocale;
   const t = await getTranslations("products");
 
   /* ---- Parse search params ---- */
@@ -88,7 +92,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const currentPage = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
 
   /* ---- Fetch products from Supabase ---- */
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
   /* Pagination range */
   const from = (currentPage - 1) * PRODUCTS_PER_PAGE;

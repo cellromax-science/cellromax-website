@@ -1,9 +1,9 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge, getCategoryBadgeVariant, getCategoryLabel } from "@/components/ui/Badge";
 import { ProductImageGallery } from "@/components/products/ProductImageGallery";
@@ -26,6 +26,21 @@ import type { Metadata } from "next";
 
 // 1분 ISR — 관리자가 제품을 수정하면 최대 1분 후 반영
 export const revalidate = 60;
+
+// 빌드 시 모든 로케일 × 제품 slug 조합을 미리 생성
+export async function generateStaticParams() {
+  const supabase = createStaticClient();
+  const { data: products } = await supabase
+    .from("products")
+    .select("slug")
+    .eq("is_active", true);
+
+  if (!products) return [];
+
+  return routing.locales.flatMap((locale) =>
+    products.map((p) => ({ locale, slug: p.slug }))
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -148,7 +163,7 @@ function buildTabs(
  * React cache()로 Supabase 쿼리를 1회만 실행한다.
  */
 const getProduct = cache(async (slug: string) => {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from("products")
     .select("*, product_subcategories(*)")
@@ -196,8 +211,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 // ---------------------------------------------------------------------------
 
 export default async function ProductDetailPage({ params }: PageProps) {
-  const { slug } = await params;
-  const locale = await getLocale();
+  const { locale: paramLocale, slug } = await params;
+  setRequestLocale(paramLocale);
+
+  const locale = paramLocale;
   const t = await getTranslations("products.detail");
   const tNav = await getTranslations("nav");
 
