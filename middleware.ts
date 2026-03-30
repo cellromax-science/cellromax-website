@@ -10,6 +10,18 @@ const intlMiddleware = createIntlMiddleware(routing)
 const locales = routing.locales
 
 /**
+ * 주어진 pathname이 admin 관련 경로인지 확인합니다.
+ * /[locale]/admin 또는 /[locale]/admin/* 경로에 해당하면 true.
+ */
+function isAdminPath(pathname: string): boolean {
+  return locales.some(
+    (locale) =>
+      pathname === `/${locale}/admin` ||
+      pathname.startsWith(`/${locale}/admin/`)
+  )
+}
+
+/**
  * 주어진 pathname이 admin 보호 대상 경로인지 확인합니다.
  * /[locale]/admin/* 경로 중 /[locale]/admin/login은 제외합니다.
  */
@@ -48,38 +60,31 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 1단계: Supabase 세션 갱신
-  //   모든 요청에 대해 Supabase 세션을 갱신합니다.
-  //   이 단계에서 만료된 JWT 토큰이 자동으로 refresh됩니다.
+  // API / ttsyrup 경로 조기 반환
+  // ─────────────────────────────────────────────────────────────────────────
+  if (pathname.startsWith('/api/') || pathname === '/ttsyrup' || pathname.startsWith('/ttsyrup/')) {
+    return NextResponse.next({ request })
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 공개 페이지 (비-admin) 경로 → 인증 불필요, intl만 실행
+  //   getUser() 호출을 건너뛰어 Supabase Auth 네트워크 왕복(100~400ms)을 절감
+  // ─────────────────────────────────────────────────────────────────────────
+  if (!isAdminPath(pathname)) {
+    const intlResponse = intlMiddleware(request)
+    intlResponse.headers.set('x-pathname', pathname)
+    return intlResponse
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Admin 경로 → Supabase 세션 갱신 + 인증 보호
   // ─────────────────────────────────────────────────────────────────────────
   const { supabase, supabaseResponse } = createSupabaseMiddlewareClient(request)
 
-  // getUser()를 호출하여 서버 측에서 JWT를 검증하고 세션을 갱신합니다.
-  // 주의: getSession()은 JWT를 서버 측에서 검증하지 않으므로 사용하지 않습니다.
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // API 라우트 조기 반환
-  //   /api/* 경로는 세션 갱신만 수행하고 intl/admin 미들웨어를 건너뜁니다.
-  //   (API route handler가 자체적으로 인증/인가를 처리합니다)
-  // ─────────────────────────────────────────────────────────────────────────
-  if (pathname.startsWith('/api/')) {
-    return supabaseResponse()
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // /ttsyrup 경로 조기 반환
-  //   vercel.json의 rewrite로 처리되므로 intl 미들웨어를 건너뜁니다.
-  // ─────────────────────────────────────────────────────────────────────────
-  if (pathname === '/ttsyrup' || pathname.startsWith('/ttsyrup/')) {
-    return supabaseResponse()
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // 2단계: Admin 경로 인증 보호
-  // ─────────────────────────────────────────────────────────────────────────
   const locale = extractLocale(pathname)
 
   // 보호 대상 admin 경로에 세션 없이 접근 -> 로그인 페이지로 리다이렉트
@@ -87,7 +92,6 @@ export default async function middleware(request: NextRequest) {
     const loginUrl = new URL(`/${locale}/admin/login`, request.url)
     const redirectResponse = NextResponse.redirect(loginUrl)
 
-    // Supabase가 설정한 쿠키를 리다이렉트 응답에도 전달
     supabaseResponse().cookies.getAll().forEach((cookie) => {
       redirectResponse.cookies.set(cookie.name, cookie.value)
     })
@@ -107,27 +111,13 @@ export default async function middleware(request: NextRequest) {
     return redirectResponse
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // 3단계: next-intl 미들웨어 실행
-  //   로케일 감지, 리다이렉트, alternate links 헤더 등 i18n 처리
-  // ─────────────────────────────────────────────────────────────────────────
+  // Admin intl 처리 + Supabase 쿠키 병합
   const intlResponse = intlMiddleware(request)
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // 4단계: Supabase 쿠키를 intl 응답에 병합
-  //   Supabase가 세션 갱신 중 설정한 쿠키를 최종 응답에 포함시킵니다.
-  //   이렇게 해야 브라우저에 갱신된 세션 쿠키가 전달됩니다.
-  // ─────────────────────────────────────────────────────────────────────────
   supabaseResponse().cookies.getAll().forEach((cookie) => {
     intlResponse.cookies.set(cookie.name, cookie.value)
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // 5단계: 레이아웃 힌트 헤더 설정
-  //   서버 컴포넌트(layout.tsx)에서 현재 pathname을 참조할 수 있도록
-  //   커스텀 헤더에 pathname을 전달합니다.
-  //   (admin 경로에서 Header/Footer를 숨기는 데 사용)
-  // ─────────────────────────────────────────────────────────────────────────
   intlResponse.headers.set('x-pathname', pathname)
 
   return intlResponse
