@@ -16,6 +16,9 @@ import type { Metadata } from "next";
    - 카테고리 탭 필터 + 제품 그리드 + 페이지네이션
    ========================================================================== */
 
+// 5분 ISR — 제품 목록은 관리자 업데이트 시에만 변경됨
+export const revalidate = 300;
+
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
@@ -90,7 +93,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   /* ---- Fetch subcategories for active category ---- */
   const { data: subcategoryData } = await supabase
     .from("product_subcategories")
-    .select("*")
+    .select("id, slug, name_ko, name_en, name_zh, name_vi, parent_category, sort_order, is_active")
     .eq("parent_category", activeCategory)
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
@@ -100,7 +103,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   let query = supabase
     .from("products")
-    .select("*, product_subcategories(*)", { count: "exact" })
+    .select(
+      "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)",
+      { count: "exact" }
+    )
     .eq("is_active", true)
     .eq("category", activeCategory)
     .order("price", { ascending: false })

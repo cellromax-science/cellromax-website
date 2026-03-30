@@ -568,11 +568,30 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         );
       }
 
+      const resData = await res.json().catch(() => null);
+      const productId = resData?.product?.id ?? initialData?.id;
+
       toast.success(
         mode === "create"
           ? "제품이 등록되었습니다."
           : "제품이 수정되었습니다."
       );
+
+      // 한국어 HTML 상세페이지가 있으면 자동 번역 (백그라운드)
+      if (body.detail_html_ko && productId) {
+        toast.success("다국어 상세페이지 자동 번역을 시작합니다...");
+        fetch(`/api/products/${productId}/translate`, { method: "POST" })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.message) {
+              toast.success(`다국어 번역 완료: ${data.message}`);
+            }
+          })
+          .catch(() => {
+            toast.error("다국어 자동 번역에 실패했습니다. 수동으로 진행해주세요.");
+          });
+      }
+
       router.push(`/${locale}/admin/products`);
     } catch (err) {
       const message =

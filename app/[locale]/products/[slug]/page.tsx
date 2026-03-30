@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -22,6 +23,9 @@ import type { Metadata } from "next";
    - 카테고리별 탭 라벨 분기 처리
    - 이미지 갤러리 + 정보 탭 + 약국 모달 + 상세 이미지
    ========================================================================== */
+
+// 1분 ISR — 관리자가 제품을 수정하면 최대 1분 후 반영
+export const revalidate = 60;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -136,6 +140,25 @@ function buildTabs(
 }
 
 // ---------------------------------------------------------------------------
+// Data Fetching (React cache — per-request dedup)
+// ---------------------------------------------------------------------------
+
+/**
+ * 동일 요청 내에서 generateMetadata와 Page 컴포넌트가 같은 slug를 조회할 때
+ * React cache()로 Supabase 쿼리를 1회만 실행한다.
+ */
+const getProduct = cache(async (slug: string) => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select("*, product_subcategories(*)")
+    .eq("slug", slug)
+    .eq("is_active", true)
+    .single();
+  return data as Product | null;
+});
+
+// ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
 
@@ -145,18 +168,11 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const supabase = await createClient();
-
-  const { data: product } = await supabase
-    .from("products")
-    .select("name_ko, name_en, name_zh, name_vi, thumbnail_url")
-    .eq("slug", decodeURIComponent(slug))
-    .eq("is_active", true)
-    .single();
+  const product = await getProduct(decodeURIComponent(slug));
 
   if (!product) return { title: "Product Not Found" };
 
-  const name = getLocalizedField(product as Product, "name", locale) ?? product.name_ko;
+  const name = getLocalizedField(product, "name", locale) ?? product.name_ko;
 
   return {
     title: name,
@@ -185,22 +201,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const t = await getTranslations("products.detail");
   const tNav = await getTranslations("nav");
 
-  /* ---- Fetch product ---- */
-  const supabase = await createClient();
+  /* ---- Fetch product (cache hit if generateMetadata already called) ---- */
   const decodedSlug = decodeURIComponent(slug);
-  const { data, error } = await supabase
-    .from("products")
-    .select("*, product_subcategories(*)")
-    .eq("slug", decodedSlug)
-    .eq("is_active", true)
-    .single();
+  const product = await getProduct(decodedSlug);
 
-  if (error || !data) {
-    console.error("[ProductDetailPage] slug:", decodedSlug, "| error:", error);
+  if (!product) {
+    console.error("[ProductDetailPage] slug:", decodedSlug, "| not found");
     notFound();
   }
-
-  const product = data as Product;
 
   /* ---- Localized fields ---- */
   const productName = getLocalizedField(product, "name", locale) ?? product.name_ko;
