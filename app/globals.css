@@ -1105,6 +1105,18 @@ hr {
   }
 }
 
+/* PageTransition 전용 fade-in — GSAP 대신 순수 CSS */
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;

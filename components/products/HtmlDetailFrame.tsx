@@ -246,7 +246,7 @@ export function HtmlDetailFrame({ html }: HtmlDetailFrameProps) {
         }}
         onLoad={() => {
           updateWrapperTop();
-          setTimeout(() => setIsLoading(false), 1500);
+          setTimeout(() => setIsLoading(false), 500);
         }}
       />
       {/* 로딩 스켈레톤 — iframe 위에 오버레이 (iframe 뒤에 배치하여 React 자식 순서 보존) */}

@@ -90,42 +90,73 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   /* ---- Fetch products from Supabase ---- */
   const supabase = await createClient();
 
-  /* ---- Fetch subcategories for active category ---- */
-  const { data: subcategoryData } = await supabase
-    .from("product_subcategories")
-    .select("id, slug, name_ko, name_en, name_zh, name_vi, parent_category, sort_order, is_active")
-    .eq("parent_category", activeCategory)
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
+  /* Pagination range */
+  const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const to = from + PRODUCTS_PER_PAGE - 1;
 
-  const subcategories: ProductSubcategory[] =
-    (subcategoryData as ProductSubcategory[]) ?? [];
+  /* ---- 서브카테고리 + 제품 목록 조회 ---- */
+  let subcategories: ProductSubcategory[];
+  let products: unknown[] | null;
+  let count: number | null;
 
-  let query = supabase
-    .from("products")
-    .select(
-      "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)",
-      { count: "exact" }
-    )
-    .eq("is_active", true)
-    .eq("category", activeCategory)
-    .order("price", { ascending: false })
-    .order("created_at", { ascending: false });
+  if (!activeSubcategory) {
+    // 서브카테고리 필터 없음 → 두 쿼리를 병렬 실행
+    const [subcategoryResult, productsResult] = await Promise.all([
+      supabase
+        .from("product_subcategories")
+        .select("id, slug, name_ko, name_en, name_zh, name_vi, parent_category, sort_order, is_active")
+        .eq("parent_category", activeCategory)
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("products")
+        .select(
+          "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)",
+          { count: "exact" }
+        )
+        .eq("is_active", true)
+        .eq("category", activeCategory)
+        .order("price", { ascending: false })
+        .order("created_at", { ascending: false })
+        .range(from, to),
+    ]);
 
-  if (activeSubcategory) {
+    subcategories = (subcategoryResult.data as ProductSubcategory[]) ?? [];
+    products = productsResult.data;
+    count = productsResult.count;
+  } else {
+    // 서브카테고리 필터 있음 → 순차 실행 (slug→id 변환 필요)
+    const { data: subcategoryData } = await supabase
+      .from("product_subcategories")
+      .select("id, slug, name_ko, name_en, name_zh, name_vi, parent_category, sort_order, is_active")
+      .eq("parent_category", activeCategory)
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
+
+    subcategories = (subcategoryData as ProductSubcategory[]) ?? [];
+
+    let query = supabase
+      .from("products")
+      .select(
+        "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)",
+        { count: "exact" }
+      )
+      .eq("is_active", true)
+      .eq("category", activeCategory)
+      .order("price", { ascending: false })
+      .order("created_at", { ascending: false });
+
     const matchedSubcategory = subcategories.find(
       (sc) => sc.slug === activeSubcategory
     );
     if (matchedSubcategory) {
       query = query.eq("subcategory_id", matchedSubcategory.id);
     }
+
+    const result = await query.range(from, to);
+    products = result.data;
+    count = result.count;
   }
-
-  /* Pagination range */
-  const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
-  const to = from + PRODUCTS_PER_PAGE - 1;
-
-  const { data: products, count } = await query.range(from, to);
 
   const totalCount = count ?? 0;
   const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);

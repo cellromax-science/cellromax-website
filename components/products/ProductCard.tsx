@@ -23,6 +23,8 @@ interface ProductCardProps {
   product: Product;
   /** 현재 로케일 (ko | en | zh | vi) */
   locale: string;
+  /** LCP 최적화: 첫 몇 개 카드에 true 설정 시 이미지를 우선 로드 */
+  priority?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -65,7 +67,7 @@ function getLocalizedSubcategoryName(
  * <ProductCard product={product} locale="ko" />
  * ```
  */
-export function ProductCard({ product, locale }: ProductCardProps) {
+export function ProductCard({ product, locale, priority = false }: ProductCardProps) {
   const productName = getLocalizedName(product, locale);
   const subcategoryName =
     product.product_subcategories
@@ -90,6 +92,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               quality={75}
+              priority={priority}
               className="object-cover transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[1.08]"
             />
           ) : (

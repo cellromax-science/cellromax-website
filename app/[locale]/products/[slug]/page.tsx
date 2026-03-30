@@ -220,45 +220,43 @@ export default async function ProductDetailPage({ params }: PageProps) {
   return (
     <section className="section bg-surface">
       <div className="container-site">
-        {/* ---- Breadcrumb ---- */}
-        <AnimatedSection direction="none" duration={0.5}>
-          <nav
-            aria-label="breadcrumb"
-            className="mb-8 text-sm text-gray-500"
-          >
-            <ol className="flex items-center gap-1.5 flex-wrap">
-              <li>
-                <Link href="/" className="hover:text-primary transition-colors">
-                  {tNav("home")}
-                </Link>
-              </li>
-              <li aria-hidden="true" className="text-gray-300">/</li>
-              <li>
-                <Link href="/products" className="hover:text-primary transition-colors">
-                  {tNav("products")}
-                </Link>
-              </li>
-              <li aria-hidden="true" className="text-gray-300">/</li>
-              <li className="text-primary font-medium truncate max-w-[200px]">
-                {productName}
-              </li>
-            </ol>
-          </nav>
-        </AnimatedSection>
+        {/* ---- Breadcrumb (above-fold: 즉시 표시) ---- */}
+        <nav
+          aria-label="breadcrumb"
+          className="mb-8 text-sm text-gray-500"
+        >
+          <ol className="flex items-center gap-1.5 flex-wrap">
+            <li>
+              <Link href="/" className="hover:text-primary transition-colors">
+                {tNav("home")}
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-gray-300">/</li>
+            <li>
+              <Link href="/products" className="hover:text-primary transition-colors">
+                {tNav("products")}
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-gray-300">/</li>
+            <li className="text-primary font-medium truncate max-w-[200px]">
+              {productName}
+            </li>
+          </ol>
+        </nav>
 
-        {/* ---- 2-Column Grid ---- */}
+        {/* ---- 2-Column Grid (above-fold: 즉시 표시) ---- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left: Image Gallery */}
-          <AnimatedSection direction="left" duration={0.8}>
+          <div>
             <ProductImageGallery
               images={product.images}
               productName={productName}
               thumbnailUrl={product.thumbnail_url}
             />
-          </AnimatedSection>
+          </div>
 
           {/* Right: Product Info */}
-          <AnimatedSection direction="right" duration={0.8}>
+          <div>
             <div className="space-y-6">
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
@@ -284,7 +282,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               {/* Detail Tabs */}
               <ProductDetailTabs tabs={tabs} />
             </div>
-          </AnimatedSection>
+          </div>
         </div>
 
         {/* ---- Nearby Pharmacy Button + Detail Image ---- */}
