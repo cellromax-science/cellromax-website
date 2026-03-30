@@ -154,7 +154,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         {/* ---- Product Grid ---- */}
         <ProductGrid
-          products={(products as Product[]) ?? []}
+          products={(products as unknown as Product[]) ?? []}
           locale={locale}
           emptyMessage={t("noProducts")}
         />
