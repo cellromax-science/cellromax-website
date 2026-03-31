@@ -5,10 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { toast } from "@/components/ui/Toast";
 
 import type { IrFile } from "@/types/ir";
@@ -407,11 +407,10 @@ export function IrFileForm({ mode, initialData }: IrFileFormProps) {
           섹션 3: 본문 내용
           ================================================================ */}
       <FormSection title="본문 내용">
-        <Textarea
+        <RichTextEditor
           label="본문 내용"
-          rows={8}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={setContent}
           placeholder="IR 자료의 본문 내용을 입력하세요"
         />
       </FormSection>

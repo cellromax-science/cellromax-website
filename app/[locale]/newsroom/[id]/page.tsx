@@ -53,10 +53,25 @@ function formatDate(dateStr: string): string {
 }
 
 /**
- * 콘텐츠 텍스트를 단락별로 분리하여 <p> 태그 배열로 렌더링.
- * 관리자 입력 콘텐츠를 XSS 위험 없이 안전하게 표시.
+ * 콘텐츠 렌더러.
+ * - HTML 태그가 포함된 리치 텍스트 → dangerouslySetInnerHTML로 렌더링
+ *   (관리자만 작성 가능한 콘텐츠이므로 신뢰할 수 있는 HTML)
+ * - plain text (레거시) → 단락별 분리 후 <p> 태그로 렌더링
  */
 function ContentRenderer({ content }: { content: string }) {
+  const isHtml = /<[a-z][\s\S]*>/i.test(content);
+
+  if (isHtml) {
+    return (
+      // 관리자 전용 CMS에서 생성된 신뢰할 수 있는 HTML 콘텐츠
+      // eslint-disable-next-line react/no-danger
+      <div
+        className="prose prose-gray max-w-none prose-headings:text-primary prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-primary/30 prose-blockquote:pl-4 prose-blockquote:italic"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    );
+  }
+
   const paragraphs = content.split(/\n\s*\n/).filter(Boolean);
   return (
     <div className="prose prose-gray max-w-none space-y-4">

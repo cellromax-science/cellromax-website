@@ -77,10 +77,21 @@ function formatFileSize(bytes: number | null): string {
 }
 
 /**
- * 콘텐츠 텍스트를 단락별로 분리하여 <p> 태그 배열로 렌더링.
- * 관리자 입력 콘텐츠를 XSS 위험 없이 안전하게 표시.
+ * 콘텐츠 렌더러 — 관리자 CMS에서 생성된 신뢰할 수 있는 콘텐츠를 렌더링.
+ * HTML 포함 여부에 따라 리치텍스트/플레인텍스트 분기 처리.
  */
 function ContentRenderer({ content }: { content: string }) {
+  const isHtml = /<[a-z][\s\S]*>/i.test(content);
+
+  if (isHtml) {
+    return (
+      <div
+        className="prose prose-gray max-w-none prose-headings:text-primary prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-primary/30 prose-blockquote:pl-4 prose-blockquote:italic"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    );
+  }
+
   const paragraphs = content.split(/\n\s*\n/).filter(Boolean);
   return (
     <div className="prose prose-gray max-w-none space-y-4">

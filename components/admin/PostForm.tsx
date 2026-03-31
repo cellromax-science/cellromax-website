@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { toast } from "@/components/ui/Toast";
 
 import type { Post, Attachment } from "@/types/newsroom";
@@ -697,34 +698,30 @@ export function PostForm({ mode, initialData }: PostFormProps) {
           섹션 4: 본문 내용
           ================================================================ */}
       <FormSection title="본문 내용">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Textarea
+        <div className="grid grid-cols-1 gap-4">
+          <RichTextEditor
             label="본문 (한국어)"
-            rows={8}
             value={contentKo}
-            onChange={(e) => setContentKo(e.target.value)}
+            onChange={setContentKo}
             placeholder="게시글 본문을 입력하세요"
           />
-          <Textarea
+          <RichTextEditor
             label="본문 (영어)"
-            rows={8}
             value={contentEn}
-            onChange={(e) => setContentEn(e.target.value)}
+            onChange={setContentEn}
             placeholder="Enter post content"
           />
-          <Textarea
+          <RichTextEditor
             label="본문 (중국어)"
-            rows={8}
             value={contentZh}
-            onChange={(e) => setContentZh(e.target.value)}
+            onChange={setContentZh}
             placeholder="请输入正文内容"
           />
-          <Textarea
+          <RichTextEditor
             label="본문 (베트남어)"
-            rows={8}
             value={contentVi}
-            onChange={(e) => setContentVi(e.target.value)}
-            placeholder="Nhap noi dung bai viet"
+            onChange={setContentVi}
+            placeholder="Nhập nội dung bài viết"
           />
         </div>
       </FormSection>
