@@ -8,7 +8,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
 import { detailUrl, galleryUrl } from "@/lib/image";
-import type { Post } from "@/types/newsroom";
+import type { Post, Attachment } from "@/types/newsroom";
 import type { Metadata } from "next";
 
 /* ==========================================================================
@@ -334,7 +334,96 @@ export default async function NewsroomDetailPage({
             </div>
           </AnimatedSection>
         )}
+
+        {/* Attachments */}
+        {post.attachments && post.attachments.length > 0 && (
+          <AnimatedSection direction="up">
+            <div className="mb-8">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                {t("detail.attachments")}
+              </h3>
+              <div className="divide-y divide-gray-100 border border-gray-100 squircle-lg overflow-hidden">
+                {post.attachments.map((file: Attachment, i: number) => (
+                  <a
+                    key={i}
+                    href={file.url}
+                    download={file.name}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-gray-50 transition-colors duration-150 group"
+                  >
+                    <AttachmentFileIcon type={file.type} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-gray-700 group-hover:text-primary truncate transition-colors">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {formatFileSize(file.size)}
+                      </p>
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="size-4 text-gray-400 group-hover:text-primary shrink-0 transition-colors"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </AnimatedSection>
+        )}
       </div>
     </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Attachment Helper Components
+// ---------------------------------------------------------------------------
+
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+}
+
+function AttachmentFileIcon({ type }: { type: string }) {
+  const isPdf = type === "application/pdf";
+  const isWord = type.includes("word") || type.includes("document");
+  const isExcel = type.includes("excel") || type.includes("spreadsheet");
+  const isPpt = type.includes("powerpoint") || type.includes("presentation");
+
+  let color = "text-gray-400";
+  if (isPdf) color = "text-red-500";
+  else if (isWord) color = "text-blue-500";
+  else if (isExcel) color = "text-green-500";
+  else if (isPpt) color = "text-orange-500";
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      width="20"
+      height="20"
+      aria-hidden="true"
+      className={`shrink-0 ${color}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+      />
+    </svg>
   );
 }

@@ -201,7 +201,8 @@
     "detail": {
       "title": "Chi tiết bài viết",
       "notFound": "Không tìm thấy bài viết.",
-      "relatedPosts": "Bài viết liên quan"
+      "relatedPosts": "Bài viết liên quan",
+      "attachments": "Tệp đính kèm"
     }
   },
   "partners": {

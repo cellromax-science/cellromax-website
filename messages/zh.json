@@ -201,7 +201,8 @@
     "detail": {
       "title": "文章详情",
       "notFound": "未找到文章。",
-      "relatedPosts": "相关文章"
+      "relatedPosts": "相关文章",
+      "attachments": "附件"
     }
   },
   "partners": {

@@ -1,5 +1,13 @@
 export type PostType = 'notice' | 'news' | 'video';
 
+/** 첨부파일 메타데이터 */
+export interface Attachment {
+  url: string;
+  name: string;
+  size: number;
+  type: string;
+}
+
 export interface Post {
   id: string;
   post_type: PostType;
@@ -14,6 +22,7 @@ export interface Post {
   youtube_id: string | null;
   thumbnail_url: string | null;
   images: string[];
+  attachments: Attachment[];
   is_pinned: boolean;
   is_active: boolean;
   published_at: string;
@@ -35,6 +44,7 @@ export interface PostInsert {
   youtube_id?: string | null;
   thumbnail_url?: string | null;
   images?: string[];
+  attachments?: Attachment[];
   is_pinned?: boolean;
   is_active?: boolean;
   published_at?: string;

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { toast } from "@/components/ui/Toast";
 
-import type { Post } from "@/types/newsroom";
+import type { Post, Attachment } from "@/types/newsroom";
 
 /* ==========================================================================
    PostForm Component -- Cellromax Admin
@@ -187,6 +187,12 @@ export function PostForm({ mode, initialData }: PostFormProps) {
     return "";
   });
 
+  // 첨부파일
+  const [attachments, setAttachments] = useState<Attachment[]>(
+    initialData?.attachments ?? []
+  );
+  const [isUploading, setIsUploading] = useState(false);
+
   // 본문 내용
   const [contentKo, setContentKo] = useState(initialData?.content_ko ?? "");
   const [contentEn, setContentEn] = useState(initialData?.content_en ?? "");
@@ -209,6 +215,61 @@ export function PostForm({ mode, initialData }: PostFormProps) {
   const currentYouTubeId = youtubeUrl.trim()
     ? extractYouTubeId(youtubeUrl.trim())
     : null;
+
+  // --------------------------------------------------------------------------
+  // Gallery Image Handlers
+  // --------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------
+  // Attachment Handlers
+  // --------------------------------------------------------------------------
+
+  /** 첨부파일 업로드 */
+  const handleFileUpload = useCallback(async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const newAttachments: Attachment[] = [];
+
+      for (const file of Array.from(files)) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("bucket", "newsroom");
+
+        const res = await fetch("/api/upload-file", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => null);
+          throw new Error(errData?.error || `${file.name} 업로드 실패`);
+        }
+
+        const data = await res.json();
+        newAttachments.push({
+          url: data.url,
+          name: data.name,
+          size: data.size,
+          type: data.type,
+        });
+      }
+
+      setAttachments((prev) => [...prev, ...newAttachments]);
+      toast.success(`${newAttachments.length}개 파일이 업로드되었습니다.`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "파일 업로드에 실패했습니다.";
+      toast.error(message);
+    } finally {
+      setIsUploading(false);
+    }
+  }, []);
+
+  /** 첨부파일 삭제 */
+  const removeAttachment = useCallback((index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  }, []);
 
   // --------------------------------------------------------------------------
   // Gallery Image Handlers
@@ -294,6 +355,7 @@ export function PostForm({ mode, initialData }: PostFormProps) {
         youtube_id: youtubeId,
         thumbnail_url: thumbnailUrl,
         images: validImages,
+        attachments,
         is_pinned: isPinned,
         is_active: overrideActive ?? isActive,
         published_at: publishedAt || undefined,
@@ -312,6 +374,7 @@ export function PostForm({ mode, initialData }: PostFormProps) {
       youtubeUrl,
       thumbnailUrl,
       galleryImages,
+      attachments,
       isPinned,
       isActive,
       publishedAt,
@@ -423,7 +486,7 @@ export function PostForm({ mode, initialData }: PostFormProps) {
   // Render
   // --------------------------------------------------------------------------
 
-  const isAnySubmitting = isSubmitting || isDraftSubmitting;
+  const isAnySubmitting = isSubmitting || isDraftSubmitting || isUploading;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-24">
@@ -667,6 +730,91 @@ export function PostForm({ mode, initialData }: PostFormProps) {
       </FormSection>
 
       {/* ================================================================
+          섹션 5: 첨부파일
+          ================================================================ */}
+      <FormSection title="첨부파일">
+        {/* 업로드 영역 */}
+        <div className="mb-4">
+          <label
+            htmlFor="file-upload"
+            className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed squircle-lg cursor-pointer transition-colors duration-150 ${
+              isUploading
+                ? "border-gray-300 bg-gray-50 cursor-not-allowed"
+                : "border-gray-300 hover:border-primary hover:bg-primary/5"
+            }`}
+          >
+            {isUploading ? (
+              <div className="flex items-center gap-2 text-gray-500">
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span className="text-sm font-medium">업로드 중...</span>
+              </div>
+            ) : (
+              <>
+                <UploadIcon />
+                <p className="mt-2 text-sm text-gray-500">
+                  클릭하여 파일을 선택하거나 드래그하여 업로드
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  PDF, Word, Excel, PPT, HWP, ZIP (최대 50MB)
+                </p>
+              </>
+            )}
+            <input
+              id="file-upload"
+              type="file"
+              className="hidden"
+              multiple
+              disabled={isUploading || isAnySubmitting}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.hwpx,.zip"
+              onChange={(e) => handleFileUpload(e.target.files)}
+            />
+          </label>
+        </div>
+
+        {/* 첨부파일 목록 */}
+        {attachments.length > 0 ? (
+          <ul className="space-y-2">
+            {attachments.map((file, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between p-3 bg-gray-50 squircle-md border border-gray-100"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <FileIcon type={file.type} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-700 truncate">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {formatFileSize(file.size)}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeAttachment(index)}
+                  disabled={isAnySubmitting}
+                  className="shrink-0 p-1.5 text-gray-400 hover:text-error transition-colors duration-150"
+                  aria-label={`${file.name} 삭제`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" width="16" height="16" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-gray-400 text-center py-2">
+            첨부된 파일이 없습니다.
+          </p>
+        )}
+      </FormSection>
+
+      {/* ================================================================
           하단 Sticky 버튼 바
           ================================================================ */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-lg">
@@ -752,6 +900,72 @@ function WarningIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+      />
+    </svg>
+  );
+}
+
+/** 파일 크기를 읽기 쉬운 형태로 포맷팅 */
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+}
+
+/** 업로드 아이콘 */
+function UploadIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      width="24"
+      height="24"
+      aria-hidden="true"
+      className="text-gray-400"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+      />
+    </svg>
+  );
+}
+
+/** 파일 타입별 아이콘 */
+function FileIcon({ type }: { type: string }) {
+  const isPdf = type === "application/pdf";
+  const isWord = type.includes("word") || type.includes("document");
+  const isExcel = type.includes("excel") || type.includes("spreadsheet");
+  const isPpt = type.includes("powerpoint") || type.includes("presentation");
+
+  let color = "text-gray-400";
+  if (isPdf) color = "text-red-500";
+  else if (isWord) color = "text-blue-500";
+  else if (isExcel) color = "text-green-500";
+  else if (isPpt) color = "text-orange-500";
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      width="20"
+      height="20"
+      aria-hidden="true"
+      className={`shrink-0 ${color}`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
       />
     </svg>
   );

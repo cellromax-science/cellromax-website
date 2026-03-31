@@ -213,7 +213,8 @@
     "detail": {
       "title": "Post Detail",
       "notFound": "Post not found.",
-      "relatedPosts": "Related Posts"
+      "relatedPosts": "Related Posts",
+      "attachments": "Attachments"
     }
   },
   "partners": {
