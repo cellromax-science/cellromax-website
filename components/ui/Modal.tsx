@@ -153,6 +153,7 @@ export function Modal({
     "squircle-xl",
     "bg-surface-raised",
     "shadow-2xl",
+    "max-h-[90dvh] flex flex-col",
     sizeClasses[size],
     /* scaleIn 진입 애니메이션 — globals.css @keyframes scaleIn 참조 */
     "animate-[scaleIn_250ms_var(--ease-spring)_both]",
@@ -203,7 +204,7 @@ export function Modal({
         </div>
 
         {/* ---- Content ---- */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto flex-1 min-h-0">
           {children}
         </div>
       </div>

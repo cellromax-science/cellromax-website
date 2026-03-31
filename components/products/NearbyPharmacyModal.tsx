@@ -221,18 +221,18 @@ export function NearbyPharmacyModal() {
       <Modal open={open} onClose={handleClose} title={t("pharmacyModalTitle")} size="lg">
         <div className="space-y-4">
           {/* 검색 입력 영역 — 항상 표시 */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             {/* 텍스트 검색 */}
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
-                placeholder="지역명 또는 약국명을 입력하세요"
+                placeholder="지역명 또는 약국명"
                 className={[
-                  "flex-1 px-4 py-2.5 text-sm",
+                  "flex-1 min-w-0 px-3 py-2 text-sm",
                   "bg-white border border-gray-200 rounded-full",
                   "text-gray-900 placeholder-gray-400",
                   "outline-none focus:border-primary focus:ring-2 focus:ring-primary/20",
@@ -244,44 +244,43 @@ export function NearbyPharmacyModal() {
                 onClick={handleTextSearch}
                 disabled={!searchInput.trim() || status === "loading"}
                 className={[
-                  "px-5 py-2.5 text-sm font-semibold squircle-md",
+                  "shrink-0 px-4 py-2 text-sm font-semibold whitespace-nowrap squircle-md",
                   "bg-primary text-white",
                   "hover:bg-primary/90 transition-colors duration-150",
                   "disabled:opacity-50 disabled:cursor-not-allowed",
                 ].join(" ")}
               >
-                약국 검색
+                검색
+              </button>
+              {/* GPS 버튼 — 아이콘만 */}
+              <button
+                type="button"
+                onClick={handleLocate}
+                disabled={status === "locating" || status === "loading"}
+                title="내 주변 약국 찾기"
+                className={[
+                  "shrink-0 flex items-center justify-center size-9",
+                  "squircle-md border border-gray-200 text-gray-600",
+                  "hover:bg-gray-50 transition-colors duration-150",
+                  "disabled:opacity-50 disabled:cursor-not-allowed",
+                ].join(" ")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="size-4"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 2v4m0 12v4M2 12h4m12 0h4" />
+                </svg>
               </button>
             </div>
-
-            {/* GPS 버튼 */}
-            <button
-              type="button"
-              onClick={handleLocate}
-              disabled={status === "locating" || status === "loading"}
-              className={[
-                "w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium",
-                "squircle-md border border-gray-200 text-gray-700",
-                "hover:bg-gray-50 transition-colors duration-150",
-                "disabled:opacity-50 disabled:cursor-not-allowed",
-              ].join(" ")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="size-4"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M12 2v4m0 12v4M2 12h4m12 0h4" />
-              </svg>
-              내 주변 약국 찾기
-            </button>
           </div>
 
           {/* locating / loading 상태 */}
@@ -329,7 +328,8 @@ export function NearbyPharmacyModal() {
                   {/* 카카오맵 */}
                   <div
                     ref={mapContainerRef}
-                    className="w-full h-[360px] squircle-lg overflow-hidden bg-gray-100 border border-gray-200"
+                    className="w-full h-[240px] sm:h-[360px] squircle-lg overflow-hidden bg-gray-100 border border-gray-200"
+                    style={{ touchAction: "none" }}
                     aria-label="약국 지도"
                   />
 
