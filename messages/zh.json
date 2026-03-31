@@ -81,8 +81,6 @@
     }
   },
   "history": {
-    "title": "发展历程",
-    "subtitle": "赛络迈科学的发展足迹",
     "2014": "成立药师与健康有限公司（京畿道平泽市）",
     "2015": "健康功能食品销售业务注册",
     "2016": "成立营养保健实验室（Nutraceutical Lab）",
@@ -95,6 +93,8 @@
     "2023": "KGSP医药品流通管理标准合格机构指定",
     "2024": "KOSDAQ上市 / 更名为赛络迈科学有限公司",
     "2025": "成立子公司赛络迈创意",
+    "title": "发展历程",
+    "subtitle": "赛络迈科学的发展足迹",
     "detail2014": "· 成立药师与健康有限公司（京畿道平泽市）",
     "detail2015": "· 健康功能食品销售业务注册（第2015-0308048号）\n· 邮购销售业务注册（第2015-京畿松炭-83号）",
     "detail2016": "· 参加第11届京畿道药师会学术节\n· 成立营养保健实验室（Nutraceutical Lab）",
@@ -141,7 +141,13 @@
     "noProducts": "暂无产品。",
     "loadMore": "加载更多",
     "newBadge": "NEW",
-    "totalCount": "共{count}个产品"
+    "totalCount": "共{count}个产品",
+    "searchPlaceholder": "按产品名称或成分搜索",
+    "searchClear": "清除搜索",
+    "searchResult": "\"{keyword}\" 搜索结果 {count}个",
+    "noSearchResult": "没有搜索结果。",
+    "subcategorySelect": "选择子类别",
+    "allSubcategory": "全部"
   },
   "ir": {
     "title": "投资者关系资料",

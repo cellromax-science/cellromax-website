@@ -81,8 +81,6 @@
     }
   },
   "history": {
-    "title": "연혁",
-    "subtitle": "셀로맥스사이언스의 발자취",
     "2014": "(주)약사와건강 설립 (경기도 평택)",
     "2015": "건강기능식품판매업신고",
     "2016": "뉴트라슈티컬 랩(Nutraceutical Lab) 설립",
@@ -95,6 +93,8 @@
     "2023": "KGSP 의약품유통관리기준 적격업소 지정",
     "2024": "코스닥(KOSDAQ) 상장 / 상호변경 → (주)셀로맥스사이언스",
     "2025": "자회사 셀로맥스크리에이티브 설립",
+    "title": "연혁",
+    "subtitle": "셀로맥스사이언스의 발자취",
     "detail2014": "· (주)약사와건강 설립 (경기도 평택)",
     "detail2015": "· 건강기능식품판매업신고(제2015-0308048호)\n· 통신판매업신고(제2015-경기송탄-83호)",
     "detail2016": "· 제11회 경기도 약사회 학술제 참가\n· 뉴트라슈티컬 랩(Nutraceutical Lab) 설립",
@@ -141,7 +141,13 @@
     "noProducts": "등록된 제품이 없습니다.",
     "loadMore": "더 보기",
     "newBadge": "NEW",
-    "totalCount": "총 {count}개 제품"
+    "totalCount": "총 {count}개 제품",
+    "searchPlaceholder": "제품명 또는 성분으로 검색하세요",
+    "searchClear": "검색어 초기화",
+    "searchResult": "\"{keyword}\" 검색 결과 {count}개",
+    "noSearchResult": "검색 결과가 없습니다.",
+    "subcategorySelect": "하위카테고리 선택",
+    "allSubcategory": "전체"
   },
   "ir": {
     "title": "IR 자료실",

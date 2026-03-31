@@ -81,8 +81,6 @@
     }
   },
   "history": {
-    "title": "Lịch sử phát triển",
-    "subtitle": "Hành trình của Cellromax Science",
     "2014": "Thành lập Công ty Yaksa & Health (Pyeongtaek, Gyeonggi-do)",
     "2015": "Đăng ký kinh doanh bán thực phẩm chức năng sức khỏe",
     "2016": "Thành lập Phòng thí nghiệm Nutraceutical Lab",
@@ -95,6 +93,8 @@
     "2023": "Được chỉ định là cơ sở đạt chuẩn KGSP",
     "2024": "Niêm yết trên KOSDAQ / Đổi tên thành Cellromax Science Co., Ltd.",
     "2025": "Thành lập công ty con Cellromax Creative",
+    "title": "Lịch sử phát triển",
+    "subtitle": "Hành trình của Cellromax Science",
     "detail2014": "· Thành lập Công ty Yaksa & Health (Pyeongtaek, Gyeonggi-do)",
     "detail2015": "· Đăng ký kinh doanh thực phẩm chức năng (Số 2015-0308048)\n· Đăng ký kinh doanh bán hàng qua thư (Số 2015-Gyeonggi Songtan-83)",
     "detail2016": "· Tham gia Lễ hội Học thuật Hội Dược sĩ Gyeonggi-do lần thứ 11\n· Thành lập Phòng thí nghiệm Nutraceutical Lab",
@@ -141,7 +141,13 @@
     "noProducts": "Chưa có sản phẩm nào.",
     "loadMore": "Xem thêm",
     "newBadge": "NEW",
-    "totalCount": "Tổng cộng {count} sản phẩm"
+    "totalCount": "Tổng cộng {count} sản phẩm",
+    "searchPlaceholder": "Tim kiem theo ten san pham hoac thanh phan",
+    "searchClear": "Xoa tim kiem",
+    "searchResult": "{count} ket qua cho \"{keyword}\"",
+    "noSearchResult": "Khong tim thay ket qua.",
+    "subcategorySelect": "Chon danh muc phu",
+    "allSubcategory": "Tat ca"
   },
   "ir": {
     "title": "Thư viện IR",

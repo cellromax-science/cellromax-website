@@ -3,6 +3,7 @@ import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { createStaticClient } from "@/lib/supabase/server";
 import { ProductFilter } from "@/components/products/ProductFilter";
+import { ProductSearchBar } from "@/components/products/ProductSearchBar";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductPagination } from "@/components/products/ProductPagination";
 import type { ProductCategory, Product, ProductSubcategory } from "@/types/product";
@@ -104,11 +105,13 @@ async function ProductContent({
   subcategory,
   page,
   locale,
+  search,
 }: {
   category: ProductCategory;
   subcategory: string | null;
   page: number;
   locale: string;
+  search: string | null;
 }) {
   const t = await getTranslations("products");
   const supabase = createStaticClient();
@@ -116,11 +119,34 @@ async function ProductContent({
   const from = (page - 1) * PRODUCTS_PER_PAGE;
   const to = from + PRODUCTS_PER_PAGE - 1;
 
-  let subcategories: ProductSubcategory[];
+  const selectFields =
+    "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)";
+
+  let subcategories: ProductSubcategory[] = [];
   let products: unknown[] | null;
   let count: number | null;
 
-  if (!subcategory) {
+  // ---- 검색 모드: 카테고리 무관 전체 검색 ----
+  if (search && search.trim()) {
+    const keyword = search.trim();
+
+    const query = supabase
+      .from("products")
+      .select(selectFields, { count: "exact" })
+      .eq("is_active", true)
+      .or(
+        `name_ko.ilike.%${keyword}%,ingredients_ko.ilike.%${keyword}%,functionality_ko.ilike.%${keyword}%`
+      )
+      .order("price", { ascending: false })
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    const result = await query;
+    products = result.data;
+    count = result.count;
+  }
+  // ---- 필터 모드: 기존 카테고리/서브카테고리 필터링 ----
+  else if (!subcategory) {
     const [subcategoryResult, productsResult] = await Promise.all([
       supabase
         .from("product_subcategories")
@@ -130,10 +156,7 @@ async function ProductContent({
         .order("sort_order", { ascending: true }),
       supabase
         .from("products")
-        .select(
-          "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)",
-          { count: "exact" }
-        )
+        .select(selectFields, { count: "exact" })
         .eq("is_active", true)
         .eq("category", category)
         .order("price", { ascending: false })
@@ -156,10 +179,7 @@ async function ProductContent({
 
     let query = supabase
       .from("products")
-      .select(
-        "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)",
-        { count: "exact" }
-      )
+      .select(selectFields, { count: "exact" })
       .eq("is_active", true)
       .eq("category", category)
       .order("price", { ascending: false })
@@ -179,24 +199,38 @@ async function ProductContent({
 
   const totalCount = count ?? 0;
   const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
+  const isSearchMode = !!(search && search.trim());
 
   return (
     <>
-      <div className="flex flex-col items-center gap-4 mb-10">
-        <ProductFilter
-          activeCategory={category}
-          activeSubcategory={subcategory}
-          subcategories={subcategories}
-        />
-        <p className="text-sm text-gray-500">
-          {t("totalCount", { count: totalCount })}
-        </p>
+      {/* 검색 모드가 아닐 때만 카테고리 필터 표시 */}
+      {!isSearchMode && (
+        <div className="flex flex-col items-center gap-4 mb-10">
+          <ProductFilter
+            activeCategory={category}
+            activeSubcategory={subcategory}
+            subcategories={subcategories}
+          />
+        </div>
+      )}
+
+      {/* 검색 결과 안내 또는 총 개수 */}
+      <div className="text-center mb-6">
+        {isSearchMode ? (
+          <p className="text-sm text-gray-500">
+            {t("searchResult", { keyword: search!.trim(), count: totalCount })}
+          </p>
+        ) : (
+          <p className="text-sm text-gray-500">
+            {t("totalCount", { count: totalCount })}
+          </p>
+        )}
       </div>
 
       <ProductGrid
         products={(products as unknown as Product[]) ?? []}
         locale={locale}
-        emptyMessage={t("noProducts")}
+        emptyMessage={isSearchMode ? t("noSearchResult") : t("noProducts")}
       />
 
       {totalPages > 1 && (
@@ -221,6 +255,7 @@ interface ProductsPageProps {
     category?: string;
     subcategory?: string;
     page?: string;
+    search?: string;
   }>;
 }
 
@@ -239,16 +274,19 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
   const activeSubcategory = resolvedParams.subcategory ?? null;
   const currentPage = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
+  const searchQuery = resolvedParams.search ?? null;
 
   return (
     <section className="section bg-surface">
       <div className="container-site">
-        {/* ---- 즉시 렌더링: 헤더 ---- */}
+        {/* ---- 즉시 렌더링: 헤더 + 검색바 ---- */}
         <div className="text-center mb-12">
           <h1 className="text-heading text-primary">{t("title")}</h1>
           <div className="divider-gold mx-auto mt-4 mb-4" />
           <p className="text-lead text-gray-600">{t("subtitle")}</p>
         </div>
+
+        <ProductSearchBar initialSearch={searchQuery ?? ""} />
 
         {/* ---- 스트리밍: DB 의존 필터 + 그리드 ---- */}
         <Suspense fallback={<ProductGridSkeleton />}>
@@ -257,6 +295,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
             subcategory={activeSubcategory}
             page={currentPage}
             locale={paramLocale}
+            search={searchQuery}
           />
         </Suspense>
       </div>

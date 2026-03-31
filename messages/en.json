@@ -81,8 +81,6 @@
     }
   },
   "history": {
-    "title": "History",
-    "subtitle": "The Journey of Cellromax Science",
     "2014": "Established Yaksa & Health Co., Ltd. (Pyeongtaek, Gyeonggi-do)",
     "2015": "Health functional food sales business registration",
     "2016": "Established Nutraceutical Lab",
@@ -95,6 +93,8 @@
     "2023": "KGSP (Good Pharmaceutical Distribution Practice) certified facility designation",
     "2024": "Listed on KOSDAQ / Name changed to Cellromax Science Co., Ltd.",
     "2025": "Established subsidiary Cellromax Creative",
+    "title": "History",
+    "subtitle": "The Journey of Cellromax Science",
     "detail2014": "· Established Yaksa & Health Co., Ltd. (Pyeongtaek, Gyeonggi-do)",
     "detail2015": "· Health functional food sales registration (No. 2015-0308048)\n· Mail-order sales registration (No. 2015-Gyeonggi Songtan-83)",
     "detail2016": "· Participated in 11th Gyeonggi-do Pharmacist Association Academic Festival\n· Established Nutraceutical Lab",
@@ -141,7 +141,13 @@
     "noProducts": "No products available.",
     "loadMore": "Load More",
     "newBadge": "NEW",
-    "totalCount": "{count} products total"
+    "totalCount": "{count} products total",
+    "searchPlaceholder": "Search by product name or ingredients",
+    "searchClear": "Clear search",
+    "searchResult": "{count} results for \"{keyword}\"",
+    "noSearchResult": "No search results found.",
+    "subcategorySelect": "Select subcategory",
+    "allSubcategory": "All"
   },
   "ir": {
     "title": "IR Library",

@@ -13,7 +13,7 @@ interface NearbyPharmacy {
   phone: string | null;
   latitude: number;
   longitude: number;
-  distance_km: number;
+  distance_km?: number;
 }
 
 type MapStatus = "idle" | "locating" | "loading" | "success" | "error";
@@ -26,8 +26,12 @@ export function NearbyPharmacyModal() {
   const [status, setStatus] = useState<MapStatus>("idle");
   const [pharmacies, setPharmacies] = useState<NearbyPharmacy[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [isSearchMode, setIsSearchMode] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // ---- GPS 기반 주변 약국 검색 ----
   const handleLocate = useCallback(async () => {
     if (!navigator.geolocation) {
       setStatus("error");
@@ -35,6 +39,7 @@ export function NearbyPharmacyModal() {
       return;
     }
 
+    setIsSearchMode(false);
     setStatus("locating");
     setErrorMessage(null);
 
@@ -68,18 +73,59 @@ export function NearbyPharmacyModal() {
     );
   }, []);
 
-  // 모달 오픈 시 자동으로 위치 요청 시작
+  // ---- 텍스트 기반 약국 검색 ----
+  const handleTextSearch = useCallback(async () => {
+    const keyword = searchInput.trim();
+    if (!keyword) return;
+
+    setIsSearchMode(true);
+    setStatus("loading");
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch(
+        `/api/pharmacies/search?q=${encodeURIComponent(keyword)}`
+      );
+      if (!res.ok) throw new Error("API request failed");
+      const json = await res.json();
+      const results: NearbyPharmacy[] = json.pharmacies ?? [];
+
+      if (results.length === 0) {
+        setPharmacies([]);
+        setStatus("success");
+        return;
+      }
+
+      setPharmacies(results);
+      setStatus("success");
+    } catch {
+      setStatus("error");
+      setErrorMessage("약국 검색에 실패했습니다. 다시 시도해 주세요.");
+    }
+  }, [searchInput]);
+
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleTextSearch();
+      }
+    },
+    [handleTextSearch]
+  );
+
+  // 모달 오픈 시 자동으로 위치 요청 시작하지 않음 — 사용자가 선택
   const handleOpen = useCallback(() => {
     setOpen(true);
-    // idle 상태일 때만 자동 시작
-    if (status === "idle") {
-      // 약간의 딜레이를 줘서 모달이 먼저 렌더링되도록
-      setTimeout(() => handleLocate(), 300);
-    }
-  }, [status, handleLocate]);
+  }, []);
 
   const handleClose = useCallback(() => {
     setOpen(false);
+    // 모달 닫을 때 상태 초기화
+    setStatus("idle");
+    setPharmacies([]);
+    setSearchInput("");
+    setIsSearchMode(false);
+    setErrorMessage(null);
   }, []);
 
   // 약국 데이터 로드 완료 시 카카오맵 초기화
@@ -93,21 +139,32 @@ export function NearbyPharmacyModal() {
       .then((kakao) => {
         if (!isMounted || !container) return;
 
+        // 좌표가 있는 약국만 맵에 표시
+        const mappable = pharmacies.filter(
+          (p) => p.latitude != null && p.longitude != null
+        );
+        if (mappable.length === 0) return;
+
         const center = new kakao.maps.LatLng(
-          pharmacies[0].latitude,
-          pharmacies[0].longitude
+          mappable[0].latitude,
+          mappable[0].longitude
         );
         const map = new kakao.maps.Map(container, { center, level: 5 });
+        const bounds = new kakao.maps.LatLngBounds();
 
-        pharmacies.forEach((pharmacy) => {
+        mappable.forEach((pharmacy) => {
           const position = new kakao.maps.LatLng(pharmacy.latitude, pharmacy.longitude);
+          bounds.extend(position);
           const marker = new kakao.maps.Marker({ map, position });
+
+          const distanceHtml = pharmacy.distance_km != null
+            ? `<br/><span style="color:#c5a55a;font-size:11px;">${pharmacy.distance_km.toFixed(1)}km</span>`
+            : "";
 
           const infoContent = `
             <div style="padding:8px 12px;font-size:13px;line-height:1.5;font-family:Pretendard,sans-serif;min-width:160px;">
               <strong style="color:#0a1628;">${pharmacy.name}</strong><br/>
-              <span style="color:#6b7280;font-size:12px;">${pharmacy.address}</span><br/>
-              <span style="color:#c5a55a;font-size:11px;">${pharmacy.distance_km.toFixed(1)}km</span>
+              <span style="color:#6b7280;font-size:12px;">${pharmacy.address}</span>${distanceHtml}
             </div>
           `;
 
@@ -120,6 +177,11 @@ export function NearbyPharmacyModal() {
             infoWindow.open(map, marker);
           });
         });
+
+        // 마커가 2개 이상이면 bounds에 맞게 줌 조정
+        if (mappable.length > 1) {
+          map.setBounds(bounds);
+        }
       })
       .catch(() => {
         // 맵 로드 실패 — 리스트는 계속 표시
@@ -158,6 +220,70 @@ export function NearbyPharmacyModal() {
       {/* 모달 */}
       <Modal open={open} onClose={handleClose} title={t("pharmacyModalTitle")} size="lg">
         <div className="space-y-4">
+          {/* 검색 입력 영역 — 항상 표시 */}
+          <div className="space-y-3">
+            {/* 텍스트 검색 */}
+            <div className="flex gap-2">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="지역명 또는 약국명을 입력하세요"
+                className={[
+                  "flex-1 px-4 py-2.5 text-sm",
+                  "bg-white border border-gray-200 rounded-full",
+                  "text-gray-900 placeholder-gray-400",
+                  "outline-none focus:border-primary focus:ring-2 focus:ring-primary/20",
+                  "transition-all duration-200",
+                ].join(" ")}
+              />
+              <button
+                type="button"
+                onClick={handleTextSearch}
+                disabled={!searchInput.trim() || status === "loading"}
+                className={[
+                  "px-5 py-2.5 text-sm font-semibold squircle-md",
+                  "bg-primary text-white",
+                  "hover:bg-primary/90 transition-colors duration-150",
+                  "disabled:opacity-50 disabled:cursor-not-allowed",
+                ].join(" ")}
+              >
+                약국 검색
+              </button>
+            </div>
+
+            {/* GPS 버튼 */}
+            <button
+              type="button"
+              onClick={handleLocate}
+              disabled={status === "locating" || status === "loading"}
+              className={[
+                "w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium",
+                "squircle-md border border-gray-200 text-gray-700",
+                "hover:bg-gray-50 transition-colors duration-150",
+                "disabled:opacity-50 disabled:cursor-not-allowed",
+              ].join(" ")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 2v4m0 12v4M2 12h4m12 0h4" />
+              </svg>
+              내 주변 약국 찾기
+            </button>
+          </div>
+
           {/* locating / loading 상태 */}
           {(status === "locating" || status === "loading") && (
             <div className="space-y-4">
@@ -167,7 +293,7 @@ export function NearbyPharmacyModal() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                <span>{status === "locating" ? "위치 확인 중..." : "약국 불러오는 중..."}</span>
+                <span>{status === "locating" ? "위치 확인 중..." : "약국 검색 중..."}</span>
               </div>
             </div>
           )}
@@ -180,7 +306,7 @@ export function NearbyPharmacyModal() {
               </svg>
               <p className="text-sm text-gray-600">{errorMessage}</p>
               <button
-                onClick={handleLocate}
+                onClick={isSearchMode ? handleTextSearch : handleLocate}
                 type="button"
                 className="px-4 py-2 squircle-md border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-150"
               >
@@ -194,7 +320,9 @@ export function NearbyPharmacyModal() {
             <>
               {pharmacies.length === 0 ? (
                 <div className="flex items-center justify-center py-12 text-gray-400 text-sm">
-                  주변 3km 내 약국이 없습니다.
+                  {isSearchMode
+                    ? `"${searchInput.trim()}" 검색 결과가 없습니다.`
+                    : "주변 3km 내 약국이 없습니다."}
                 </div>
               ) : (
                 <>
@@ -202,8 +330,15 @@ export function NearbyPharmacyModal() {
                   <div
                     ref={mapContainerRef}
                     className="w-full h-[360px] squircle-lg overflow-hidden bg-gray-100 border border-gray-200"
-                    aria-label="주변 약국 지도"
+                    aria-label="약국 지도"
                   />
+
+                  {/* 검색 결과 개수 */}
+                  <p className="text-xs text-gray-500 text-center">
+                    {isSearchMode
+                      ? `"${searchInput.trim()}" 검색 결과 ${pharmacies.length}개`
+                      : `주변 약국 ${pharmacies.length}개`}
+                  </p>
 
                   {/* 약국 리스트 */}
                   <ul className="space-y-2 max-h-48 overflow-y-auto" role="list">
@@ -228,9 +363,11 @@ export function NearbyPharmacyModal() {
                             </a>
                           )}
                         </div>
-                        <span className="text-xs text-secondary font-semibold whitespace-nowrap">
-                          {pharmacy.distance_km.toFixed(1)}km
-                        </span>
+                        {pharmacy.distance_km != null && (
+                          <span className="text-xs text-secondary font-semibold whitespace-nowrap">
+                            {pharmacy.distance_km.toFixed(1)}km
+                          </span>
+                        )}
                       </li>
                     ))}
                   </ul>
