@@ -463,6 +463,7 @@ select {
   border-radius: var(--radius-squircle-sm);
   padding: 0.625rem 1rem;
   outline: none;
+  color: var(--color-gray-900);
   transition:
     border-color var(--duration-fast) var(--ease-default),
     box-shadow var(--duration-fast) var(--ease-default);
