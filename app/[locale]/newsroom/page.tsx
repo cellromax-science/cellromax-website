@@ -1,6 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/server";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { NewsroomTabs } from "@/components/newsroom/NewsroomTabs";
 import { PostCard } from "@/components/newsroom/PostCard";
@@ -19,9 +19,8 @@ import type { Metadata } from "next";
    - 탭 필터 + 카드 그리드 + 페이지네이션
    ========================================================================== */
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
+// ISR — 5분 캐싱
+export const revalidate = 300;
 
 const POSTS_PER_PAGE = 9;
 
@@ -82,11 +81,14 @@ export default async function NewsroomPage({ searchParams }: NewsroomPageProps) 
   );
 
   /* ---- Fetch posts from Supabase ---- */
-  const supabase = await createClient();
+  const supabase = createStaticClient();
 
-  let query = supabase
+  const query = supabase
     .from("posts")
-    .select("*", { count: "exact" })
+    .select(
+      "id, title_ko, title_en, title_zh, title_vi, content_ko, content_en, content_zh, content_vi, thumbnail_url, published_at, post_type, is_pinned, images, youtube_id",
+      { count: "exact" },
+    )
     .eq("post_type", activeTab)
     .eq("is_active", true)
     .order("is_pinned", { ascending: false })

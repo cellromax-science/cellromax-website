@@ -1,8 +1,9 @@
+import { cache } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
@@ -93,6 +94,21 @@ function ContentRenderer({ content }: { content: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// Cached Supabase Query — generateMetadata + page에서 공유 (1회만 실행)
+// ---------------------------------------------------------------------------
+
+const getIrFile = cache(async (id: string) => {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("ir_files")
+    .select("*")
+    .eq("id", id)
+    .eq("is_active", true)
+    .single();
+  return data as IrFile | null;
+});
+
+// ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
 
@@ -111,19 +127,12 @@ export async function generateMetadata({
     return { title: t("detail.notFound") };
   }
 
-  const supabase = await createClient();
-  const { data: irFile } = await supabase
-    .from("ir_files")
-    .select("*")
-    .eq("id", id)
-    .eq("is_active", true)
-    .single();
+  const file = await getIrFile(id);
 
-  if (!irFile) {
+  if (!file) {
     return { title: t("detail.notFound") };
   }
 
-  const file = irFile as IrFile;
   const description = file.content?.slice(0, 160) || undefined;
 
   return {
@@ -157,25 +166,15 @@ export default async function IrDetailPage({ params }: IrDetailPageProps) {
   const { id } = await params;
   const t = await getTranslations("ir");
 
-  /* ---- Validate UUID ---- */
   if (!UUID_REGEX.test(id)) {
     notFound();
   }
 
-  /* ---- Fetch IR file from Supabase ---- */
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("ir_files")
-    .select("*")
-    .eq("id", id)
-    .eq("is_active", true)
-    .single();
+  const file = await getIrFile(id);
 
-  if (error || !data) {
+  if (!file) {
     notFound();
   }
-
-  const file = data as IrFile;
   const badgeVariant = categoryBadgeMap[file.category];
   const categoryLabel = categoryLabelMap[file.category];
   const fileSize = formatFileSize(file.file_size);

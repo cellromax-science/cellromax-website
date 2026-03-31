@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/server";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { IrFileCard } from "@/components/ir/IrFileCard";
 import { IrCategoryFilter } from "@/components/ir/IrCategoryFilter";
@@ -19,6 +19,9 @@ import type { Metadata } from "next";
    - 전자공시 (annual_report) — DART iframe 임베드
    - 윤리강령 (ethics)        — 텍스트 + PDF 다운로드
    ========================================================================== */
+
+// ISR — 5분 캐싱 (관리자 수정 시에만 갱신)
+export const revalidate = 300;
 
 const FILES_PER_PAGE = 9;
 
@@ -80,11 +83,14 @@ export default async function IrPage({ searchParams }: IrPageProps) {
   let totalPages = 0;
 
   if (isListTab) {
-    const supabase = await createClient();
+    const supabase = createStaticClient();
 
     const query = supabase
       .from("ir_files")
-      .select("*", { count: "exact" })
+      .select(
+        "id, title, category, thumbnail_url, published_at, file_size, file_type",
+        { count: "exact" },
+      )
       .eq("is_active", true)
       .eq("category", "announcement")
       .order("published_at", { ascending: false });

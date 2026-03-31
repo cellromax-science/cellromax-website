@@ -1,8 +1,9 @@
+import { cache } from "react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
@@ -72,6 +73,25 @@ function ContentRenderer({ content }: { content: string }) {
 // Metadata
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Cached Supabase Query — generateMetadata + page에서 공유 (1회만 실행)
+// ---------------------------------------------------------------------------
+
+const getPost = cache(async (id: string) => {
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .eq("is_active", true)
+    .single();
+  return data as Post | null;
+});
+
+// ---------------------------------------------------------------------------
+// Metadata
+// ---------------------------------------------------------------------------
+
 interface PageParams {
   params: Promise<{ id: string }>;
 }
@@ -87,21 +107,15 @@ export async function generateMetadata({
     return { title: t("detail.notFound") };
   }
 
-  const supabase = await createClient();
-  const { data: post } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("id", id)
-    .eq("is_active", true)
-    .single();
+  const post = await getPost(id);
 
   if (!post) {
     return { title: t("detail.notFound") };
   }
 
-  const title = getLocalizedField(post as Post, "title", locale);
+  const title = getLocalizedField(post, "title", locale);
   const description =
-    getLocalizedField(post as Post, "content", locale).slice(0, 160) ||
+    getLocalizedField(post, "content", locale).slice(0, 160) ||
     undefined;
 
   return {
@@ -138,25 +152,15 @@ export default async function NewsroomDetailPage({
   const t = await getTranslations("newsroom");
   const locale = await getLocale();
 
-  /* ---- Validate UUID ---- */
   if (!UUID_REGEX.test(id)) {
     notFound();
   }
 
-  /* ---- Fetch post from Supabase ---- */
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("id", id)
-    .eq("is_active", true)
-    .single();
+  const post = await getPost(id);
 
-  if (error || !data) {
+  if (!post) {
     notFound();
   }
-
-  const post = data as Post;
   const title = getLocalizedField(post, "title", locale);
   const content = getLocalizedField(post, "content", locale);
   const thumbnailSrc =
