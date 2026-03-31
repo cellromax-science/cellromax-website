@@ -31,6 +31,7 @@ declare global {
           content: string;
           removable?: boolean;
         }) => kakao.maps.InfoWindow;
+        LatLngBounds: new () => kakao.maps.LatLngBounds;
         event: {
           addListener: (
             target: kakao.maps.Marker | kakao.maps.Map,
@@ -59,6 +60,10 @@ declare namespace kakao.maps {
   interface Map {
     setCenter(latlng: LatLng): void;
     setLevel(level: number): void;
+    setBounds(bounds: LatLngBounds): void;
+  }
+  interface LatLngBounds {
+    extend(latlng: LatLng): void;
   }
   interface Marker {
     setMap(map: Map | null): void;
