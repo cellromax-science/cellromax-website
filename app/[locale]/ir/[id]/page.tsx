@@ -37,13 +37,15 @@ const categoryBadgeMap: Record<IrCategory, BadgeVariant> = {
   announcement: "info",
   annual_report: "gold",
   presentation: "primary",
+  ethics: "primary",
   other: "outline",
 };
 
 const categoryLabelMap: Record<IrCategory, string> = {
-  announcement: "공시자료",
-  annual_report: "연간보고서",
+  announcement: "IR자료실",
+  annual_report: "전자공시",
   presentation: "IR 발표자료",
+  ethics: "윤리강령",
   other: "기타",
 };
 

@@ -1,4 +1,4 @@
-export type IrCategory = 'announcement' | 'annual_report' | 'presentation' | 'other';
+export type IrCategory = 'announcement' | 'annual_report' | 'presentation' | 'ethics' | 'other';
 
 export interface IrFile {
   id: string;

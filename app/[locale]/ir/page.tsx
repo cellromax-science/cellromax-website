@@ -2,34 +2,25 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
-import { DartBanner } from "@/components/ir/DartBanner";
 import { IrFileCard } from "@/components/ir/IrFileCard";
 import { IrCategoryFilter } from "@/components/ir/IrCategoryFilter";
 import { IrPagination } from "@/components/ir/IrPagination";
-import type { IrFile, IrCategory } from "@/types/ir";
+import { DartDisclosure } from "@/components/ir/DartDisclosure";
+import { EthicsCode } from "@/components/ir/EthicsCode";
+import type { IrFile } from "@/types/ir";
 import type { Metadata } from "next";
 
 /* ==========================================================================
    IR Page — /[locale]/ir
 
    IR 자료실 페이지 (서버 컴포넌트).
-   - URL searchParams로 카테고리/연도 필터 및 페이지네이션 상태 관리
-   - Supabase에서 활성 IR 파일 목록 패칭 (9개씩)
-   - DART 배너 + 카테고리 필터 + 파일 그리드 + 페이지네이션
+   탭 구조:
+   - IR자료실 (announcement)  — 카드 목록
+   - 전자공시 (annual_report) — DART iframe 임베드
+   - 윤리강령 (ethics)        — 텍스트 + PDF 다운로드
    ========================================================================== */
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 const FILES_PER_PAGE = 9;
-
-const VALID_CATEGORIES: IrCategory[] = [
-  "announcement",
-  "annual_report",
-  "presentation",
-  "other",
-];
 
 // ---------------------------------------------------------------------------
 // Metadata
@@ -64,7 +55,6 @@ export async function generateMetadata(): Promise<Metadata> {
 interface IrPageProps {
   searchParams: Promise<{
     category?: string;
-    year?: string;
     page?: string;
   }>;
 }
@@ -73,50 +63,41 @@ export default async function IrPage({ searchParams }: IrPageProps) {
   const resolvedParams = await searchParams;
   const t = await getTranslations("ir");
 
-  /* ---- Parse search params ---- */
-  const rawCategory = resolvedParams.category;
-  const activeCategory: IrCategory | null =
-    rawCategory && VALID_CATEGORIES.includes(rawCategory as IrCategory)
-      ? (rawCategory as IrCategory)
-      : null;
-
-  const rawYear = resolvedParams.year;
-  const activeYear =
-    rawYear && /^\d{4}$/.test(rawYear) ? rawYear : null;
+  const activeTab = resolvedParams.category || "announcement";
 
   const currentPage = Math.max(
     1,
     parseInt(resolvedParams.page ?? "1", 10) || 1,
   );
 
-  /* ---- Fetch IR files from Supabase ---- */
-  const supabase = await createClient();
+  const isListTab = activeTab === "announcement";
+  const isDartTab = activeTab === "annual_report";
+  const isEthicsTab = activeTab === "ethics";
 
-  let query = supabase
-    .from("ir_files")
-    .select("*", { count: "exact" })
-    .eq("is_active", true)
-    .order("published_at", { ascending: false });
+  /* ---- 카드 목록 탭일 때만 Supabase 패칭 ---- */
+  let irFiles: IrFile[] = [];
+  let totalCount = 0;
+  let totalPages = 0;
 
-  if (activeCategory) {
-    query = query.eq("category", activeCategory);
+  if (isListTab) {
+    const supabase = await createClient();
+
+    const query = supabase
+      .from("ir_files")
+      .select("*", { count: "exact" })
+      .eq("is_active", true)
+      .eq("category", "announcement")
+      .order("published_at", { ascending: false });
+
+    const from = (currentPage - 1) * FILES_PER_PAGE;
+    const to = from + FILES_PER_PAGE - 1;
+
+    const { data: files, count } = await query.range(from, to);
+
+    totalCount = count ?? 0;
+    totalPages = Math.ceil(totalCount / FILES_PER_PAGE);
+    irFiles = (files as IrFile[]) ?? [];
   }
-
-  if (activeYear) {
-    query = query
-      .gte("published_at", `${activeYear}-01-01`)
-      .lte("published_at", `${activeYear}-12-31`);
-  }
-
-  /* Pagination range */
-  const from = (currentPage - 1) * FILES_PER_PAGE;
-  const to = from + FILES_PER_PAGE - 1;
-
-  const { data: files, count } = await query.range(from, to);
-
-  const totalCount = count ?? 0;
-  const totalPages = Math.ceil(totalCount / FILES_PER_PAGE);
-  const irFiles = (files as IrFile[]) ?? [];
 
   return (
     <section className="section bg-surface">
@@ -130,62 +111,66 @@ export default async function IrPage({ searchParams }: IrPageProps) {
           </div>
         </AnimatedSection>
 
-        {/* ---- DART Banner ---- */}
-        <AnimatedSection direction="up" className="mb-10">
-          <DartBanner />
-        </AnimatedSection>
-
-        {/* ---- IR Files Section ---- */}
+        {/* ---- Tab Navigation ---- */}
         <AnimatedSection direction="up">
-          {/* Category Filter + Year Select */}
           <div className="flex flex-col items-center gap-4 mb-8">
             <IrCategoryFilter
-              activeCategory={activeCategory}
-              activeYear={activeYear}
+              activeCategory={activeTab === "announcement" ? null : activeTab}
             />
-            <p className="text-sm text-gray-500">
-              {t("files.title")} {totalCount}
-            </p>
+            {isListTab && (
+              <p className="text-sm text-gray-500">
+                {t("files.title")} {totalCount}
+              </p>
+            )}
           </div>
 
-          {/* File Grid or Empty State */}
-          {irFiles.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {irFiles.map((file) => (
-                <IrFileCard key={file.id} file={file} />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <svg
-                className="size-16 text-gray-300 mb-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-                <path d="M14 2v6h6" />
-                <path d="M12 18v-6" />
-                <path d="m9 15 3-3 3 3" />
-              </svg>
-              <p className="text-gray-400">{t("files.noFiles")}</p>
-            </div>
+          {/* 1) IR자료실 — 카드 목록 */}
+          {isListTab && (
+            <>
+              {irFiles.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {irFiles.map((file) => (
+                    <IrFileCard key={file.id} file={file} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <svg
+                    className="size-16 text-gray-300 mb-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+                    <path d="M14 2v6h6" />
+                    <path d="M12 18v-6" />
+                    <path d="m9 15 3-3 3 3" />
+                  </svg>
+                  <p className="text-gray-400">{t("files.noFiles")}</p>
+                </div>
+              )}
+
+              {totalPages > 1 && (
+                <div className="mt-12">
+                  <IrPagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                  />
+                </div>
+              )}
+            </>
           )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-12">
-              <IrPagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-              />
-            </div>
-          )}
+          {/* 2) 전자공시 — DART iframe */}
+          {isDartTab && <DartDisclosure />}
+
+          {/* 3) 윤리강령 — 텍스트 + 파일 다운로드 */}
+          {isEthicsTab && <EthicsCode />}
         </AnimatedSection>
       </div>
     </section>

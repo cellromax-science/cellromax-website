@@ -38,9 +38,10 @@ interface IrFileFormProps {
 // ---------------------------------------------------------------------------
 
 const IR_CATEGORY_OPTIONS = [
-  { value: "announcement", label: "결산공고" },
-  { value: "annual_report", label: "사업보고서" },
+  { value: "announcement", label: "IR자료실" },
+  { value: "annual_report", label: "전자공시" },
   { value: "presentation", label: "IR발표자료" },
+  { value: "ethics", label: "윤리강령" },
   { value: "other", label: "기타" },
 ];
 

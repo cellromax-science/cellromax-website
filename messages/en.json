@@ -145,11 +145,10 @@
   },
   "ir": {
     "title": "IR Library",
-    "subtitle": "Investor Information",
+    "subtitle": "Cellromax Science provides accurate and transparent management information.",
     "dart": {
       "title": "DART Disclosure",
-      "description": "Check official disclosures on the DART electronic disclosure system.",
-      "link": "Go to DART"
+      "description": "Check official disclosures on the DART electronic disclosure system."
     },
     "files": {
       "title": "IR Materials",
@@ -159,11 +158,24 @@
       "noFiles": "No files available."
     },
     "categories": {
-      "all": "All",
-      "announcement": "Disclosure",
-      "annual_report": "Annual Report",
-      "presentation": "IR Presentation",
+      "announcement": "IR Library",
+      "annual_report": "Disclosure",
+      "ethics": "Code of Ethics",
       "other": "Other"
+    },
+    "disclosure": {
+      "title": "Disclosure",
+      "description": "Results from the Financial Supervisory Service DART system (https://dart.fss.or.kr).",
+      "openInNewTab": "Open DART",
+      "source": "Data sourced from the Financial Supervisory Service electronic disclosure system (https://dart.fss.or.kr)."
+    },
+    "ethics": {
+      "heading": "Cellromax Science Code of Ethics",
+      "body1": "We hereby publish the Cellromax Science Code of Ethics.",
+      "body2": "Cellromax Science has established a Code of Ethics to provide ethical standards for sound decision-making, and regularly conducts employee training.",
+      "body3": "For more details, please refer to the attached Code of Ethics file.",
+      "body4": "We will continue to comply with all applicable laws and regulations and perform our duties fairly.",
+      "download": "Download"
     },
     "detail": {
       "title": "IR Material Detail",
