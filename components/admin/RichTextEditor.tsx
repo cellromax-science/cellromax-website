@@ -295,12 +295,8 @@ export function RichTextEditor({
     content: value || "",
     editorProps: {
       attributes: {
-        class: [
-          "prose prose-sm max-w-none px-4 py-3 min-h-[200px] focus:outline-none",
-          "prose-headings:text-primary prose-p:text-gray-700 prose-p:leading-relaxed",
-          "prose-a:text-blue-600 prose-a:underline",
-          "prose-blockquote:border-l-4 prose-blockquote:border-primary/30 prose-blockquote:pl-4 prose-blockquote:italic",
-        ].join(" "),
+        class: "prose prose-sm max-w-none px-4 py-3 min-h-[200px] focus:outline-none text-gray-900",
+        style: "color: #111827;",
       },
     },
     onUpdate: ({ editor: e }) => {
