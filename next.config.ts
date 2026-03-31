@@ -47,15 +47,17 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
   },
-  async rewrites() {
+  async redirects() {
     return [
       {
         source: '/ttsyrup',
         destination: 'https://ttsyrup-seven.vercel.app/',
+        permanent: false,
       },
       {
         source: '/ttsyrup/:path*',
         destination: 'https://ttsyrup-seven.vercel.app/:path*',
+        permanent: false,
       },
     ];
   },
