@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { createStaticClient } from "@/lib/supabase/server";
@@ -13,14 +14,11 @@ import type { Metadata } from "next";
 /* ==========================================================================
    IR Page — /[locale]/ir
 
-   IR 자료실 페이지 (서버 컴포넌트).
-   탭 구조:
-   - IR자료실 (announcement)  — 카드 목록
-   - 전자공시 (annual_report) — DART iframe 임베드
-   - 윤리강령 (ethics)        — 텍스트 + PDF 다운로드
+   Suspense 기반 Streaming:
+   - 헤더 + 탭 네비게이션은 즉시 렌더링
+   - DB 의존 카드 목록은 Suspense로 스트리밍
    ========================================================================== */
 
-// ISR — 5분 캐싱 (관리자 수정 시에만 갱신)
 export const revalidate = 300;
 
 const FILES_PER_PAGE = 9;
@@ -52,6 +50,107 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // ---------------------------------------------------------------------------
+// Card Grid Skeleton (Suspense fallback)
+// ---------------------------------------------------------------------------
+
+function CardGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className="squircle-xl overflow-hidden bg-surface-raised border border-gray-100"
+        >
+          <div className="aspect-card bg-gray-100 animate-pulse" />
+          <div className="p-5 space-y-3">
+            <div className="h-5 w-20 bg-gray-200 rounded-full animate-pulse" />
+            <div className="h-5 w-full bg-gray-100 rounded animate-pulse" />
+            <div className="h-4 w-2/3 bg-gray-50 rounded animate-pulse" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Async Card List (Suspense boundary 내부)
+// ---------------------------------------------------------------------------
+
+async function IrFileList({
+  page,
+}: {
+  page: number;
+}) {
+  const t = await getTranslations("ir");
+  const supabase = createStaticClient();
+
+  const query = supabase
+    .from("ir_files")
+    .select(
+      "id, title, category, thumbnail_url, published_at, file_size, file_type",
+      { count: "exact" },
+    )
+    .eq("is_active", true)
+    .eq("category", "announcement")
+    .order("published_at", { ascending: false });
+
+  const from = (page - 1) * FILES_PER_PAGE;
+  const to = from + FILES_PER_PAGE - 1;
+
+  const { data: files, count } = await query.range(from, to);
+
+  const totalCount = count ?? 0;
+  const totalPages = Math.ceil(totalCount / FILES_PER_PAGE);
+  const irFiles = (files as IrFile[]) ?? [];
+
+  return (
+    <>
+      <p className="text-sm text-gray-500 text-center mb-8">
+        {t("files.title")} {totalCount}
+      </p>
+
+      {irFiles.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {irFiles.map((file) => (
+            <IrFileCard key={file.id} file={file} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <svg
+            className="size-16 text-gray-300 mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+            <path d="M14 2v6h6" />
+            <path d="M12 18v-6" />
+            <path d="m9 15 3-3 3 3" />
+          </svg>
+          <p className="text-gray-400">{t("files.noFiles")}</p>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="mt-12">
+          <IrPagination
+            currentPage={page}
+            totalPages={totalPages}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page Component
 // ---------------------------------------------------------------------------
 
@@ -77,38 +176,10 @@ export default async function IrPage({ searchParams }: IrPageProps) {
   const isDartTab = activeTab === "annual_report";
   const isEthicsTab = activeTab === "ethics";
 
-  /* ---- 카드 목록 탭일 때만 Supabase 패칭 ---- */
-  let irFiles: IrFile[] = [];
-  let totalCount = 0;
-  let totalPages = 0;
-
-  if (isListTab) {
-    const supabase = createStaticClient();
-
-    const query = supabase
-      .from("ir_files")
-      .select(
-        "id, title, category, thumbnail_url, published_at, file_size, file_type",
-        { count: "exact" },
-      )
-      .eq("is_active", true)
-      .eq("category", "announcement")
-      .order("published_at", { ascending: false });
-
-    const from = (currentPage - 1) * FILES_PER_PAGE;
-    const to = from + FILES_PER_PAGE - 1;
-
-    const { data: files, count } = await query.range(from, to);
-
-    totalCount = count ?? 0;
-    totalPages = Math.ceil(totalCount / FILES_PER_PAGE);
-    irFiles = (files as IrFile[]) ?? [];
-  }
-
   return (
     <section className="section bg-surface">
       <div className="container-site">
-        {/* ---- Page Header ---- */}
+        {/* ---- 즉시 렌더링: 헤더 + 탭 ---- */}
         <AnimatedSection>
           <div className="text-center mb-12">
             <h1 className="text-heading text-primary">{t("title")}</h1>
@@ -117,65 +188,23 @@ export default async function IrPage({ searchParams }: IrPageProps) {
           </div>
         </AnimatedSection>
 
-        {/* ---- Tab Navigation ---- */}
         <AnimatedSection direction="up">
           <div className="flex flex-col items-center gap-4 mb-8">
             <IrCategoryFilter
               activeCategory={activeTab === "announcement" ? null : activeTab}
             />
-            {isListTab && (
-              <p className="text-sm text-gray-500">
-                {t("files.title")} {totalCount}
-              </p>
-            )}
           </div>
 
-          {/* 1) IR자료실 — 카드 목록 */}
-          {isListTab && (
-            <>
-              {irFiles.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {irFiles.map((file) => (
-                    <IrFileCard key={file.id} file={file} />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <svg
-                    className="size-16 text-gray-300 mb-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={1}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-                    <path d="M14 2v6h6" />
-                    <path d="M12 18v-6" />
-                    <path d="m9 15 3-3 3 3" />
-                  </svg>
-                  <p className="text-gray-400">{t("files.noFiles")}</p>
-                </div>
-              )}
+          {/* ---- 스트리밍: DB 의존 컨텐츠 ---- */}
 
-              {totalPages > 1 && (
-                <div className="mt-12">
-                  <IrPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                  />
-                </div>
-              )}
-            </>
+          {isListTab && (
+            <Suspense fallback={<CardGridSkeleton />}>
+              <IrFileList page={currentPage} />
+            </Suspense>
           )}
 
-          {/* 2) 전자공시 — DART iframe */}
           {isDartTab && <DartDisclosure />}
 
-          {/* 3) 윤리강령 — 텍스트 + 파일 다운로드 */}
           {isEthicsTab && <EthicsCode />}
         </AnimatedSection>
       </div>
