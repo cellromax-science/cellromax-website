@@ -51,12 +51,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/ttsyrup',
-        destination: 'https://ttsyrup.vercel.app/',
+        destination: 'https://ttsyrup-seven.vercel.app/',
         permanent: false,
       },
       {
         source: '/ttsyrup/:path*',
-        destination: 'https://ttsyrup.vercel.app/:path*',
+        destination: 'https://ttsyrup-seven.vercel.app/:path*',
         permanent: false,
       },
     ];
