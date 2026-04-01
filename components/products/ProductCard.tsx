@@ -84,7 +84,7 @@ export function ProductCard({ product, locale, priority = false }: ProductCardPr
         {/* ----------------------------------------------------------------
             Thumbnail Area
             ---------------------------------------------------------------- */}
-        <div className="relative aspect-card overflow-hidden bg-surface">
+        <div className="relative aspect-square overflow-hidden bg-white">
           {product.thumbnail_url ? (
             <Image
               src={thumbnailUrl(product.thumbnail_url)}
@@ -93,7 +93,7 @@ export function ProductCard({ product, locale, priority = false }: ProductCardPr
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               quality={75}
               priority={priority}
-              className="object-cover transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[1.08]"
+              className="object-contain transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[1.08]"
             />
           ) : (
             /* Placeholder — 이미지가 없는 경우 그라디언트 + 아이콘 */

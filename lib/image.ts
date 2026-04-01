@@ -49,7 +49,7 @@ export function optimizeImageUrl(
 
 /** 카드 썸네일용 (작은 크기) */
 export function thumbnailUrl(url: string | null | undefined): string {
-  return optimizeImageUrl(url, { width: 480, quality: 75, resize: "cover" });
+  return optimizeImageUrl(url, { width: 480, quality: 75, resize: "contain" });
 }
 
 /** 갤러리/리스트용 (중간 크기) */
