@@ -7,6 +7,7 @@ import localFont from "next/font/local";
 import { routing } from "@/lib/i18n/routing";
 import { LayoutShell } from "@/components/layout/LayoutShell";
 import { ToastContainer } from "@/components/ui/Toast";
+import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 
 const inter = Inter({
@@ -127,6 +128,7 @@ export default async function LocaleLayout({
           <LayoutShell>{children}</LayoutShell>
           <ToastContainer />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
