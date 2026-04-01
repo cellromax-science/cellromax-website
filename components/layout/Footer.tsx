@@ -187,7 +187,7 @@ export function Footer() {
                 <IconMapPin className="shrink-0 mt-0.5" />
                 <span>
                   {t("footer.address")}:{" "}
-                  경기 용인시 기흥구 구성로 357 용인테크노밸리 D동 710호
+                  경기도 용인시 기흥구 구성로 357 D동 7층 용인테크노밸리 (청덕동)
                 </span>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-400">
