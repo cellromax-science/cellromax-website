@@ -11,7 +11,7 @@ interface ProductImageGalleryProps {
 }
 
 export function ProductImageGallery({ images, productName, thumbnailUrl }: ProductImageGalleryProps) {
-  const allImages: string[] = images.length > 0
+  const allImages: string[] = images && images.length > 0
     ? images
     : thumbnailUrl
       ? [thumbnailUrl]
