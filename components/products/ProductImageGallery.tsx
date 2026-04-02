@@ -11,11 +11,18 @@ interface ProductImageGalleryProps {
 }
 
 export function ProductImageGallery({ images, productName, thumbnailUrl }: ProductImageGalleryProps) {
-  const allImages: string[] = images && images.length > 0
-    ? images
-    : thumbnailUrl
-      ? [thumbnailUrl]
-      : [];
+  const allImages: string[] = (() => {
+    const result: string[] = [];
+    // 썸네일을 항상 첫 번째로 배치
+    if (thumbnailUrl) result.push(thumbnailUrl);
+    // 갤러리 이미지 중 썸네일과 중복되지 않는 것만 추가
+    if (images && images.length > 0) {
+      for (const img of images) {
+        if (img !== thumbnailUrl) result.push(img);
+      }
+    }
+    return result;
+  })();
 
   const [activeIndex, setActiveIndex] = useState(0);
 
