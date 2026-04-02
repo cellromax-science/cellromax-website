@@ -46,7 +46,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           quality={75}
-          className="object-contain"
+          className="object-contain scale-[0.8]"
           priority={activeIndex === 0}
         />
       </div>
