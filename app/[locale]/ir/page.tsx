@@ -165,7 +165,7 @@ export default async function IrPage({ searchParams }: IrPageProps) {
   const resolvedParams = await searchParams;
   const t = await getTranslations("ir");
 
-  const activeTab = resolvedParams.category || "announcement";
+  const activeTab = resolvedParams.category || "annual_report";
 
   const currentPage = Math.max(
     1,
@@ -191,7 +191,7 @@ export default async function IrPage({ searchParams }: IrPageProps) {
         <AnimatedSection direction="up">
           <div className="flex flex-col items-center gap-4 mb-8">
             <IrCategoryFilter
-              activeCategory={activeTab === "announcement" ? null : activeTab}
+              activeCategory={activeTab === "annual_report" ? null : activeTab}
             />
           </div>
 

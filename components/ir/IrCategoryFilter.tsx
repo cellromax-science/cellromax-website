@@ -15,8 +15,8 @@ import type { IrCategory } from "@/types/ir";
    ========================================================================== */
 
 const IR_TABS: (IrCategory | "ethics")[] = [
-  "announcement",    // IR자료실
   "annual_report",   // 전자공시
+  "announcement",    // IR자료실
   "ethics",          // 윤리강령
 ];
 
@@ -39,12 +39,12 @@ export function IrCategoryFilter({
   const pathname = usePathname();
   const t = useTranslations("ir");
 
-  const currentTab = activeCategory || "announcement";
+  const currentTab = activeCategory || "annual_report";
 
   const handleTabChange = useCallback(
     (tab: string) => {
       const params = new URLSearchParams();
-      if (tab !== "announcement") params.set("category", tab);
+      if (tab !== "annual_report") params.set("category", tab);
       const queryString = params.toString();
       const url = queryString ? `${pathname}?${queryString}` : pathname;
       router.push(url);
