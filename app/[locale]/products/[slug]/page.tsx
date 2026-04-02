@@ -12,6 +12,8 @@ import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
 import { detailUrl } from "@/lib/image";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { productJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import type { Product, ProductCategory } from "@/types/product";
 import type { Metadata } from "next";
 
@@ -234,8 +236,22 @@ export default async function ProductDetailPage({ params }: PageProps) {
   /* ---- Build tabs ---- */
   const tabs = buildTabs(product, locale, t);
 
+  /* ---- JSON-LD 구조화 데이터 ---- */
+  const description = getLocalizedField(product, "ingredients", locale);
+
   return (
     <section className="section bg-surface">
+      <JsonLd data={productJsonLd(product, locale, productName, description)} />
+      <JsonLd
+        data={breadcrumbJsonLd(
+          [
+            { name: tNav("home"), url: "/" },
+            { name: tNav("products"), url: "/products" },
+            { name: productName },
+          ],
+          locale,
+        )}
+      />
       <div className="container-site">
         {/* ---- Breadcrumb (above-fold: 즉시 표시) ---- */}
         <nav

@@ -53,6 +53,16 @@ function getLocalizedSubcategoryName(
 }
 
 // ---------------------------------------------------------------------------
+// 외부 링크 제품 — 클릭 시 외부 URL로 이동
+// ---------------------------------------------------------------------------
+
+const EXTERNAL_LINK_SLUGS: Record<string, string> = {
+  "gf-038": "https://cellromax.kr/ttsyrup",  // 어린이튼튼시럽
+  "gf-032": "https://cellromax.kr/ttsyrup",  // 어린이튼튼시럽 스틱
+  "gf-023": "https://cellromax.kr/ttsyrup",  // 어린이튼튼 짜요
+};
+
+// ---------------------------------------------------------------------------
 // ProductCard Component
 // ---------------------------------------------------------------------------
 
@@ -61,6 +71,7 @@ function getLocalizedSubcategoryName(
  *
  * 제품 목록 그리드에서 개별 제품을 카드 형태로 표시한다.
  * 전체 카드가 링크로 감싸져 클릭 시 제품 상세 페이지로 이동한다.
+ * EXTERNAL_LINK_SLUGS에 등록된 제품은 외부 URL로 이동한다.
  *
  * @example
  * ```tsx
@@ -74,12 +85,32 @@ export function ProductCard({ product, locale, priority = false }: ProductCardPr
       ? getLocalizedSubcategoryName(product.product_subcategories, locale)
       : null;
 
+  const externalUrl = EXTERNAL_LINK_SLUGS[product.slug];
+
+  const Wrapper = externalUrl
+    ? (props: { children: React.ReactNode }) => (
+        <a
+          href={externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group block focus-ring"
+          aria-label={productName}
+        >
+          {props.children}
+        </a>
+      )
+    : (props: { children: React.ReactNode }) => (
+        <Link
+          href={`/products/${product.slug}`}
+          className="group block focus-ring"
+          aria-label={productName}
+        >
+          {props.children}
+        </Link>
+      );
+
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="group block focus-ring"
-      aria-label={productName}
-    >
+    <Wrapper>
       <article className="squircle-xl overflow-hidden bg-surface-raised border border-gray-100 shadow-sm transition-all duration-300 ease-[var(--ease-default)] group-hover:shadow-lg group-hover:-translate-y-1.5 group-hover:border-secondary/20">
         {/* ----------------------------------------------------------------
             Thumbnail Area
@@ -154,7 +185,7 @@ export function ProductCard({ product, locale, priority = false }: ProductCardPr
           )}
         </div>
       </article>
-    </Link>
+    </Wrapper>
   );
 }
 

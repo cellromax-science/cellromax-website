@@ -7,6 +7,8 @@ import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { newsArticleJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import { detailUrl, galleryUrl } from "@/lib/image";
 import type { Post, Attachment } from "@/types/newsroom";
 import type { Metadata } from "next";
@@ -165,6 +167,7 @@ export default async function NewsroomDetailPage({
 }: NewsroomDetailPageProps) {
   const { id } = await params;
   const t = await getTranslations("newsroom");
+  const tNav = await getTranslations("nav");
   const locale = await getLocale();
 
   if (!UUID_REGEX.test(id)) {
@@ -181,10 +184,24 @@ export default async function NewsroomDetailPage({
   const thumbnailSrc =
     post.thumbnail_url || (post.images.length > 0 ? post.images[0] : null);
 
+  /* ---- JSON-LD 구조화 데이터 ---- */
+  const articleDescription = content ? content.replace(/<[^>]*>/g, "").slice(0, 160) : undefined;
+  const articleJsonLd = newsArticleJsonLd(post, locale, title, articleDescription);
+  const crumbJsonLd = breadcrumbJsonLd(
+    [
+      { name: tNav("home"), url: "/" },
+      { name: tNav("newsroom"), url: "/newsroom" },
+      { name: title },
+    ],
+    locale,
+  );
+
   /* ---- Video Layout ---- */
   if (post.post_type === "video") {
     return (
       <section className="section bg-surface">
+        <JsonLd data={articleJsonLd} />
+        <JsonLd data={crumbJsonLd} />
         <div className="container-site max-w-4xl">
           {/* Back to list */}
           <AnimatedSection>
@@ -256,6 +273,8 @@ export default async function NewsroomDetailPage({
   /* ---- Notice / News Layout ---- */
   return (
     <section className="section bg-surface">
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={crumbJsonLd} />
       <div className="container-site max-w-4xl">
         {/* Back to list */}
         <AnimatedSection>
