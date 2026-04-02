@@ -32,7 +32,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
   return (
     <div className="space-y-3">
       {/* Main Image Viewer */}
-      <div className="relative aspect-square w-full squircle-xl overflow-hidden bg-gray-50 border border-gray-100">
+      <div className="relative aspect-square w-full squircle-xl overflow-hidden bg-white border border-gray-100">
         <Image
           src={galleryUrl(allImages[activeIndex])}
           alt={`${productName} - ${activeIndex + 1}`}
@@ -54,7 +54,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
               role="tab"
               aria-selected={idx === activeIndex}
               onClick={() => setActiveIndex(idx)}
-              className={`relative flex-shrink-0 size-16 squircle-md overflow-hidden border-2 transition-all duration-150 ${
+              className={`relative flex-shrink-0 size-16 squircle-md overflow-hidden border-2 bg-white transition-all duration-150 ${
                 idx === activeIndex
                   ? "border-secondary shadow-sm"
                   : "border-transparent hover:border-gray-300"
@@ -66,7 +66,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
                 fill
                 sizes="64px"
                 quality={60}
-                className="object-cover"
+                className="object-contain"
               />
             </button>
           ))}

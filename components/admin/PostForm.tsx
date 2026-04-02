@@ -571,7 +571,7 @@ export function PostForm({ mode, initialData }: PostFormProps) {
             label="썸네일 이미지"
             value={thumbnailUrl}
             onChange={setThumbnailUrl}
-            bucket="posts"
+            bucket="newsroom"
             maxSize={2 * 1024 * 1024}
           />
         </div>
@@ -607,7 +607,7 @@ export function PostForm({ mode, initialData }: PostFormProps) {
                     label={`갤러리 ${index + 1}`}
                     value={url}
                     onChange={(newUrl) => updateGalleryImage(index, newUrl)}
-                    bucket="posts"
+                    bucket="newsroom"
                     maxSize={2 * 1024 * 1024}
                   />
                   {/* 슬롯 삭제 버튼 */}

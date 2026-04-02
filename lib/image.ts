@@ -64,5 +64,5 @@ export function detailUrl(url: string | null | undefined): string {
 
 /** 갤러리 썸네일 스트립용 (아주 작은 크기) */
 export function thumbStripUrl(url: string | null | undefined): string {
-  return optimizeImageUrl(url, { width: 128, quality: 60, resize: "cover" });
+  return optimizeImageUrl(url, { width: 128, height: 128, quality: 60, resize: "contain" });
 }
