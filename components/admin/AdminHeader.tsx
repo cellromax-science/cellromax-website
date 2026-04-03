@@ -1,7 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-import { logoutAction } from "@/app/[locale]/admin/actions";
+import { useState } from "react";
 import type { AdminProfile, AdminRole } from "@/types/admin";
 
 /* ==========================================================================
@@ -41,13 +40,22 @@ const ROLE_LABELS: Record<AdminRole, string> = {
 // ---------------------------------------------------------------------------
 
 export function AdminHeader({ profile, onMenuToggle }: AdminHeaderProps) {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
-  /** 로그아웃 처리 — 서버 액션 호출 */
-  function handleLogout() {
-    startTransition(async () => {
-      await logoutAction();
-    });
+  /** 로그아웃 처리 — API 라우트로 POST 후 리다이렉트 */
+  async function handleLogout() {
+    setIsPending(true);
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        redirect: "follow",
+      });
+      // API가 로그인 페이지로 리다이렉트하므로 브라우저에서 이동
+      window.location.href = res.url || "/ko/admin/login";
+    } catch {
+      // 네트워크 에러 시에도 강제 이동
+      window.location.href = "/ko/admin/login";
+    }
   }
 
   return (
