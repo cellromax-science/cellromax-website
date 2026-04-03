@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { Button } from "@/components/ui/Button";
@@ -125,10 +126,18 @@ export function Header() {
               ---------------------------------------------------------------- */}
           <Link
             href="/"
-            className="relative font-display font-bold text-xl tracking-widest text-primary transition-colors duration-300 hover:text-secondary hover:opacity-100"
+            className="relative block transition-opacity duration-300 hover:opacity-80"
             aria-label={t("home")}
           >
-            CELLROMAX SCIENCE
+            <Image
+              src="/logo-cellromax-white.png"
+              alt="Cellromax Science"
+              width={189}
+              height={31}
+              priority
+              className="h-7 w-auto"
+              style={{ filter: "brightness(0)" }}
+            />
           </Link>
 
           {/* ----------------------------------------------------------------
