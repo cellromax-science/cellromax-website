@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
@@ -11,7 +10,7 @@ import { ProductDetailTabs } from "@/components/products/ProductDetailTabs";
 import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
-import { detailUrl } from "@/lib/image";
+
 import { JsonLd } from "@/components/seo/JsonLd";
 import { productJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import type { Product, ProductCategory } from "@/types/product";
@@ -334,14 +333,13 @@ export default async function ProductDetailPage({ params }: PageProps) {
             if (detailHtml) return <HtmlDetailFrame html={detailHtml} />;
             if (product.detail_image_url) return (
               <div className="w-full squircle-xl overflow-hidden">
-                <Image
-                  src={detailUrl(product.detail_image_url)}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={product.detail_image_url}
                   alt={`${productName} - detail`}
-                  width={1200}
-                  height={1600}
-                  quality={75}
                   className="w-full h-auto"
-                  sizes="(max-width: 1280px) 100vw, 1200px"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             );
@@ -351,14 +349,13 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {/* Nutrition Image (영양정보) */}
           {product.nutrition_image_url && (
             <div className="w-full squircle-xl overflow-hidden">
-              <Image
-                src={detailUrl(product.nutrition_image_url)}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={product.nutrition_image_url}
                 alt={`${productName} - nutrition`}
-                width={1200}
-                height={1600}
-                quality={75}
                 className="w-full h-auto"
-                sizes="(max-width: 1280px) 100vw, 1200px"
+                loading="eager"
+                decoding="async"
               />
             </div>
           )}
