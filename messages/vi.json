@@ -304,6 +304,24 @@
       "terms": "Điều khoản sử dụng"
     }
   },
+  "pharmacy": {
+    "title": "Tìm nhà thuốc",
+    "subtitle": "Tìm nhà thuốc gần nhất nơi bạn có thể mua sản phẩm Cellromax.",
+    "searchPlaceholder": "Tên khu vực hoặc nhà thuốc",
+    "searchButton": "Tìm kiếm",
+    "gpsButton": "Tìm nhà thuốc gần đây",
+    "locating": "Đang xác định vị trí...",
+    "searching": "Đang tìm kiếm nhà thuốc...",
+    "noResultsSearch": "Không tìm thấy kết quả cho \"{keyword}\".",
+    "noResultsNearby": "Không có nhà thuốc trong bán kính 3km.",
+    "resultCountSearch": "{count} kết quả cho \"{keyword}\"",
+    "resultCountNearby": "{count} nhà thuốc gần đây",
+    "geoNotSupported": "Trình duyệt này không hỗ trợ định vị.",
+    "geoDenied": "Quyền truy cập vị trí bị từ chối. Vui lòng cho phép trong cài đặt trình duyệt.",
+    "geoFailed": "Không thể lấy vị trí. Vui lòng thử lại.",
+    "fetchFailed": "Không thể tải nhà thuốc gần đây.",
+    "searchFailed": "Tìm kiếm nhà thuốc thất bại. Vui lòng thử lại."
+  },
   "common": {
     "loading": "Đang tải...",
     "error": "Đã xảy ra lỗi.",

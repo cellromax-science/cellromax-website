@@ -304,6 +304,24 @@
       "terms": "使用条款"
     }
   },
+  "pharmacy": {
+    "title": "查找药店",
+    "subtitle": "查找可以购买赛络迈产品的最近药店。",
+    "searchPlaceholder": "地区名或药店名",
+    "searchButton": "搜索",
+    "gpsButton": "查找附近药店",
+    "locating": "正在获取位置...",
+    "searching": "正在搜索药店...",
+    "noResultsSearch": "未找到 \"{keyword}\" 的结果。",
+    "noResultsNearby": "3公里内没有药店。",
+    "resultCountSearch": "\"{keyword}\" 搜索结果 {count} 个",
+    "resultCountNearby": "附近药店 {count} 个",
+    "geoNotSupported": "此浏览器不支持位置信息。",
+    "geoDenied": "位置权限被拒绝。请在浏览器设置中允许。",
+    "geoFailed": "无法获取位置。请重试。",
+    "fetchFailed": "加载附近药店失败。",
+    "searchFailed": "药店搜索失败。请重试。"
+  },
   "common": {
     "loading": "加载中...",
     "error": "发生错误。",

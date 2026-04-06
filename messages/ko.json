@@ -316,6 +316,24 @@
       "terms": "이용약관"
     }
   },
+  "pharmacy": {
+    "title": "회원약국찾기",
+    "subtitle": "셀로맥스 제품을 구매할 수 있는 가까운 약국을 찾아보세요.",
+    "searchPlaceholder": "지역명 또는 약국명",
+    "searchButton": "검색",
+    "gpsButton": "내 주변 약국 찾기",
+    "locating": "위치 확인 중...",
+    "searching": "약국 검색 중...",
+    "noResultsSearch": "\"{keyword}\" 검색 결과가 없습니다.",
+    "noResultsNearby": "주변 3km 내 약국이 없습니다.",
+    "resultCountSearch": "\"{keyword}\" 검색 결과 {count}개",
+    "resultCountNearby": "주변 약국 {count}개",
+    "geoNotSupported": "이 브라우저는 위치 정보를 지원하지 않습니다.",
+    "geoDenied": "위치 권한이 거부되었습니다. 브라우저 설정에서 허용해 주세요.",
+    "geoFailed": "위치를 가져올 수 없습니다. 다시 시도해 주세요.",
+    "fetchFailed": "주변 약국을 불러오는 데 실패했습니다.",
+    "searchFailed": "약국 검색에 실패했습니다. 다시 시도해 주세요."
+  },
   "common": {
     "loading": "로딩 중...",
     "error": "오류가 발생했습니다.",

@@ -316,6 +316,24 @@
       "terms": "Terms of Use"
     }
   },
+  "pharmacy": {
+    "title": "Find a Pharmacy",
+    "subtitle": "Find the nearest pharmacy where you can purchase Cellromax products.",
+    "searchPlaceholder": "Region or pharmacy name",
+    "searchButton": "Search",
+    "gpsButton": "Find nearby pharmacies",
+    "locating": "Getting your location...",
+    "searching": "Searching pharmacies...",
+    "noResultsSearch": "No results found for \"{keyword}\".",
+    "noResultsNearby": "No pharmacies found within 3km.",
+    "resultCountSearch": "{count} results for \"{keyword}\"",
+    "resultCountNearby": "{count} nearby pharmacies",
+    "geoNotSupported": "Geolocation is not supported by this browser.",
+    "geoDenied": "Location permission denied. Please allow it in your browser settings.",
+    "geoFailed": "Unable to get your location. Please try again.",
+    "fetchFailed": "Failed to load nearby pharmacies.",
+    "searchFailed": "Pharmacy search failed. Please try again."
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred.",
