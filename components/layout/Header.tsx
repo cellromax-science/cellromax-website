@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { Button } from "@/components/ui/Button";
+import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 
@@ -168,7 +169,18 @@ export function Header() {
           <div className="flex items-center gap-3">
             <LanguageSwitcher variant="light" />
 
-            {/* CTA 버튼 — 데스크탑에서만 표시 */}
+            {/* 회원약국찾기 — 데스크탑에서만 표시 */}
+            <div className="hidden lg:block">
+              <NearbyPharmacyModal
+                trigger={
+                  <Button variant="primary" size="sm">
+                    {t("pharmacy")}
+                  </Button>
+                }
+              />
+            </div>
+
+            {/* 문의하기 — 데스크탑에서만 표시 */}
             <Link href="/contact" className="hidden lg:block">
               <Button variant="secondary" size="sm">
                 {t("contact")}

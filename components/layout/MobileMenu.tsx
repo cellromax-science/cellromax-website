@@ -6,6 +6,7 @@ import { Link, usePathname } from "@/lib/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { NAV_ITEMS } from "@/components/layout/Header";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 
 /* ==========================================================================
    MobileMenu Component — Cellromax Science
@@ -202,12 +203,24 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
           <LanguageSwitcher variant="dark" />
 
-          {/* CTA 버튼 */}
-          <Link href="/contact" className="block" onClick={handleLinkClick}>
-            <Button variant="secondary" size="lg" className="w-full">
-              {t("contact")}
-            </Button>
-          </Link>
+          {/* CTA 버튼: 회원약국찾기 | 문의하기 */}
+          <div className="grid grid-cols-2 gap-3">
+            <NearbyPharmacyModal
+              trigger={
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center w-full py-3 px-6 squircle-lg font-semibold text-base tracking-wide bg-white text-primary hover:bg-white/90 transition-all duration-150"
+                >
+                  {t("pharmacy")}
+                </button>
+              }
+            />
+            <Link href="/contact" className="block" onClick={handleLinkClick}>
+              <Button variant="secondary" size="lg" className="w-full">
+                {t("contact")}
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

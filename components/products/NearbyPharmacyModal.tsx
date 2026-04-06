@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, cloneElement } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -18,7 +18,12 @@ interface NearbyPharmacy {
 
 type MapStatus = "idle" | "locating" | "loading" | "success" | "error";
 
-export function NearbyPharmacyModal() {
+interface NearbyPharmacyModalProps {
+  /** 외부 트리거 버튼. 제공 시 내장 버튼 대신 사용. onClick은 자동 바인딩됨. */
+  trigger?: React.ReactElement<{ onClick?: () => void }>;
+}
+
+export function NearbyPharmacyModal({ trigger }: NearbyPharmacyModalProps = {}) {
   const t = useTranslations("products.detail");
   const tCommon = useTranslations("common");
 
@@ -195,27 +200,31 @@ export function NearbyPharmacyModal() {
   return (
     <>
       {/* 트리거 버튼 */}
-      <button
-        type="button"
-        onClick={handleOpen}
-        className="inline-flex items-center gap-2 px-5 py-2.5 squircle-md bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors duration-150"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="size-4"
-          aria-hidden="true"
+      {trigger ? (
+        cloneElement(trigger, { onClick: handleOpen })
+      ) : (
+        <button
+          type="button"
+          onClick={handleOpen}
+          className="inline-flex items-center gap-2 px-5 py-2.5 squircle-md bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors duration-150"
         >
-          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-        {t("findPharmacy")}
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-4"
+            aria-hidden="true"
+          >
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          {t("findPharmacy")}
+        </button>
+      )}
 
       {/* 모달 */}
       <Modal open={open} onClose={handleClose} title={t("pharmacyModalTitle")} size="lg">
