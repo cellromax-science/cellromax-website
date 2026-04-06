@@ -130,13 +130,12 @@ export function Header() {
             aria-label={t("home")}
           >
             <Image
-              src="/logo-cellromax-white.png"
+              src="/cellromax-logo-color.png"
               alt="Cellromax Science"
               width={189}
               height={31}
               priority
-              className="h-7 w-auto"
-              style={{ filter: "brightness(0)" }}
+              className="h-9 w-auto"
             />
           </Link>
 
