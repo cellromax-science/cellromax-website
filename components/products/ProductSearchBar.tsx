@@ -27,6 +27,7 @@ export function ProductSearchBar({ initialSearch = "" }: ProductSearchBarProps) 
   const [inputValue, setInputValue] = useState(initialSearch);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const composingRef = useRef(false);
 
   // URL 변경 시 input 동기화
   useEffect(() => {
@@ -45,7 +46,8 @@ export function ProductSearchBar({ initialSearch = "" }: ProductSearchBarProps) 
         params.set("category", "health_functional");
       }
       const queryString = params.toString();
-      router.push(`${pathname}?${queryString}`);
+      // replace로 히스토리 쌓임 방지 + 부드러운 업데이트
+      router.replace(`${pathname}?${queryString}`);
     },
     [router, pathname],
   );
@@ -57,8 +59,10 @@ export function ProductSearchBar({ initialSearch = "" }: ProductSearchBarProps) 
 
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
+        // 한글 조합 중이면 네비게이션 지연 (IME 조합 끊김 방지)
+        if (composingRef.current) return;
         navigateWithSearch(value);
-      }, 300);
+      }, 500);
     },
     [navigateWithSearch],
   );
@@ -71,7 +75,7 @@ export function ProductSearchBar({ initialSearch = "" }: ProductSearchBarProps) 
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && !e.nativeEvent.isComposing) {
         if (debounceRef.current) clearTimeout(debounceRef.current);
         navigateWithSearch(inputValue);
       }
@@ -117,6 +121,16 @@ export function ProductSearchBar({ initialSearch = "" }: ProductSearchBarProps) 
           value={inputValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onCompositionStart={() => { composingRef.current = true; }}
+          onCompositionEnd={(e) => {
+            composingRef.current = false;
+            // 조합 완료 후 디바운스 검색 트리거
+            const value = (e.target as HTMLInputElement).value;
+            if (debounceRef.current) clearTimeout(debounceRef.current);
+            debounceRef.current = setTimeout(() => {
+              navigateWithSearch(value);
+            }, 500);
+          }}
           placeholder={t("searchPlaceholder")}
           className={[
             "w-full pl-12 pr-10 py-3 text-sm",
