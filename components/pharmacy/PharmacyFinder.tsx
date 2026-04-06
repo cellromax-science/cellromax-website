@@ -81,6 +81,12 @@ export function PharmacyFinder() {
     );
   }, [t]);
 
+  // ---- 페이지 진입 시 자동 위치 요청 ----
+  useEffect(() => {
+    handleLocate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ---- 텍스트 기반 약국 검색 ----
   const handleTextSearch = useCallback(async () => {
     const keyword = searchInput.trim();
@@ -209,33 +215,19 @@ export function PharmacyFinder() {
         >
           {t("searchButton")}
         </button>
-        {/* GPS 버튼 */}
+        {/* 가까운약국 버튼 */}
         <button
           type="button"
           onClick={handleLocate}
           disabled={status === "locating" || status === "loading"}
-          title={t("gpsButton")}
           className={[
-            "shrink-0 flex items-center justify-center size-11",
-            "squircle-md border border-gray-200 text-gray-600",
+            "shrink-0 px-5 py-3 text-sm font-semibold whitespace-nowrap squircle-md",
+            "border border-gray-200 text-gray-700",
             "hover:bg-gray-50 transition-colors duration-150",
             "disabled:opacity-50 disabled:cursor-not-allowed",
           ].join(" ")}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="size-5"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 2v4m0 12v4M2 12h4m12 0h4" />
-          </svg>
+          {t("nearbyButton")}
         </button>
       </div>
 

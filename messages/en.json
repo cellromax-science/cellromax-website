@@ -322,6 +322,7 @@
     "searchPlaceholder": "Region or pharmacy name",
     "searchButton": "Search",
     "gpsButton": "Find nearby pharmacies",
+    "nearbyButton": "Nearby",
     "locating": "Getting your location...",
     "searching": "Searching pharmacies...",
     "noResultsSearch": "No results found for \"{keyword}\".",

@@ -322,6 +322,7 @@
     "searchPlaceholder": "지역명 또는 약국명",
     "searchButton": "검색",
     "gpsButton": "내 주변 약국 찾기",
+    "nearbyButton": "가까운약국",
     "locating": "위치 확인 중...",
     "searching": "약국 검색 중...",
     "noResultsSearch": "\"{keyword}\" 검색 결과가 없습니다.",

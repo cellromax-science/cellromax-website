@@ -310,6 +310,7 @@
     "searchPlaceholder": "Tên khu vực hoặc nhà thuốc",
     "searchButton": "Tìm kiếm",
     "gpsButton": "Tìm nhà thuốc gần đây",
+    "nearbyButton": "Gần đây",
     "locating": "Đang xác định vị trí...",
     "searching": "Đang tìm kiếm nhà thuốc...",
     "noResultsSearch": "Không tìm thấy kết quả cho \"{keyword}\".",
