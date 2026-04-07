@@ -316,6 +316,39 @@
       "terms": "이용약관"
     }
   },
+  "innerbeauty": {
+    "title": "이너뷰티",
+    "subtitle": "아름다움을 안에서부터, 프리미엄 이너뷰티 솔루션",
+    "sections": {
+      "basic": "기본 정보",
+      "ingredients": "원재료명",
+      "nutrition": "영양정보",
+      "caution": "주의사항",
+      "manufacturing": "제조 및 유통 정보"
+    },
+    "labels": {
+      "productName": "제품명",
+      "foodType": "식품유형",
+      "reportNumber": "품목제조보고번호",
+      "containsTomato": "토마토 함유",
+      "packaging": "내포장재질",
+      "manufacturer": "제조원",
+      "distributor": "유통전문판매원"
+    },
+    "nutrition": {
+      "tablet": {
+        "title": "영양정보 [정제]",
+        "serving": "1병(1.5 g)당"
+      },
+      "liquid": {
+        "title": "영양정보 [액상]",
+        "serving": "1병(25 mL)당"
+      }
+    },
+    "caution": {
+      "erythritol": "당알코올(에리스리톨 3%) 함유 제품으로 과량 섭취 시 설사를 일으킬 수 있습니다."
+    }
+  },
   "pharmacy": {
     "title": "회원약국찾기",
     "subtitle": "셀로맥스 제품을 구매할 수 있는 가까운 약국을 찾아보세요.",

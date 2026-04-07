@@ -304,6 +304,39 @@
       "terms": "使用条款"
     }
   },
+  "innerbeauty": {
+    "title": "内在美",
+    "subtitle": "由内而外的美丽，高端内在美解决方案",
+    "sections": {
+      "basic": "基本信息",
+      "ingredients": "原料名称",
+      "nutrition": "营养信息",
+      "caution": "注意事项",
+      "manufacturing": "制造及流通信息"
+    },
+    "labels": {
+      "productName": "产品名称",
+      "foodType": "食品类型",
+      "reportNumber": "产品制造报告编号",
+      "containsTomato": "含有番茄",
+      "packaging": "内包装材质",
+      "manufacturer": "制造商",
+      "distributor": "经销商"
+    },
+    "nutrition": {
+      "tablet": {
+        "title": "营养信息 [片剂]",
+        "serving": "每瓶(1.5 g)"
+      },
+      "liquid": {
+        "title": "营养信息 [液体]",
+        "serving": "每瓶(25 mL)"
+      }
+    },
+    "caution": {
+      "erythritol": "本产品含有糖醇（赤藓糖醇3%），过量食用可能导致腹泻。"
+    }
+  },
   "pharmacy": {
     "title": "查找药店",
     "subtitle": "查找可以购买赛络迈产品的最近药店。",

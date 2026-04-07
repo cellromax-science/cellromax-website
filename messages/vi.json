@@ -304,6 +304,39 @@
       "terms": "Điều khoản sử dụng"
     }
   },
+  "innerbeauty": {
+    "title": "Sắc đẹp từ bên trong",
+    "subtitle": "Vẻ đẹp từ bên trong, giải pháp làm đẹp cao cấp",
+    "sections": {
+      "basic": "Thông tin cơ bản",
+      "ingredients": "Thành phần nguyên liệu",
+      "nutrition": "Thông tin dinh dưỡng",
+      "caution": "Lưu ý",
+      "manufacturing": "Thông tin sản xuất & phân phối"
+    },
+    "labels": {
+      "productName": "Tên sản phẩm",
+      "foodType": "Loại thực phẩm",
+      "reportNumber": "Số báo cáo sản xuất",
+      "containsTomato": "Chứa cà chua",
+      "packaging": "Chất liệu bao bì bên trong",
+      "manufacturer": "Nhà sản xuất",
+      "distributor": "Nhà phân phối"
+    },
+    "nutrition": {
+      "tablet": {
+        "title": "Thông tin dinh dưỡng [Viên nén]",
+        "serving": "Mỗi chai (1.5 g)"
+      },
+      "liquid": {
+        "title": "Thông tin dinh dưỡng [Dạng lỏng]",
+        "serving": "Mỗi chai (25 mL)"
+      }
+    },
+    "caution": {
+      "erythritol": "Sản phẩm chứa đường alcohol (erythritol 3%). Sử dụng quá nhiều có thể gây tiêu chảy."
+    }
+  },
   "pharmacy": {
     "title": "Tìm nhà thuốc",
     "subtitle": "Tìm nhà thuốc gần nhất nơi bạn có thể mua sản phẩm Cellromax.",

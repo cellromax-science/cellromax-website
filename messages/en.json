@@ -316,6 +316,39 @@
       "terms": "Terms of Use"
     }
   },
+  "innerbeauty": {
+    "title": "Inner Beauty",
+    "subtitle": "Beauty from within, premium inner beauty solution",
+    "sections": {
+      "basic": "Basic Information",
+      "ingredients": "Ingredients",
+      "nutrition": "Nutrition Facts",
+      "caution": "Caution",
+      "manufacturing": "Manufacturing & Distribution"
+    },
+    "labels": {
+      "productName": "Product Name",
+      "foodType": "Food Type",
+      "reportNumber": "Product Report Number",
+      "containsTomato": "Contains Tomato",
+      "packaging": "Inner Packaging Material",
+      "manufacturer": "Manufacturer",
+      "distributor": "Distributor"
+    },
+    "nutrition": {
+      "tablet": {
+        "title": "Nutrition Facts [Tablet]",
+        "serving": "Per 1 bottle (1.5 g)"
+      },
+      "liquid": {
+        "title": "Nutrition Facts [Liquid]",
+        "serving": "Per 1 bottle (25 mL)"
+      }
+    },
+    "caution": {
+      "erythritol": "This product contains sugar alcohol (erythritol 3%). Excessive consumption may cause diarrhea."
+    }
+  },
   "pharmacy": {
     "title": "Find a Pharmacy",
     "subtitle": "Find the nearest pharmacy where you can purchase Cellromax products.",
