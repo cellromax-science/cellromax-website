@@ -118,10 +118,12 @@ export function NearbyPharmacyModal({ trigger }: NearbyPharmacyModalProps = {}) 
     [handleTextSearch]
   );
 
-  // 모달 오픈 시 자동으로 위치 요청 시작하지 않음 — 사용자가 선택
+  // 모달 오픈 시 자동으로 위치 요청 시작
   const handleOpen = useCallback(() => {
     setOpen(true);
-  }, []);
+    // 약간의 지연 후 위치 요청 (모달 렌더링 완료 대기)
+    setTimeout(() => handleLocate(), 100);
+  }, [handleLocate]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -261,33 +263,19 @@ export function NearbyPharmacyModal({ trigger }: NearbyPharmacyModalProps = {}) 
               >
                 검색
               </button>
-              {/* GPS 버튼 — 아이콘만 */}
+              {/* 가까운약국 버튼 */}
               <button
                 type="button"
                 onClick={handleLocate}
                 disabled={status === "locating" || status === "loading"}
-                title="내 주변 약국 찾기"
                 className={[
-                  "shrink-0 flex items-center justify-center size-9",
-                  "squircle-md border border-gray-200 text-gray-600",
+                  "shrink-0 px-3 py-2 text-sm font-semibold whitespace-nowrap squircle-md",
+                  "border border-gray-200 text-gray-700",
                   "hover:bg-gray-50 transition-colors duration-150",
                   "disabled:opacity-50 disabled:cursor-not-allowed",
                 ].join(" ")}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="size-4"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 2v4m0 12v4M2 12h4m12 0h4" />
-                </svg>
+                가까운약국
               </button>
             </div>
           </div>
