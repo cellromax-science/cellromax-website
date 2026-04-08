@@ -351,26 +351,53 @@
       margin-top: 40px;
     }
     .empathy-card {
-      background: var(--bg-warm);
+      background: var(--bg-white);
       border-radius: var(--radius-lg);
-      padding: 32px 20px;
+      padding: 32px 20px 28px;
       text-align: center;
-      transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out);
-      border: 1px solid rgba(0,0,0,0.04);
+      transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+      border: 1px solid rgba(232,120,154,0.08);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .empathy-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pink-300), var(--pink-400));
+      border-radius: 3px 3px 0 0;
+      transition: width 0.4s var(--ease-out);
     }
     .empathy-card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(232,120,154,0.15);
+    }
+    .empathy-card:hover::after {
+      width: 60%;
     }
     .empathy-card .emoji {
-      font-size: 2.2rem;
-      margin-bottom: 14px;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: linear-gradient(145deg, var(--pink-50) 0%, var(--pink-100) 100%);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(232,120,154,0.1), inset 0 1px 2px rgba(255,255,255,0.8);
     }
     .empathy-card .text {
       font-size: 0.95rem;
       font-weight: 500;
       color: var(--text-primary);
-      line-height: 1.5;
+      line-height: 1.6;
       word-break: keep-all;
     }
 
@@ -984,34 +1011,64 @@
     .product-info-compact {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 32px;
+      gap: 14px;
+      margin-top: 36px;
     }
     .product-info-chip {
-      background: var(--bg-warm);
-      border-radius: var(--radius-sm);
-      padding: 14px 12px;
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      padding: 28px 16px 24px;
       text-align: center;
-      border: 1px solid rgba(0,0,0,0.04);
-      transition: transform 0.3s var(--ease-spring);
+      border: 1px solid rgba(232,120,154,0.08);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    .product-info-chip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pink-300), var(--pink-400));
+      border-radius: 0 0 3px 3px;
+      opacity: 0;
+      transition: opacity 0.3s var(--ease-out), width 0.3s var(--ease-out);
     }
     .product-info-chip:hover {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(232,120,154,0.15);
+    }
+    .product-info-chip:hover::before {
+      opacity: 1;
+      width: 100%;
     }
     .product-info-chip .chip-icon {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      background: linear-gradient(145deg, var(--pink-50) 0%, var(--pink-100) 100%);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(232,120,154,0.12), inset 0 1px 2px rgba(255,255,255,0.8);
     }
     .product-info-chip .chip-label {
       font-size: 0.68rem;
-      font-weight: 500;
-      color: var(--text-tertiary);
-      margin-bottom: 2px;
-      letter-spacing: 0.02em;
+      font-weight: 600;
+      color: var(--pink-400);
+      margin-bottom: 4px;
+      letter-spacing: 0.06em;
     }
     .product-info-chip .chip-value {
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.9rem;
+      font-weight: 700;
       color: var(--text-primary);
       word-break: keep-all;
       line-height: 1.4;
@@ -1337,7 +1394,7 @@
       .usp-cards { grid-template-columns: 1fr 1fr; gap: 10px; }
       .usp-card { padding: 24px 16px; }
       .product-info-compact { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .product-info-chip { padding: 18px 14px; }
+      .product-info-chip { padding: 20px 14px 16px; }
       .final-cta { padding: 88px 0; }
       .final-cta .section-title { font-size: 1.75rem; }
       .hero-info { gap: 16px; }
@@ -1687,7 +1744,7 @@
           <div class="chip-value">24개월 이상</div>
         </div>
         <div class="product-info-chip">
-          <div class="chip-icon">&#x2615;</div>
+          <div class="chip-icon"><svg viewBox="0 0 64 64" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="27" stroke="var(--pink-500)" stroke-width="4" stroke-linecap="round" stroke-dasharray="140 30"/><path d="M44 10 l6-4 M44 10 l4 6" stroke="var(--pink-500)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><text x="32" y="38" text-anchor="middle" font-family="'Pretendard Variable', sans-serif" font-size="22" font-weight="800" fill="var(--pink-600)">1</text></svg></div>
           <div class="chip-label">섭취 방법</div>
           <div class="chip-value">1일 1회, 1포씩</div>
         </div>
