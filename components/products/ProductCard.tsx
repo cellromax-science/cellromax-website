@@ -60,6 +60,7 @@ const EXTERNAL_LINK_SLUGS: Record<string, string> = {
   "gf-038": "https://cellromax.kr/ttsyrup",  // 어린이튼튼시럽
   "gf-032": "https://cellromax.kr/ttsyrup",  // 어린이튼튼시럽 스틱
   "gf-023": "https://cellromax.kr/ttsyrup",  // 어린이튼튼 짜요
+  "gf-003": "https://cellromax.kr/jsc",      // 장생천 키즈시럽
 };
 
 // ---------------------------------------------------------------------------
