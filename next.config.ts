@@ -68,6 +68,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/jsc',
+        destination: '/jsc/index.html',
+      },
+    ];
+  },
   async redirects() {
     return [
       {
