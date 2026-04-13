@@ -30,6 +30,15 @@ const VALID_CATEGORIES: ProductCategory[] = [
   "other",
 ];
 
+const CATEGORY_LABELS_KO: Record<ProductCategory, string> = {
+  health_functional: "건강기능식품",
+  general_food: "일반식품",
+  cosmetic: "화장품",
+  medicine: "일반의약품",
+  nutra_pet: "뉴트라펫",
+  other: "기타",
+};
+
 // ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
@@ -129,14 +138,36 @@ async function ProductContent({
   // ---- 검색 모드: 카테고리 무관 전체 검색 ----
   if (search && search.trim()) {
     const keyword = search.trim();
+    const matchedCategories = VALID_CATEGORIES.filter((category) =>
+      CATEGORY_LABELS_KO[category].includes(keyword)
+    );
+    const { data: matchedSubcategories } = await supabase
+      .from("product_subcategories")
+      .select("id")
+      .eq("is_active", true)
+      .ilike("name_ko", `%${keyword}%`);
+
+    const orFilters = [
+      `name_ko.ilike.%${keyword}%`,
+      `ingredients_ko.ilike.%${keyword}%`,
+      `functionality_ko.ilike.%${keyword}%`,
+    ];
+
+    if (matchedCategories.length > 0) {
+      orFilters.push(`category.in.(${matchedCategories.join(",")})`);
+    }
+
+    const matchedSubcategoryIds =
+      matchedSubcategories?.map((subcategory) => subcategory.id) ?? [];
+    if (matchedSubcategoryIds.length > 0) {
+      orFilters.push(`subcategory_id.in.(${matchedSubcategoryIds.join(",")})`);
+    }
 
     const query = supabase
       .from("products")
       .select(selectFields, { count: "exact" })
       .eq("is_active", true)
-      .or(
-        `name_ko.ilike.%${keyword}%,ingredients_ko.ilike.%${keyword}%,functionality_ko.ilike.%${keyword}%`
-      )
+      .or(orFilters.join(","))
       .order("price", { ascending: false })
       .order("created_at", { ascending: false })
       .range(from, to);
