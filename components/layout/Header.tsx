@@ -121,13 +121,13 @@ export function Header() {
             : "bg-transparent",
         ].join(" ")}
       >
-        <nav className="container-site flex items-center justify-between py-4">
+        <nav className="container-site grid grid-cols-[auto_1fr_auto] items-center py-4 lg:grid-cols-[1fr_auto_1fr]">
           {/* ----------------------------------------------------------------
               로고
               ---------------------------------------------------------------- */}
           <Link
             href="/"
-            className="relative block transition-opacity duration-300 hover:opacity-80"
+            className="relative block justify-self-start transition-opacity duration-300 hover:opacity-80"
             aria-label={t("home")}
           >
             <Image
@@ -143,7 +143,7 @@ export function Header() {
           {/* ----------------------------------------------------------------
               데스크탑 네비게이션 (lg 이상에서 표시)
               ---------------------------------------------------------------- */}
-          <ul className="hidden lg:flex items-center gap-2">
+          <ul className="hidden justify-self-center lg:flex items-center gap-2">
             {NAV_ITEMS.map((item) => (
               <li key={item.key}>
                 <Link
@@ -166,7 +166,7 @@ export function Header() {
           {/* ----------------------------------------------------------------
               우측 영역: LanguageSwitcher + CTA + 햄버거
               ---------------------------------------------------------------- */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-self-end gap-3">
             <LanguageSwitcher variant="light" />
 
             {/* 회원약국찾기 — 데스크탑에서만 표시 */}

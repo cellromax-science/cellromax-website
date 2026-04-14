@@ -50,7 +50,14 @@ export async function GET(request: NextRequest) {
       .select(ADMIN_PRODUCT_LIST_SELECT, { count: 'exact' })
 
     if (search) {
-      query = query.ilike('name_ko', `%${search}%`)
+      query = query.or(
+        [
+          `name_ko.ilike.%${search}%`,
+          `name_en.ilike.%${search}%`,
+          `name_zh.ilike.%${search}%`,
+          `name_vi.ilike.%${search}%`,
+        ].join(',')
+      )
     }
 
     if (category) {
@@ -62,7 +69,7 @@ export async function GET(request: NextRequest) {
     const to = from + limit - 1
 
     query = query
-      .order('price', { ascending: false })
+      .order('category_sort_order', { ascending: true })
       .order('created_at', { ascending: false })
       .range(from, to)
 

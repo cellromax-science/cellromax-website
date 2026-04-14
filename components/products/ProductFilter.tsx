@@ -78,8 +78,7 @@ export function ProductFilter({
   );
 
   const handleSubcategoryChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const slug = e.target.value;
+    (slug: string | null) => {
       const params = new URLSearchParams();
       params.set("category", activeCategory);
       if (slug) {
@@ -126,26 +125,45 @@ export function ProductFilter({
 
       {/* 서브카테고리 셀렉트 박스 */}
       {hasSubcategories && (
-        <select
-          value={activeSubcategory ?? ""}
-          onChange={handleSubcategoryChange}
-          className={[
-            "px-4 py-2 text-sm rounded-full border cursor-pointer",
-            "outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
-            "transition-all duration-200",
-            activeSubcategory
-              ? "border-primary text-primary bg-primary/5 font-medium"
-              : "border-gray-200 text-gray-600 bg-white",
-          ].join(" ")}
+        <div
+          className="flex flex-wrap items-center justify-center gap-2"
+          role="group"
           aria-label={tProducts("subcategorySelect")}
         >
-          <option value="">{tProducts("allSubcategory")}</option>
+          <button
+            type="button"
+            onClick={() => handleSubcategoryChange(null)}
+            className={[
+              "px-4 py-2 text-sm font-medium squircle-pill border cursor-pointer",
+              "transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
+              "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+              activeSubcategory === null
+                ? "border-primary bg-primary/8 text-primary shadow-sm"
+                : "border-gray-200 bg-white text-gray-600 hover:border-primary/30 hover:bg-primary/5 hover:text-primary",
+            ].join(" ")}
+            aria-pressed={activeSubcategory === null}
+          >
+            {tProducts("allSubcategory")}
+          </button>
           {subcategories.map((sub) => (
-            <option key={sub.id} value={sub.slug}>
+            <button
+              key={sub.id}
+              type="button"
+              onClick={() => handleSubcategoryChange(sub.slug)}
+              className={[
+                "px-4 py-2 text-sm font-medium squircle-pill border cursor-pointer",
+                "transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
+                "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                activeSubcategory === sub.slug
+                  ? "border-primary bg-primary/8 text-primary shadow-sm"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-primary/30 hover:bg-primary/5 hover:text-primary",
+              ].join(" ")}
+              aria-pressed={activeSubcategory === sub.slug}
+            >
               {getSubcategoryName(sub, locale)}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       )}
     </div>
   );

@@ -113,6 +113,7 @@ export interface ProductListItem {
   slug: string;
   name_ko: string;
   category: ProductCategory;
+  category_sort_order: number;
   subcategory_id: string | null;
   thumbnail_url: string | null;
   is_active: boolean;

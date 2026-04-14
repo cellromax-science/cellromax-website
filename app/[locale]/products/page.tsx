@@ -43,6 +43,93 @@ const CATEGORY_LABELS_KO: Record<ProductCategory, string> = {
   other: "기타",
 };
 
+const CATEGORY_SEARCH_TERMS: Record<ProductCategory, string[]> = {
+  health_functional: [
+    CATEGORY_LABELS_KO.health_functional,
+    "health functional food",
+    "functional food",
+    "health supplement",
+    "保健食品",
+    "保健功能食品",
+    "thuc pham chuc nang",
+    "thực phẩm chức năng",
+  ],
+  general_food: [
+    CATEGORY_LABELS_KO.general_food,
+    "general food",
+    "food",
+    "普通食品",
+    "一般食品",
+    "thuc pham",
+    "thực phẩm",
+  ],
+  cosmetic: [
+    CATEGORY_LABELS_KO.cosmetic,
+    "cosmetic",
+    "cosmetics",
+    "skincare",
+    "化妆品",
+    "護膚品",
+    "my pham",
+    "mỹ phẩm",
+  ],
+  medicine: [
+    CATEGORY_LABELS_KO.medicine,
+    "medicine",
+    "medicines",
+    "otc",
+    "drug",
+    "一般医药品",
+    "药品",
+    "thuoc",
+    "thuốc",
+  ],
+  nutra_pet: [
+    CATEGORY_LABELS_KO.nutra_pet,
+    "nutra pet",
+    "pet supplement",
+    "pet",
+    "宠物营养",
+    "宠物保健",
+    "thu cung",
+    "thú cưng",
+  ],
+  other: [
+    CATEGORY_LABELS_KO.other,
+    "other",
+    "others",
+    "其他",
+    "khac",
+    "khác",
+  ],
+};
+
+const PRODUCT_SEARCH_FIELDS = [
+  "name_ko",
+  "name_en",
+  "name_zh",
+  "name_vi",
+  "ingredients_ko",
+  "ingredients_en",
+  "ingredients_zh",
+  "ingredients_vi",
+  "functionality_ko",
+  "functionality_en",
+  "functionality_zh",
+  "functionality_vi",
+];
+
+const SUBCATEGORY_SEARCH_FIELDS = [
+  "name_ko",
+  "name_en",
+  "name_zh",
+  "name_vi",
+];
+
+function buildIlikeFilters(fields: string[], keyword: string) {
+  return fields.map((field) => `${field}.ilike.%${keyword}%`);
+}
+
 // ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
@@ -139,20 +226,23 @@ async function ProductContent({
   // ---- 검색 모드: 카테고리 무관 전체 검색 ----
   if (search && search.trim()) {
     const keyword = search.trim();
+    const loweredKeyword = keyword.toLocaleLowerCase();
     const matchedCategories = VALID_CATEGORIES.filter((category) =>
-      CATEGORY_LABELS_KO[category].includes(keyword)
+      CATEGORY_SEARCH_TERMS[category].some((term) =>
+        term.toLocaleLowerCase().includes(loweredKeyword)
+      )
+    );
+    const subcategoryFilters = buildIlikeFilters(
+      SUBCATEGORY_SEARCH_FIELDS,
+      keyword
     );
     const { data: matchedSubcategories } = await supabase
       .from("product_subcategories")
       .select("id")
       .eq("is_active", true)
-      .ilike("name_ko", `%${keyword}%`);
+      .or(subcategoryFilters.join(","));
 
-    const orFilters = [
-      `name_ko.ilike.%${keyword}%`,
-      `ingredients_ko.ilike.%${keyword}%`,
-      `functionality_ko.ilike.%${keyword}%`,
-    ];
+    const orFilters = buildIlikeFilters(PRODUCT_SEARCH_FIELDS, keyword);
 
     if (matchedCategories.length > 0) {
       orFilters.push(`category.in.(${matchedCategories.join(",")})`);

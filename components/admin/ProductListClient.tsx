@@ -598,20 +598,25 @@ export function ProductListClient({
                     </td>
 
                     {/* 제품명 */}
-                    <td className="px-5 py-3 font-medium text-gray-900 whitespace-nowrap max-w-[200px] truncate">
+                    <td className="px-5 py-3 font-medium text-gray-900 whitespace-nowrap max-w-[220px] truncate">
                       {product.name_ko}
                     </td>
 
                     {/* 카테고리 */}
                     <td className="px-5 py-3 whitespace-nowrap">
-                      <Badge
-                        variant={getCategoryBadgeVariant(
-                          product.category as ProductCategory,
-                        )}
-                        size="sm"
-                      >
-                        {CATEGORY_LABELS[product.category] ?? product.category}
-                      </Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge
+                          variant={getCategoryBadgeVariant(
+                            product.category as ProductCategory,
+                          )}
+                          size="sm"
+                        >
+                          {CATEGORY_LABELS[product.category] ?? product.category}
+                        </Badge>
+                        <p className="text-xs text-gray-400 tabular-nums">
+                          순서 {product.category_sort_order.toLocaleString("ko-KR")}
+                        </p>
+                      </div>
                     </td>
 
                     {/* 하위카테고리 */}
