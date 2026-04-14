@@ -52,9 +52,8 @@ function generatePageRange(
   totalPages: number,
   siblingCount: number,
 ): PageItem[] {
-  /* 전체 페이지가 표시 가능 슬롯 이하면 모두 표시 */
-  const totalSlots = siblingCount * 2 + 5; // siblings + first + last + 2 ellipsis + current
-  if (totalPages <= totalSlots) {
+  /* 전체 페이지가 10 이하면 모두 표시 */
+  if (totalPages <= 10) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 

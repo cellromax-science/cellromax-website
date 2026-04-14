@@ -169,8 +169,7 @@ async function ProductContent({
       .select(PRODUCT_CARD_SELECT, { count: "exact" })
       .eq("is_active", true)
       .or(orFilters.join(","))
-      .order("price", { ascending: false })
-      .order("created_at", { ascending: false })
+      .order("category_sort_order", { ascending: true })
       .range(from, to);
 
     const result = await query;
@@ -191,8 +190,7 @@ async function ProductContent({
         .select(PRODUCT_CARD_SELECT, { count: "exact" })
         .eq("is_active", true)
         .eq("category", category)
-        .order("price", { ascending: false })
-        .order("created_at", { ascending: false })
+        .order("category_sort_order", { ascending: true })
         .range(from, to),
     ]);
 
@@ -214,8 +212,7 @@ async function ProductContent({
       .select(PRODUCT_CARD_SELECT, { count: "exact" })
       .eq("is_active", true)
       .eq("category", category)
-      .order("price", { ascending: false })
-      .order("created_at", { ascending: false });
+      .order("category_sort_order", { ascending: true });
 
     const matchedSubcategory = subcategories.find(
       (sc) => sc.slug === subcategory
