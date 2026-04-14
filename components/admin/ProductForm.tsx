@@ -168,6 +168,9 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   const [price, setPrice] = useState(
     String(initialData?.price ?? 0)
   );
+  const [categorySortOrder, setCategorySortOrder] = useState(
+    String(initialData?.category_sort_order ?? 0)
+  );
 
   // 이미지
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
@@ -493,6 +496,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         is_active: overrideActive ?? isActive,
         is_new: isNew,
         price: parseInt(price, 10) || 0,
+        category_sort_order: parseInt(categorySortOrder, 10) || 0,
       };
     },
     [
@@ -532,6 +536,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       isActive,
       isNew,
       price,
+      categorySortOrder,
     ]
   );
 
@@ -792,6 +797,16 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
+              placeholder="0"
+            />
+          </div>
+          <div className="w-40">
+            <Input
+              label="카테고리 순서"
+              type="number"
+              min="0"
+              value={categorySortOrder}
+              onChange={(e) => setCategorySortOrder(e.target.value)}
               placeholder="0"
             />
           </div>

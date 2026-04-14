@@ -44,7 +44,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
           src={galleryUrl(allImages[activeIndex])}
           alt={`${productName} - ${activeIndex + 1}`}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) calc(100vw - 2rem), (max-width: 1360px) calc((100vw - 4rem - 3rem) / 2), 616px"
           quality={75}
           className="object-contain scale-[0.8]"
           priority={activeIndex === 0}

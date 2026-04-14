@@ -59,6 +59,7 @@ export interface Product {
   is_active: boolean;
   is_new: boolean;
   sort_order: number;
+  category_sort_order: number;
   created_at: string;
   updated_at: string;
   created_by: string | null;
@@ -104,6 +105,29 @@ export interface ProductInsert {
   is_active?: boolean;
   is_new?: boolean;
   sort_order?: number;
+  category_sort_order?: number;
+}
+
+export interface ProductListItem {
+  id: string;
+  slug: string;
+  name_ko: string;
+  category: ProductCategory;
+  subcategory_id: string | null;
+  thumbnail_url: string | null;
+  is_active: boolean;
+  is_new: boolean;
+  created_at: string;
+  product_subcategories?: Pick<ProductSubcategory, 'name_ko'> | null;
+}
+
+export interface RelatedProductOrderItem {
+  id: string;
+  slug: string;
+  name_ko: string;
+  thumbnail_url: string | null;
+  is_active: boolean;
+  category_sort_order: number;
 }
 
 export interface SubcategoryWithCount extends ProductSubcategory {

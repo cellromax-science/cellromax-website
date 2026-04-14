@@ -6,7 +6,6 @@ import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge, getCategoryBadgeVariant, getCategoryLabel } from "@/components/ui/Badge";
 import { ProductImageGallery } from "@/components/products/ProductImageGallery";
-import { ProductDetailTabs } from "@/components/products/ProductDetailTabs";
 import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
@@ -97,17 +96,17 @@ function getSubcategoryName(
  * 카테고리별 탭 구성을 결정한다.
  * 서버에서 라벨을 결정하여 클라이언트 컴포넌트에 전달.
  */
-function buildTabs(
+function buildDetailSections(
   product: Product,
   locale: string,
   t: Awaited<ReturnType<typeof getTranslations>>,
 ) {
   const category = product.category;
 
-  const tabs: { key: string; label: string; content: string | null }[] = [];
+  const sections: { key: string; label: string; content: string | null }[] = [];
 
   // 1. 주요성분 (모든 카테고리)
-  tabs.push({
+  sections.push({
     key: "ingredients",
     label: t("ingredients"),
     content: getLocalizedField(product, "ingredients", locale),
@@ -115,13 +114,13 @@ function buildTabs(
 
   // 2. 기능성/효능효과 (카테고리별 분기)
   if (category === "health_functional") {
-    tabs.push({
+    sections.push({
       key: "functionality",
       label: t("functionality"),
       content: getLocalizedField(product, "functionality", locale),
     });
   } else if (category === "medicine" || category === "other") {
-    tabs.push({
+    sections.push({
       key: "functionality",
       label: t("efficacy"),
       content: getLocalizedField(product, "functionality", locale),
@@ -139,20 +138,20 @@ function buildTabs(
     nutra_pet: t("recommendedFeeding"),
   };
 
-  tabs.push({
+  sections.push({
     key: "howToUse",
     label: howToUseLabels[category],
     content: getLocalizedField(product, "how_to_use", locale),
   });
 
   // 4. 기타 정보 (모든 카테고리)
-  tabs.push({
+  sections.push({
     key: "otherInfo",
     label: t("otherInfo"),
     content: getLocalizedField(product, "other_info", locale),
   });
 
-  return tabs;
+  return sections.filter((section) => section.content !== null);
 }
 
 // ---------------------------------------------------------------------------
@@ -232,8 +231,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const productName = getLocalizedField(product, "name", locale) ?? product.name_ko;
   const subcategoryName = getSubcategoryName(product.product_subcategories, locale);
 
-  /* ---- Build tabs ---- */
-  const tabs = buildTabs(product, locale, t);
+  /* ---- Build detail sections ---- */
+  const detailSections = buildDetailSections(product, locale, t);
 
   /* ---- JSON-LD 구조화 데이터 ---- */
   const description = getLocalizedField(product, "ingredients", locale);
@@ -252,6 +251,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         )}
       />
       <div className="container-site">
+        <div className="container-product-detail">
         {/* ---- Breadcrumb (above-fold: 즉시 표시) ---- */}
         <nav
           aria-label="breadcrumb"
@@ -311,8 +311,24 @@ export default async function ProductDetailPage({ params }: PageProps) {
               {/* Gold Divider */}
               <div className="divider-gold" />
 
-              {/* Detail Tabs */}
-              <ProductDetailTabs tabs={tabs} />
+              {/* Detail Sections */}
+              {detailSections.length > 0 && (
+                <div className="space-y-6">
+                  {detailSections.map((section, index) => (
+                    <section
+                      key={section.key}
+                      className={index === 0 ? "" : "border-t border-gray-200 pt-6"}
+                    >
+                      <h2 className="text-base md:text-lg font-semibold text-primary">
+                        {section.label}
+                      </h2>
+                      <p className="mt-3 text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-wrap">
+                        {section.content}
+                      </p>
+                    </section>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -332,15 +348,17 @@ export default async function ProductDetailPage({ params }: PageProps) {
               product.detail_html;
             if (detailHtml) return <HtmlDetailFrame html={detailHtml} />;
             if (product.detail_image_url) return (
-              <div className="w-full squircle-xl overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.detail_image_url}
-                  alt={`${productName} - detail`}
-                  className="w-full h-auto"
-                  loading="eager"
-                  decoding="async"
-                />
+              <div className="flex justify-center">
+                <div className="inline-block max-w-full squircle-xl overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.detail_image_url}
+                    alt={`${productName} - detail`}
+                    className="block w-auto h-auto max-w-full"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
               </div>
             );
             return null;
@@ -348,15 +366,17 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
           {/* Nutrition Image (영양정보) */}
           {product.nutrition_image_url && (
-            <div className="w-full squircle-xl overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={product.nutrition_image_url}
-                alt={`${productName} - nutrition`}
-                className="w-full h-auto"
-                loading="eager"
-                decoding="async"
-              />
+            <div className="flex justify-center">
+              <div className="inline-block max-w-full squircle-xl overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={product.nutrition_image_url}
+                  alt={`${productName} - nutrition`}
+                  className="block w-auto h-auto max-w-full"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
             </div>
           )}
         </AnimatedSection>
@@ -383,6 +403,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             {t("backToList")}
           </Link>
         </AnimatedSection>
+        </div>
       </div>
     </section>
   );

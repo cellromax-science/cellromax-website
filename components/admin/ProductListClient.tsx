@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 
 import { Input } from "@/components/ui/Input";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge, getCategoryBadgeVariant } from "@/components/ui/Badge";
 import { toast } from "@/components/ui/Toast";
 
-import type { Product, ProductCategory } from "@/types/product";
+import type { ProductCategory, ProductListItem } from "@/types/product";
 
 /* ==========================================================================
    ProductListClient — 관리자 제품 목록 클라이언트 컴포넌트
@@ -31,7 +31,7 @@ import type { Product, ProductCategory } from "@/types/product";
 
 interface ProductListClientProps {
   /** 서버에서 패칭한 초기 제품 목록 */
-  initialProducts: Product[];
+  initialProducts: ProductListItem[];
   /** 서버에서 패칭한 전체 제품 수 */
   initialTotal: number;
 }
@@ -269,15 +269,17 @@ export function ProductListClient({
   // State
   // --------------------------------------------------------------------------
 
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<ProductListItem[]>(initialProducts);
   const [total, setTotal] = useState(initialTotal);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const hasHydratedRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // 삭제 모달 상태
-  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ProductListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // --------------------------------------------------------------------------
@@ -290,6 +292,9 @@ export function ProductListClient({
       categoryFilter: string,
       pageNum: number,
     ) => {
+      abortControllerRef.current?.abort();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
       setIsLoading(true);
       try {
         const params = new URLSearchParams();
@@ -298,7 +303,9 @@ export function ProductListClient({
         params.set("page", String(pageNum));
         params.set("limit", String(PAGE_LIMIT));
 
-        const res = await fetch(`/api/products?${params.toString()}`);
+        const res = await fetch(`/api/products?${params.toString()}`, {
+          signal: controller.signal,
+        });
         if (!res.ok) {
           throw new Error("제품 목록을 불러오지 못했습니다.");
         }
@@ -307,11 +314,16 @@ export function ProductListClient({
         setProducts(data.products ?? []);
         setTotal(data.total ?? 0);
       } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
         const message =
           err instanceof Error ? err.message : "목록 조회 중 오류가 발생했습니다.";
         toast.error(message);
       } finally {
-        setIsLoading(false);
+        if (abortControllerRef.current === controller) {
+          setIsLoading(false);
+        }
       }
     },
     [],
@@ -323,13 +335,23 @@ export function ProductListClient({
 
   /** 검색어 변경 시 디바운스 타이머 */
   useEffect(() => {
+    if (!hasHydratedRef.current) {
+      hasHydratedRef.current = true;
+      return;
+    }
+
     const timer = setTimeout(() => {
-      setPage(1);
-      fetchProducts(search, category, 1);
+      setPage((prev) => (prev === 1 ? prev : 1));
+      void fetchProducts(search, category, 1);
     }, 300);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, category]);
+  }, [category, fetchProducts, search]);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   /** 카테고리 필터 변경 */
   const handleCategoryChange = useCallback(
@@ -348,7 +370,7 @@ export function ProductListClient({
   const goToPage = useCallback(
     (newPage: number) => {
       setPage(newPage);
-      fetchProducts(search, category, newPage);
+      void fetchProducts(search, category, newPage);
     },
     [fetchProducts, search, category],
   );
@@ -357,7 +379,7 @@ export function ProductListClient({
   // Delete Handlers
   // --------------------------------------------------------------------------
 
-  const handleDeleteClick = useCallback((product: Product) => {
+  const handleDeleteClick = useCallback((product: ProductListItem) => {
     setDeleteTarget(product);
   }, []);
 

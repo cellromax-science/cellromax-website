@@ -1,6 +1,10 @@
 import { Suspense } from "react";
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
+import {
+  PRODUCT_CARD_SELECT,
+  PRODUCT_SUBCATEGORY_FILTER_SELECT,
+} from "@/lib/products";
 import { createStaticClient } from "@/lib/supabase/server";
 import { ProductFilter } from "@/components/products/ProductFilter";
 import { ProductSearchBar } from "@/components/products/ProductSearchBar";
@@ -86,7 +90,7 @@ function ProductGridSkeleton() {
       </div>
 
       {/* Grid Skeleton */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
@@ -128,9 +132,6 @@ async function ProductContent({
   const from = (page - 1) * PRODUCTS_PER_PAGE;
   const to = from + PRODUCTS_PER_PAGE - 1;
 
-  const selectFields =
-    "id, slug, name_ko, name_en, name_zh, name_vi, category, subcategory_id, thumbnail_url, is_new, product_subcategories(id, slug, name_ko, name_en, name_zh, name_vi)";
-
   let subcategories: ProductSubcategory[] = [];
   let products: unknown[] | null;
   let count: number | null;
@@ -165,7 +166,7 @@ async function ProductContent({
 
     const query = supabase
       .from("products")
-      .select(selectFields, { count: "exact" })
+      .select(PRODUCT_CARD_SELECT, { count: "exact" })
       .eq("is_active", true)
       .or(orFilters.join(","))
       .order("price", { ascending: false })
@@ -181,13 +182,13 @@ async function ProductContent({
     const [subcategoryResult, productsResult] = await Promise.all([
       supabase
         .from("product_subcategories")
-        .select("id, slug, name_ko, name_en, name_zh, name_vi, parent_category, sort_order, is_active")
+        .select(PRODUCT_SUBCATEGORY_FILTER_SELECT)
         .eq("parent_category", category)
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
       supabase
         .from("products")
-        .select(selectFields, { count: "exact" })
+        .select(PRODUCT_CARD_SELECT, { count: "exact" })
         .eq("is_active", true)
         .eq("category", category)
         .order("price", { ascending: false })
@@ -201,7 +202,7 @@ async function ProductContent({
   } else {
     const { data: subcategoryData } = await supabase
       .from("product_subcategories")
-      .select("id, slug, name_ko, name_en, name_zh, name_vi, parent_category, sort_order, is_active")
+      .select(PRODUCT_SUBCATEGORY_FILTER_SELECT)
       .eq("parent_category", category)
       .eq("is_active", true)
       .order("sort_order", { ascending: true });
@@ -210,7 +211,7 @@ async function ProductContent({
 
     let query = supabase
       .from("products")
-      .select(selectFields, { count: "exact" })
+      .select(PRODUCT_CARD_SELECT, { count: "exact" })
       .eq("is_active", true)
       .eq("category", category)
       .order("price", { ascending: false })

@@ -63,7 +63,12 @@ function injectScrollScript(html: string): string {
   //    overflow:hidden 이어도 programmatic scrollTo()는 동작한다 (MDN 스펙)
   // 2. 휠 이벤트를 부모 페이지로 전달하여 relay 경로로 통일
   // 3. 콘텐츠 높이를 부모에 전송
-  const injection = `<style>html{scroll-behavior:auto!important;overflow:hidden!important;}</style>
+  const injection = `<style>
+html{scroll-behavior:auto!important;overflow:hidden!important;background:transparent!important;}
+body{margin:0 auto!important;width:max-content;max-width:100%!important;background:transparent!important;}
+img{display:block;max-width:100%!important;width:auto!important;height:auto!important;}
+picture,video,canvas,svg,table,iframe{max-width:100%!important;}
+</style>
 <script>
 (function() {
   /* ---- 휠 이벤트를 부모 페이지로 전달 ---- */

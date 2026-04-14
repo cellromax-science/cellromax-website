@@ -122,7 +122,7 @@ export function ProductCard({ product, locale, priority = false }: ProductCardPr
               src={thumbnailUrl(product.thumbnail_url)}
               alt={productName}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
               quality={75}
               priority={priority}
               className="object-contain scale-[0.8] transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[0.86]"

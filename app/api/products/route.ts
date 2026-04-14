@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { ADMIN_PRODUCT_LIST_SELECT } from '@/lib/products'
 import { getUser } from '@/lib/supabase/auth'
 import { getAdminProfile } from '@/lib/supabase/admin'
 import type { ProductInsert } from '@/types/product'
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('products')
-      .select('*, product_subcategories(*)', { count: 'exact' })
+      .select(ADMIN_PRODUCT_LIST_SELECT, { count: 'exact' })
 
     if (search) {
       query = query.ilike('name_ko', `%${search}%`)

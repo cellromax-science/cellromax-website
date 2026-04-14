@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { ADMIN_PRODUCT_LIST_SELECT } from "@/lib/products";
 import { createClient } from "@/lib/supabase/server";
 import { ProductListClient } from "@/components/admin/ProductListClient";
+import type { ProductListItem } from "@/types/product";
 
 /* ==========================================================================
    Admin Products Page — Server Component
@@ -29,14 +31,14 @@ export default async function ProductsPage() {
   // 초기 데이터 패칭: 최신순 정렬, 20개 제한
   const { data: products, count } = await supabase
     .from("products")
-    .select("*, product_subcategories(*)", { count: "exact" })
+    .select(ADMIN_PRODUCT_LIST_SELECT, { count: "exact" })
     .order("price", { ascending: false })
     .order("created_at", { ascending: false })
     .range(0, 19);
 
   return (
     <ProductListClient
-      initialProducts={products ?? []}
+      initialProducts={((products ?? []) as unknown as ProductListItem[])}
       initialTotal={count ?? 0}
     />
   );
