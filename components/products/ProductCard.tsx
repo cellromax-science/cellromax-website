@@ -11,7 +11,7 @@
 import Image from "next/image";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge, getCategoryBadgeVariant, getCategoryLabel } from "@/components/ui/Badge";
-import { thumbnailUrl } from "@/lib/image";
+import { thumbnailUrl, isSupabaseStorageUrl } from "@/lib/image";
 import type { Product, ProductSubcategory } from "@/types/product";
 
 // ---------------------------------------------------------------------------
@@ -125,6 +125,7 @@ export function ProductCard({ product, locale, priority = false }: ProductCardPr
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
               quality={75}
               priority={priority}
+              unoptimized={isSupabaseStorageUrl(product.thumbnail_url)}
               className="object-contain scale-[0.8] transition-transform duration-500 ease-[var(--ease-default)] group-hover:scale-[0.86]"
             />
           ) : (

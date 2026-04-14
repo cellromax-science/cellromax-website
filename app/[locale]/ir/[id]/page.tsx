@@ -8,7 +8,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { detailUrl } from "@/lib/image";
+import { detailUrl, isSupabaseStorageUrl } from "@/lib/image";
 import type { IrFile, IrCategory } from "@/types/ir";
 import type { BadgeVariant } from "@/components/ui/Badge";
 import type { Metadata } from "next";
@@ -245,6 +245,7 @@ export default async function IrDetailPage({ params }: IrDetailPageProps) {
                 height={450}
                 quality={75}
                 sizes="(max-width: 800px) 100vw, 800px"
+                unoptimized={isSupabaseStorageUrl(file.thumbnail_url)}
                 className="w-full h-auto object-cover"
               />
             </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { galleryUrl, thumbStripUrl } from "@/lib/image";
+import { galleryUrl, thumbStripUrl, isSupabaseStorageUrl } from "@/lib/image";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -46,6 +46,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
           fill
           sizes="(max-width: 768px) calc(100vw - 2rem), (max-width: 1360px) calc((100vw - 4rem - 3rem) / 2), 616px"
           quality={75}
+          unoptimized={isSupabaseStorageUrl(allImages[activeIndex])}
           className="object-contain scale-[0.8]"
           priority={activeIndex === 0}
         />
@@ -73,6 +74,7 @@ export function ProductImageGallery({ images, productName, thumbnailUrl }: Produ
                 fill
                 sizes="64px"
                 quality={60}
+                unoptimized={isSupabaseStorageUrl(src)}
                 className="object-contain"
               />
             </button>

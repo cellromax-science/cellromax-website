@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge } from "@/components/ui/Badge";
-import { thumbnailUrl } from "@/lib/image";
+import { thumbnailUrl, isSupabaseStorageUrl } from "@/lib/image";
 import type { IrFile, IrCategory } from "@/types/ir";
 import type { BadgeVariant } from "@/components/ui/Badge";
 
@@ -104,6 +104,7 @@ export function IrFileCard({ file }: IrFileCardProps) {
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               quality={75}
+              unoptimized={isSupabaseStorageUrl(file.thumbnail_url)}
               className="object-cover transition-transform duration-[250ms] ease-[var(--ease-default)] group-hover:scale-105"
             />
           ) : (

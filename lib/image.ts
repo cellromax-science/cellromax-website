@@ -1,68 +1,36 @@
 /**
- * Supabase Storage 이미지 최적화 유틸리티
+ * Supabase Storage 이미지 유틸리티
  *
- * Supabase Storage의 이미지 변환 API를 활용하여
- * 원본 이미지 대신 리사이즈된 이미지를 요청한다.
- *
- * URL 변환: /storage/v1/object/public/ → /storage/v1/render/image/public/
- * 쿼리 파라미터: width, height, quality, format 등
+ * Supabase Storage URL을 반환하고, Next.js Image의 unoptimized 여부를 판단한다.
+ * Supabase 이미지 변환 API(/render/image/)는 유료 플랜이 필요하므로 사용하지 않는다.
+ * 대신 원본 URL을 그대로 사용하고 Next.js 자체 최적화를 비활성화(unoptimized)한다.
  */
-
-interface ImageTransformOptions {
-  width?: number;
-  height?: number;
-  quality?: number;
-  /** resize 모드: cover(잘림 허용), contain(빈 공간 허용), fill(비율 무시) */
-  resize?: "cover" | "contain" | "fill";
-}
 
 /**
- * Supabase Storage URL에 이미지 변환 파라미터를 적용한다.
- * Supabase URL이 아닌 경우 원본을 그대로 반환한다.
+ * Supabase Storage URL 여부 판단.
+ * true 반환 시 Next.js Image에 unoptimized 적용 필요.
  */
-export function optimizeImageUrl(
-  url: string | null | undefined,
-  options: ImageTransformOptions = {},
-): string {
-  if (!url) return "";
-
-  // Supabase Storage URL인지 확인
-  if (!url.includes("supabase.co/storage/v1/object/public/")) {
-    return url;
-  }
-
-  // object → render/image 경로로 변환
-  const transformedUrl = url.replace(
-    "/storage/v1/object/public/",
-    "/storage/v1/render/image/public/",
-  );
-
-  const params = new URLSearchParams();
-  if (options.width) params.set("width", String(options.width));
-  if (options.height) params.set("height", String(options.height));
-  if (options.quality) params.set("quality", String(options.quality));
-  if (options.resize) params.set("resize", options.resize);
-
-  const queryString = params.toString();
-  return queryString ? `${transformedUrl}?${queryString}` : transformedUrl;
+export function isSupabaseStorageUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  return url.includes("supabase.co/storage/");
 }
 
-/** 카드 썸네일용 (작은 크기) */
+/** 카드 썸네일용 */
 export function thumbnailUrl(url: string | null | undefined): string {
-  return optimizeImageUrl(url, { width: 480, quality: 75, resize: "contain" });
+  return url ?? "";
 }
 
-/** 갤러리/리스트용 (중간 크기) */
+/** 갤러리/리스트용 */
 export function galleryUrl(url: string | null | undefined): string {
-  return optimizeImageUrl(url, { width: 800, quality: 75, resize: "cover" });
+  return url ?? "";
 }
 
-/** 상세 페이지용 (큰 크기) */
+/** 상세 페이지용 */
 export function detailUrl(url: string | null | undefined): string {
-  return optimizeImageUrl(url, { width: 1200, quality: 80 });
+  return url ?? "";
 }
 
-/** 갤러리 썸네일 스트립용 (아주 작은 크기) */
+/** 갤러리 썸네일 스트립용 */
 export function thumbStripUrl(url: string | null | undefined): string {
-  return optimizeImageUrl(url, { width: 128, height: 128, quality: 60, resize: "contain" });
+  return url ?? "";
 }

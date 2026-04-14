@@ -9,7 +9,7 @@ import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { Badge } from "@/components/ui/Badge";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { newsArticleJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
-import { detailUrl, galleryUrl } from "@/lib/image";
+import { detailUrl, galleryUrl, isSupabaseStorageUrl } from "@/lib/image";
 import type { Post, Attachment } from "@/types/newsroom";
 import type { Metadata } from "next";
 
@@ -333,6 +333,7 @@ export default async function NewsroomDetailPage({
                 height={450}
                 quality={75}
                 sizes="(max-width: 800px) 100vw, 800px"
+                unoptimized={isSupabaseStorageUrl(thumbnailSrc)}
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -361,6 +362,7 @@ export default async function NewsroomDetailPage({
                     height={400}
                     quality={75}
                     sizes="(max-width: 640px) 100vw, 50vw"
+                    unoptimized={isSupabaseStorageUrl(img)}
                     className="w-full h-auto object-cover"
                   />
                 </div>
