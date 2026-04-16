@@ -220,11 +220,10 @@ export function SubcategoryFormModal({
       }
 
       if (!finalSlug) {
-        toast.error(
-          "슬러그를 자동 생성할 수 없습니다. 영문 이름을 입력하거나 고급 설정에서 직접 입력해주세요."
-        );
-        setIsSubmitting(false);
-        return;
+        // 한국어 전용 이름은 슬러그 생성 불가 → 상위 카테고리 + 랜덤으로 자동 생성
+        const prefix = parentCategory.replace(/_/g, "-");
+        const suffix = Math.random().toString(36).substring(2, 7);
+        finalSlug = `${prefix}-${suffix}`;
       }
 
       const payload: Record<string, unknown> = {
