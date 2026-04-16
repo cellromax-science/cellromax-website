@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import { getUser } from '@/lib/supabase/auth'
-import { getAdminProfile } from '@/lib/supabase/admin'
+import { getAdminProfile, createAdminClient } from '@/lib/supabase/admin'
 import crypto from 'crypto'
 
 /**
@@ -85,8 +84,8 @@ export async function POST(request: NextRequest) {
     const fileName = `${Date.now()}-${randomString}.${ext}`
     const filePath = `${user.id}/${fileName}`
 
-    // --- 6. Supabase Storage 업로드 ---
-    const supabase = await createClient()
+    // --- 6. Supabase Storage 업로드 (admin client로 RLS 우회) ---
+    const supabase = createAdminClient()
 
     const { error: uploadError } = await supabase.storage
       .from(bucket)

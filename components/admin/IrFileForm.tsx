@@ -408,7 +408,7 @@ export function IrFileForm({ mode, initialData }: IrFileFormProps) {
           label="썸네일 이미지"
           value={thumbnailUrl}
           onChange={setThumbnailUrl}
-          bucket="ir-files"
+          bucket="newsroom"
           maxSize={2 * 1024 * 1024}
         />
       </FormSection>
