@@ -129,7 +129,7 @@ export function IrFileForm({ mode, initialData }: IrFileFormProps) {
   // PDF Upload
   // --------------------------------------------------------------------------
 
-  const uploadPdf = useCallback((file: File) => {
+  const uploadPdf = useCallback(async (file: File) => {
     if (file.type !== "application/pdf") {
       setUploadError("PDF 파일만 업로드할 수 있습니다.");
       return;
@@ -143,66 +143,76 @@ export function IrFileForm({ mode, initialData }: IrFileFormProps) {
     setIsUploading(true);
     setUploadProgress(0);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("bucket", "ir-files");
+    try {
+      // --- 1단계: 서버에서 권한 검증 + Signed Upload URL 발급 ---
+      const signRes = await fetch("/api/upload-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+        }),
+      });
 
-    const xhr = new XMLHttpRequest();
-    xhrRef.current = xhr;
-
-    xhr.upload.addEventListener("progress", (event) => {
-      if (event.lengthComputable) {
-        setUploadProgress(Math.round((event.loaded / event.total) * 100));
-      }
-    });
-
-    xhr.addEventListener("load", () => {
-      xhrRef.current = null;
-      if (xhr.status >= 200 && xhr.status < 300) {
+      if (!signRes.ok) {
+        let errorMessage = "업로드 준비 중 오류가 발생했습니다.";
         try {
-          const response = JSON.parse(xhr.responseText);
-          const uploadedUrl = response.url || response.publicUrl || response.data?.url;
-          if (uploadedUrl) {
-            setPdfUrl(uploadedUrl);
-            setPdfFileName(file.name);
-            setPdfFileSize(file.size);
-          } else {
-            setUploadError("서버 응답에서 파일 URL을 찾을 수 없습니다.");
-          }
-        } catch {
-          setUploadError("서버 응답을 처리할 수 없습니다.");
-        }
-      } else {
-        let errorMessage = "파일 업로드에 실패했습니다.";
-        try {
-          const errorResponse = JSON.parse(xhr.responseText);
-          if (errorResponse.error || errorResponse.message) {
-            errorMessage = errorResponse.error || errorResponse.message;
-          }
-        } catch {
-          // 기본 에러 메시지 사용
-        }
+          const err = await signRes.json();
+          if (err.error) errorMessage = err.error;
+        } catch { /* 기본 메시지 사용 */ }
         setUploadError(errorMessage);
+        return;
       }
-      setIsUploading(false);
-      setUploadProgress(0);
-    });
 
-    xhr.addEventListener("error", () => {
-      xhrRef.current = null;
-      setUploadError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
-      setIsUploading(false);
-      setUploadProgress(0);
-    });
+      const { signedUrl, publicUrl, originalFileName } = await signRes.json();
 
-    xhr.addEventListener("abort", () => {
-      xhrRef.current = null;
-      setIsUploading(false);
-      setUploadProgress(0);
-    });
+      // --- 2단계: Signed URL로 Supabase에 직접 PUT 업로드 (Vercel 제한 우회) ---
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhrRef.current = xhr;
 
-    xhr.open("POST", "/api/upload-pdf");
-    xhr.send(formData);
+        xhr.upload.addEventListener("progress", (event) => {
+          if (event.lengthComputable) {
+            setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          }
+        });
+
+        xhr.addEventListener("load", () => {
+          xhrRef.current = null;
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve();
+          } else {
+            reject(new Error(`업로드 실패 (${xhr.status})`));
+          }
+        });
+
+        xhr.addEventListener("error", () => {
+          xhrRef.current = null;
+          reject(new Error("네트워크 오류가 발생했습니다. 다시 시도해주세요."));
+        });
+
+        xhr.addEventListener("abort", () => {
+          xhrRef.current = null;
+          reject(new Error("업로드가 취소되었습니다."));
+        });
+
+        xhr.open("PUT", signedUrl);
+        xhr.setRequestHeader("Content-Type", file.type);
+        xhr.send(file);
+      });
+
+      // --- 3단계: 업로드 완료 처리 ---
+      setPdfUrl(publicUrl);
+      setPdfFileName(originalFileName ?? file.name);
+      setPdfFileSize(file.size);
+      setUploadProgress(100);
+
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "업로드 중 오류가 발생했습니다.");
+    } finally {
+      setIsUploading(false);
+    }
   }, []);
 
   // --------------------------------------------------------------------------
