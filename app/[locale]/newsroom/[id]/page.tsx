@@ -322,24 +322,6 @@ export default async function NewsroomDetailPage({
           </div>
         </AnimatedSection>
 
-        {/* Thumbnail Image */}
-        {thumbnailSrc && (
-          <AnimatedSection direction="up">
-            <div className="mb-8 squircle-xl overflow-hidden">
-              <Image
-                src={detailUrl(thumbnailSrc)}
-                alt={title}
-                width={800}
-                height={450}
-                quality={75}
-                sizes="(max-width: 800px) 100vw, 800px"
-                unoptimized={isSupabaseStorageUrl(thumbnailSrc)}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </AnimatedSection>
-        )}
-
         {/* Content Body */}
         {content && (
           <AnimatedSection direction="up">
