@@ -259,7 +259,7 @@ async function ProductContent({
       .select(PRODUCT_CARD_SELECT, { count: "exact" })
       .eq("is_active", true)
       .or(orFilters.join(","))
-      .order("category_sort_order", { ascending: true })
+      .order("created_at", { ascending: false })
       .range(from, to);
 
     const result = await query;

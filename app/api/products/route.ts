@@ -68,10 +68,16 @@ export async function GET(request: NextRequest) {
     const from = (page - 1) * limit
     const to = from + limit - 1
 
-    query = query
-      .order('category_sort_order', { ascending: true })
-      .order('created_at', { ascending: false })
-      .range(from, to)
+    if (category) {
+      query = query
+        .order('category_sort_order', { ascending: true })
+        .order('created_at', { ascending: false })
+        .range(from, to)
+    } else {
+      query = query
+        .order('created_at', { ascending: false })
+        .range(from, to)
+    }
 
     const { data: products, count, error } = await query
 

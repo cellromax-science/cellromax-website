@@ -58,7 +58,6 @@ export interface Product {
   price: number;
   is_active: boolean;
   is_new: boolean;
-  sort_order: number;
   category_sort_order: number;
   created_at: string;
   updated_at: string;
@@ -104,7 +103,6 @@ export interface ProductInsert {
   price?: number;
   is_active?: boolean;
   is_new?: boolean;
-  sort_order?: number;
   category_sort_order?: number;
 }
 

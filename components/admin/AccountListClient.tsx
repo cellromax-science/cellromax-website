@@ -365,6 +365,7 @@ interface EditModalProps {
     name: string;
     role: AdminRole;
     department: string;
+    password: string;
   }) => void;
   onCancel: () => void;
 }
@@ -373,6 +374,8 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
   const [name, setName] = useState(account.name);
   const [role, setRole] = useState<AdminRole>(account.role);
   const [department, setDepartment] = useState(account.department ?? "");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // 유효성 검사 상태
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -403,9 +406,21 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
       newErrors.name = "이름을 입력해 주세요.";
     }
 
+    if (password || passwordConfirm) {
+      if (password.length < 8) {
+        newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다.";
+      }
+
+      if (!passwordConfirm) {
+        newErrors.passwordConfirm = "비밀번호 확인을 입력해 주세요.";
+      } else if (password !== passwordConfirm) {
+        newErrors.passwordConfirm = "비밀번호가 일치하지 않습니다.";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name]);
+  }, [name, password, passwordConfirm]);
 
   const handleSubmit = useCallback(() => {
     if (!validate()) return;
@@ -413,8 +428,9 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
       name: name.trim(),
       role,
       department: department.trim(),
+      password: password.trim(),
     });
-  }, [validate, onConfirm, name, role, department]);
+  }, [validate, onConfirm, name, role, department, password]);
 
   return (
     <>
@@ -494,6 +510,27 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
             placeholder="부서명 (선택)"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
+            disabled={isSaving}
+          />
+
+          <Input
+            label="새 비밀번호"
+            type="password"
+            placeholder="변경할 때만 입력"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={errors.password}
+            helperText="입력한 경우에만 로그인 비밀번호가 변경됩니다."
+            disabled={isSaving}
+          />
+
+          <Input
+            label="비밀번호 확인"
+            type="password"
+            placeholder="새 비밀번호 다시 입력"
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
+            error={errors.passwordConfirm}
             disabled={isSaving}
           />
         </div>
@@ -827,6 +864,7 @@ export function AccountListClient({
       name: string;
       role: AdminRole;
       department: string;
+      password: string;
     }) => {
       if (!editTarget) return;
 

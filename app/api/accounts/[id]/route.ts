@@ -13,14 +13,13 @@ const VALID_ROLES: AdminRole[] = ['super_admin', 'marketing', 'ir', 'inquiry']
  *
  * PATCH /api/accounts/:id
  *
- * Body: { name?: string, role?: AdminRole, department?: string, is_active?: boolean }
+ * Body: { name?: string, role?: AdminRole, department?: string, is_active?: boolean, password?: string }
  */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // --- 1. 인증 및 권한 확인 ---
     const user = await getUser()
     if (!user) {
       return NextResponse.json(
@@ -44,7 +43,6 @@ export async function PATCH(
       )
     }
 
-    // --- 2. 파라미터 및 바디 추출 ---
     const { id } = await params
 
     if (!uuidRegex.test(id)) {
@@ -63,13 +61,12 @@ export async function PATCH(
       )
     }
 
-    // --- 3. 허용된 필드만 추출 ---
     const updateData: Record<string, unknown> = {}
 
     if (body.name !== undefined) {
       if (typeof body.name !== 'string' || body.name.trim().length === 0) {
         return NextResponse.json(
-          { error: '이름은 비어있을 수 없습니다.' },
+          { error: '이름은 비어 있을 수 없습니다.' },
           { status: 400 }
         )
       }
@@ -79,7 +76,7 @@ export async function PATCH(
     if (body.role !== undefined) {
       if (!VALID_ROLES.includes(body.role)) {
         return NextResponse.json(
-          { error: `유효하지 않은 역할입니다. 허용된 역할: ${VALID_ROLES.join(', ')}` },
+          { error: `유효하지 않은 역할입니다. 사용 가능 역할: ${VALID_ROLES.join(', ')}` },
           { status: 400 }
         )
       }
@@ -98,10 +95,9 @@ export async function PATCH(
         )
       }
 
-      // 자기 자신의 계정을 비활성화하는 것은 불가능
       if (body.is_active === false && id === user.id) {
         return NextResponse.json(
-          { error: '자기 자신의 계정을 비활성화할 수 없습니다.' },
+          { error: '자기 자신의 계정은 비활성화할 수 없습니다.' },
           { status: 400 }
         )
       }
@@ -109,15 +105,62 @@ export async function PATCH(
       updateData.is_active = body.is_active
     }
 
-    if (Object.keys(updateData).length === 0) {
+    const nextPassword =
+      body.password !== undefined ? String(body.password).trim() : undefined
+
+    if (nextPassword !== undefined && nextPassword.length < 8) {
       return NextResponse.json(
-        { error: '수정 가능한 필드가 없습니다. 허용된 필드: name, role, department, is_active' },
+        { error: '비밀번호는 최소 8자 이상이어야 합니다.' },
         { status: 400 }
       )
     }
 
-    // --- 4. admin_profiles 업데이트 ---
+    if (Object.keys(updateData).length === 0 && nextPassword === undefined) {
+      return NextResponse.json(
+        {
+          error:
+            '수정 가능한 필드가 없습니다. 사용 가능 필드: name, role, department, is_active, password',
+        },
+        { status: 400 }
+      )
+    }
+
     const adminClient = createAdminClient()
+
+    if (nextPassword !== undefined) {
+      const { error: passwordError } = await adminClient.auth.admin.updateUserById(
+        id,
+        {
+          password: nextPassword,
+        }
+      )
+
+      if (passwordError) {
+        console.error('[accounts/PATCH] Auth password update error:', passwordError)
+        return NextResponse.json(
+          { error: `비밀번호 변경 중 오류가 발생했습니다: ${passwordError.message}` },
+          { status: 500 }
+        )
+      }
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      const { data: account, error: accountError } = await adminClient
+        .from('admin_profiles')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (accountError) {
+        console.error('[accounts/PATCH] Profile fetch error:', accountError)
+        return NextResponse.json(
+          { error: '비밀번호는 변경되었지만 계정 정보를 다시 불러오지 못했습니다.' },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ account })
+    }
 
     const { data, error } = await adminClient
       .from('admin_profiles')
