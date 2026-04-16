@@ -50,6 +50,21 @@ function stripHtml(text: string): string {
   return text.replace(/<[^>]*>/g, "");
 }
 
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&nbsp;|&#160;|&#xa0;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\u00A0/g, " ");
+}
+
+function toPreviewText(text: string): string {
+  return decodeHtmlEntities(stripHtml(text)).replace(/\s+/g, " ").trim();
+}
+
 /**
  * ISO 날짜 문자열을 YYYY.MM.DD 형식으로 변환한다.
  */
@@ -79,7 +94,7 @@ function formatDate(dateString: string): string {
 export function PostCard({ post, locale }: PostCardProps) {
   const title = getLocalizedField(post, "title", locale);
   const rawContent = getLocalizedField(post, "content", locale);
-  const contentPreview = rawContent ? stripHtml(rawContent) : "";
+  const contentPreview = rawContent ? toPreviewText(rawContent) : "";
   const thumbnailSrc =
     post.thumbnail_url || (post.images.length > 0 ? post.images[0] : null);
 
