@@ -182,7 +182,7 @@ export function BrandSection() {
           </span>
 
           {/* 섹션 제목 */}
-          <h2 className="text-heading !text-white mt-3">
+          <h2 className="text-heading !text-white mt-3 whitespace-nowrap">
             {t("title")}
           </h2>
 
@@ -201,15 +201,23 @@ export function BrandSection() {
 
           {/* 3문단 인사말 텍스트 */}
           <div ref={paragraphsRef} className="space-y-8 md:space-y-10 text-center">
-            <p className="text-lg md:text-xl text-white/85 leading-loose whitespace-pre-line">
-              {t("ceoGreeting.paragraph1")}
-            </p>
-            <p className="text-lg md:text-xl text-white/85 leading-loose whitespace-pre-line">
-              {t("ceoGreeting.paragraph2")}
-            </p>
-            <p className="text-lg md:text-xl text-white/85 leading-loose whitespace-pre-line">
-              {t("ceoGreeting.paragraph3")}
-            </p>
+            {[
+              t("ceoGreeting.paragraph1"),
+              t("ceoGreeting.paragraph2"),
+              t("ceoGreeting.paragraph3"),
+            ].map((paragraph, pIdx) => (
+              <p key={pIdx} className="text-white/85 leading-loose">
+                {paragraph.split("\n").map((line, lIdx) => (
+                  <span
+                    key={lIdx}
+                    className="block whitespace-nowrap"
+                    style={{ fontSize: "clamp(0.7rem, 3.35vw, 1.25rem)" }}
+                  >
+                    {line}
+                  </span>
+                ))}
+              </p>
+            ))}
           </div>
 
           {/* 닫는 따옴표 장식 아이콘 */}
