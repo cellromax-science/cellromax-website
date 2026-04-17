@@ -228,7 +228,7 @@ export default async function IrPage({ searchParams }: IrPageProps) {
         </AnimatedSection>
 
         <AnimatedSection direction="up">
-          <div className="flex flex-col items-start gap-4 mb-8">
+          <div className="flex flex-col items-center gap-4 mb-8">
             <IrCategoryFilter activeCategory={activeTab === "notice" ? null : activeTab} />
           </div>
 

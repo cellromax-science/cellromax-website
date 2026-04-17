@@ -33,7 +33,7 @@ export function IrCategoryFilter({ activeCategory }: IrCategoryFilterProps) {
   );
 
   return (
-    <div className="flex flex-wrap items-center justify-start gap-2">
+    <div className="flex flex-wrap items-center justify-center gap-2">
       {IR_TABS.map((tab) => {
         const isActive = currentTab === tab;
 
