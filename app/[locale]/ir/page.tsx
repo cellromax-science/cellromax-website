@@ -8,24 +8,14 @@ import { IrCategoryFilter } from "@/components/ir/IrCategoryFilter";
 import { IrPagination } from "@/components/ir/IrPagination";
 import { DartDisclosure } from "@/components/ir/DartDisclosure";
 import { EthicsCode } from "@/components/ir/EthicsCode";
+import { PostCard } from "@/components/newsroom/PostCard";
 import type { IrFile } from "@/types/ir";
+import type { Post } from "@/types/newsroom";
 import type { Metadata } from "next";
-
-/* ==========================================================================
-   IR Page — /[locale]/ir
-
-   Suspense 기반 Streaming:
-   - 헤더 + 탭 네비게이션은 즉시 렌더링
-   - DB 의존 카드 목록은 Suspense로 스트리밍
-   ========================================================================== */
 
 export const revalidate = 300;
 
-const FILES_PER_PAGE = 9;
-
-// ---------------------------------------------------------------------------
-// Metadata
-// ---------------------------------------------------------------------------
+const ITEMS_PER_PAGE = 9;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ir");
@@ -37,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: `/${locale}/ir`,
       languages: Object.fromEntries(
-        routing.locales.map((l) => [l, `/${l}/ir`])
+        routing.locales.map((l) => [l, `/${l}/ir`]),
       ),
     },
     openGraph: {
@@ -48,10 +38,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
-
-// ---------------------------------------------------------------------------
-// Card Grid Skeleton (Suspense fallback)
-// ---------------------------------------------------------------------------
 
 function CardGridSkeleton() {
   return (
@@ -73,15 +59,79 @@ function CardGridSkeleton() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Async Card List (Suspense boundary 내부)
-// ---------------------------------------------------------------------------
-
-async function IrFileList({
+async function NoticeList({
   page,
+  locale,
 }: {
   page: number;
+  locale: string;
 }) {
+  const t = await getTranslations("newsroom");
+  const supabase = createStaticClient();
+
+  const query = supabase
+    .from("posts")
+    .select(
+      "id, title_ko, title_en, title_zh, title_vi, content_ko, content_en, content_zh, content_vi, thumbnail_url, published_at, post_type, is_pinned, images, youtube_id",
+      { count: "exact" },
+    )
+    .eq("post_type", "notice")
+    .eq("is_active", true)
+    .order("is_pinned", { ascending: false })
+    .order("published_at", { ascending: false });
+
+  const from = (page - 1) * ITEMS_PER_PAGE;
+  const to = from + ITEMS_PER_PAGE - 1;
+  const { data: posts, count } = await query.range(from, to);
+
+  const totalCount = count ?? 0;
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const noticePosts = (posts as Post[]) ?? [];
+
+  return (
+    <>
+      <p className="text-sm text-gray-500 text-center mb-8">
+        {t("totalCount", { count: totalCount })}
+      </p>
+
+      {noticePosts.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {noticePosts.map((post) => (
+            <PostCard key={post.id} post={post} locale={locale} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <svg
+            className="size-16 text-gray-300 mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+            <path d="M18 14h-8" />
+            <path d="M15 18h-5" />
+            <path d="M10 6h8v4h-8V6Z" />
+          </svg>
+          <p className="text-gray-400">{t("notice.noItems")}</p>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="mt-12">
+          <IrPagination currentPage={page} totalPages={totalPages} />
+        </div>
+      )}
+    </>
+  );
+}
+
+async function IrFileList({ page }: { page: number }) {
   const t = await getTranslations("ir");
   const supabase = createStaticClient();
 
@@ -95,13 +145,12 @@ async function IrFileList({
     .eq("category", "announcement")
     .order("published_at", { ascending: false });
 
-  const from = (page - 1) * FILES_PER_PAGE;
-  const to = from + FILES_PER_PAGE - 1;
-
+  const from = (page - 1) * ITEMS_PER_PAGE;
+  const to = from + ITEMS_PER_PAGE - 1;
   const { data: files, count } = await query.range(from, to);
 
   const totalCount = count ?? 0;
-  const totalPages = Math.ceil(totalCount / FILES_PER_PAGE);
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const irFiles = (files as IrFile[]) ?? [];
 
   return (
@@ -140,19 +189,12 @@ async function IrFileList({
 
       {totalPages > 1 && (
         <div className="mt-12">
-          <IrPagination
-            currentPage={page}
-            totalPages={totalPages}
-          />
+          <IrPagination currentPage={page} totalPages={totalPages} />
         </div>
       )}
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Page Component
-// ---------------------------------------------------------------------------
 
 interface IrPageProps {
   searchParams: Promise<{
@@ -164,22 +206,19 @@ interface IrPageProps {
 export default async function IrPage({ searchParams }: IrPageProps) {
   const resolvedParams = await searchParams;
   const t = await getTranslations("ir");
+  const locale = await getLocale();
 
-  const activeTab = resolvedParams.category || "annual_report";
+  const activeTab = resolvedParams.category || "notice";
+  const currentPage = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
 
-  const currentPage = Math.max(
-    1,
-    parseInt(resolvedParams.page ?? "1", 10) || 1,
-  );
-
-  const isListTab = activeTab === "announcement";
+  const isNoticeTab = activeTab === "notice";
   const isDartTab = activeTab === "annual_report";
+  const isIrFileTab = activeTab === "announcement";
   const isEthicsTab = activeTab === "ethics";
 
   return (
     <section className="section bg-surface">
       <div className="container-site">
-        {/* ---- 즉시 렌더링: 헤더 + 탭 ---- */}
         <AnimatedSection>
           <div className="text-center mb-12">
             <h1 className="text-heading text-primary">{t("title")}</h1>
@@ -190,20 +229,22 @@ export default async function IrPage({ searchParams }: IrPageProps) {
 
         <AnimatedSection direction="up">
           <div className="flex flex-col items-center gap-4 mb-8">
-            <IrCategoryFilter
-              activeCategory={activeTab === "annual_report" ? null : activeTab}
-            />
+            <IrCategoryFilter activeCategory={activeTab === "notice" ? null : activeTab} />
           </div>
 
-          {/* ---- 스트리밍: DB 의존 컨텐츠 ---- */}
-
-          {isListTab && (
+          {isNoticeTab && (
             <Suspense fallback={<CardGridSkeleton />}>
-              <IrFileList page={currentPage} />
+              <NoticeList page={currentPage} locale={locale} />
             </Suspense>
           )}
 
           {isDartTab && <DartDisclosure />}
+
+          {isIrFileTab && (
+            <Suspense fallback={<CardGridSkeleton />}>
+              <IrFileList page={currentPage} />
+            </Suspense>
+          )}
 
           {isEthicsTab && <EthicsCode />}
         </AnimatedSection>

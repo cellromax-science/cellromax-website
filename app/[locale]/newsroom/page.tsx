@@ -10,23 +10,11 @@ import { NewsroomPagination } from "@/components/newsroom/NewsroomPagination";
 import type { Post, PostType } from "@/types/newsroom";
 import type { Metadata } from "next";
 
-/* ==========================================================================
-   Newsroom Page — /[locale]/newsroom
-
-   Suspense 기반 Streaming:
-   - 헤더 + 탭은 즉시 렌더링
-   - DB 의존 카드 목록은 Suspense로 스트리밍
-   ========================================================================== */
-
 export const revalidate = 300;
 
 const POSTS_PER_PAGE = 9;
 
-const VALID_TABS: PostType[] = ["notice", "news", "video"];
-
-// ---------------------------------------------------------------------------
-// Metadata
-// ---------------------------------------------------------------------------
+const VALID_TABS: PostType[] = ["news", "video"];
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("newsroom");
@@ -38,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: `/${locale}/newsroom`,
       languages: Object.fromEntries(
-        routing.locales.map((l) => [l, `/${l}/newsroom`])
+        routing.locales.map((l) => [l, `/${l}/newsroom`]),
       ),
     },
     openGraph: {
@@ -49,10 +37,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
-
-// ---------------------------------------------------------------------------
-// Card Grid Skeleton (Suspense fallback)
-// ---------------------------------------------------------------------------
 
 function CardGridSkeleton() {
   return (
@@ -76,10 +60,6 @@ function CardGridSkeleton() {
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Async Post List (Suspense boundary 내부)
-// ---------------------------------------------------------------------------
 
 async function PostList({
   tab,
@@ -153,19 +133,12 @@ async function PostList({
 
       {totalPages > 1 && (
         <div className="mt-12">
-          <NewsroomPagination
-            currentPage={page}
-            totalPages={totalPages}
-          />
+          <NewsroomPagination currentPage={page} totalPages={totalPages} />
         </div>
       )}
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Page Component
-// ---------------------------------------------------------------------------
 
 interface NewsroomPageProps {
   searchParams: Promise<{
@@ -183,17 +156,13 @@ export default async function NewsroomPage({ searchParams }: NewsroomPageProps) 
   const activeTab: PostType =
     rawTab && VALID_TABS.includes(rawTab as PostType)
       ? (rawTab as PostType)
-      : "notice";
+      : "news";
 
-  const currentPage = Math.max(
-    1,
-    parseInt(resolvedParams.page ?? "1", 10) || 1,
-  );
+  const currentPage = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
 
   return (
     <section className="section bg-surface">
       <div className="container-site">
-        {/* ---- 즉시 렌더링: 헤더 + 탭 ---- */}
         <AnimatedSection>
           <div className="text-center mb-12">
             <h1 className="text-heading text-primary">{t("title")}</h1>
@@ -208,7 +177,6 @@ export default async function NewsroomPage({ searchParams }: NewsroomPageProps) 
           </div>
         </AnimatedSection>
 
-        {/* ---- 스트리밍: DB 의존 카드 목록 ---- */}
         <AnimatedSection direction="up">
           <Suspense fallback={<CardGridSkeleton />}>
             <PostList tab={activeTab} page={currentPage} locale={locale} />

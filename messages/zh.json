@@ -167,6 +167,7 @@
     },
     "categories": {
       "all": "全部",
+      "notice": "公告",
       "announcement": "公示资料",
       "annual_report": "年度报告",
       "presentation": "IR演示资料",
