@@ -3,13 +3,11 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { createStaticClient } from "@/lib/supabase/server";
 import { AnimatedSection } from "@/components/products/AnimatedSection";
-import { IrFileCard } from "@/components/ir/IrFileCard";
 import { IrCategoryFilter } from "@/components/ir/IrCategoryFilter";
 import { IrPagination } from "@/components/ir/IrPagination";
 import { DartDisclosure } from "@/components/ir/DartDisclosure";
 import { EthicsCode } from "@/components/ir/EthicsCode";
 import { PostCard } from "@/components/newsroom/PostCard";
-import type { IrFile } from "@/types/ir";
 import type { Post } from "@/types/newsroom";
 import type { Metadata } from "next";
 
@@ -131,68 +129,119 @@ async function NoticeList({
   );
 }
 
-async function IrFileList({ page }: { page: number }) {
-  const t = await getTranslations("ir");
+async function IrFileSingle() {
   const supabase = createStaticClient();
 
-  const query = supabase
+  const { data: file } = await supabase
     .from("ir_files")
-    .select(
-      "id, title, category, thumbnail_url, published_at, file_size, file_type",
-      { count: "exact" },
-    )
+    .select("id, title, file_url, file_name, file_size, content")
     .eq("is_active", true)
     .eq("category", "announcement")
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .limit(1)
+    .single();
 
-  const from = (page - 1) * ITEMS_PER_PAGE;
-  const to = from + ITEMS_PER_PAGE - 1;
-  const { data: files, count } = await query.range(from, to);
+  if (!file) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <svg
+          className="size-16 text-gray-300 mb-4"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+          <path d="M14 2v6h6" />
+          <path d="M12 18v-6" />
+          <path d="m9 15 3-3 3 3" />
+        </svg>
+        <p className="text-gray-400">등록된 자료가 없습니다.</p>
+      </div>
+    );
+  }
 
-  const totalCount = count ?? 0;
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-  const irFiles = (files as IrFile[]) ?? [];
+  const fileName = file.file_name || file.title;
+  const fileSizeLabel = file.file_size
+    ? file.file_size >= 1024 * 1024
+      ? `${(file.file_size / (1024 * 1024)).toFixed(1)} MB`
+      : `${Math.round(file.file_size / 1024)} KB`
+    : null;
 
   return (
-    <>
-      <p className="text-sm text-gray-500 text-center mb-8">
-        {t("files.title")} {totalCount}
-      </p>
+    <div className="w-full max-w-3xl mx-auto">
+      {/* 제목 */}
+      <div className="border-t-2 border-primary mb-8">
+        <div className="bg-gray-50 px-6 py-4">
+          <h2 className="text-lg font-bold text-gray-900">{file.title}</h2>
+        </div>
+        <div className="border-b border-gray-200" />
+      </div>
 
-      {irFiles.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {irFiles.map((file) => (
-            <IrFileCard key={file.id} file={file} />
+      {/* 본문 */}
+      {file.content && (
+        <div className="px-2 space-y-6 text-gray-700 leading-relaxed mb-10">
+          {file.content.split("\n").map((line: string, i: number) => (
+            <p key={i}>{line}</p>
           ))}
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <svg
-            className="size-16 text-gray-300 mb-4"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-            <path d="M14 2v6h6" />
-            <path d="M12 18v-6" />
-            <path d="m9 15 3-3 3 3" />
-          </svg>
-          <p className="text-gray-400">{t("files.noFiles")}</p>
-        </div>
       )}
 
-      {totalPages > 1 && (
-        <div className="mt-12">
-          <IrPagination currentPage={page} totalPages={totalPages} />
+      {/* 파일 다운로드 */}
+      <div className="mt-4 p-5 squircle-xl border border-gray-200 bg-gray-50/50">
+        <div className="flex items-center gap-4">
+          <div className="shrink-0">
+            <svg
+              className="size-10 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+              <path d="M14 2v6h6" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <a
+              href={file.file_url}
+              download={fileName}
+              className="text-sm font-semibold text-gray-900 hover:text-primary transition-colors"
+            >
+              {fileName}
+            </a>
+            {fileSizeLabel && (
+              <p className="text-xs text-gray-400 mt-0.5">{fileSizeLabel}</p>
+            )}
+          </div>
+          <a
+            href={file.file_url}
+            download={fileName}
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <svg
+              className="size-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+            </svg>
+            다운로드
+          </a>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }
 
@@ -242,7 +291,7 @@ export default async function IrPage({ searchParams }: IrPageProps) {
 
           {isIrFileTab && (
             <Suspense fallback={<CardGridSkeleton />}>
-              <IrFileList page={currentPage} />
+              <IrFileSingle />
             </Suspense>
           )}
 
