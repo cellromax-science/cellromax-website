@@ -183,6 +183,10 @@ export default async function NewsroomDetailPage({
   const content = getLocalizedField(post, "content", locale);
   const thumbnailSrc =
     post.thumbnail_url || (post.images.length > 0 ? post.images[0] : null);
+  const isNoticePost = post.post_type === "notice";
+  const listHref = isNoticePost ? "/ir" : `/newsroom?tab=${post.post_type}`;
+  const sectionName = isNoticePost ? tNav("ir") : tNav("newsroom");
+  const sectionUrl = isNoticePost ? "/ir" : "/newsroom";
 
   /* ---- JSON-LD 구조화 데이터 ---- */
   const articleDescription = content ? content.replace(/<[^>]*>/g, "").slice(0, 160) : undefined;
@@ -190,7 +194,7 @@ export default async function NewsroomDetailPage({
   const crumbJsonLd = breadcrumbJsonLd(
     [
       { name: tNav("home"), url: "/" },
-      { name: tNav("newsroom"), url: "/newsroom" },
+      { name: sectionName, url: sectionUrl },
       { name: title },
     ],
     locale,
@@ -279,7 +283,7 @@ export default async function NewsroomDetailPage({
         {/* Back to list */}
         <AnimatedSection>
           <Link
-            href={`/newsroom?tab=${post.post_type}`}
+            href={listHref}
             className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary mb-8 transition-colors"
           >
             <svg

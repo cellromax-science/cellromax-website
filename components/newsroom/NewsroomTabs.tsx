@@ -5,31 +5,11 @@ import { useRouter, usePathname } from "@/lib/i18n/navigation";
 import { useTranslations } from "next-intl";
 import type { PostType } from "@/types/newsroom";
 
-/* ==========================================================================
-   NewsroomTabs — 뉴스룸 카테고리 탭 전환
-   IrCategoryFilter.tsx 패턴 기반, URL searchParams 연동
-   pill 스타일 버튼으로 notice / news / video 탭 전환
-   탭 변경 시 page 파라미터 초기화
-   ========================================================================== */
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-const POST_TYPES: PostType[] = ["notice", "news", "video"];
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+const POST_TYPES: PostType[] = ["news", "video"];
 
 interface NewsroomTabsProps {
-  /** 현재 활성 탭 (URL에서 파싱) */
   activeTab: PostType;
 }
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export function NewsroomTabs({ activeTab }: NewsroomTabsProps) {
   const router = useRouter();
@@ -38,7 +18,6 @@ export function NewsroomTabs({ activeTab }: NewsroomTabsProps) {
 
   const handleTabChange = useCallback(
     (tab: PostType) => {
-      /* 탭 변경 시 page 파라미터 초기화 — tab만 설정 */
       const params = new URLSearchParams();
       params.set("tab", tab);
       const queryString = params.toString();
@@ -75,9 +54,5 @@ export function NewsroomTabs({ activeTab }: NewsroomTabsProps) {
     </div>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Type Exports
-// ---------------------------------------------------------------------------
 
 export type { NewsroomTabsProps };

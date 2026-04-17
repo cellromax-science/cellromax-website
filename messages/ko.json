@@ -165,6 +165,7 @@
       "noFiles": "등록된 자료가 없습니다."
     },
     "categories": {
+      "notice": "공지사항",
       "announcement": "IR자료실",
       "annual_report": "전자공시",
       "ethics": "윤리강령",

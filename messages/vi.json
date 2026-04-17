@@ -167,6 +167,7 @@
     },
     "categories": {
       "all": "Tất cả",
+      "notice": "Thông báo",
       "announcement": "Tài liệu công bố",
       "annual_report": "Báo cáo thường niên",
       "presentation": "Tài liệu trình bày IR",

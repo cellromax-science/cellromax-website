@@ -3,48 +3,28 @@
 import { useCallback } from "react";
 import { useRouter, usePathname } from "@/lib/i18n/navigation";
 import { useTranslations } from "next-intl";
-import type { IrCategory } from "@/types/ir";
 
-/* ==========================================================================
-   IrCategoryFilter — IR 탭 네비게이션
+type IrTab = "notice" | "annual_report" | "announcement" | "ethics";
 
-   탭 구조:
-   - IR자료실 (announcement) — 카드 목록
-   - 전자공시 (annual_report) — DART iframe 페이지
-   - 윤리강령 (ethics)       — 텍스트 + 파일 다운로드
-   ========================================================================== */
-
-const IR_TABS: (IrCategory | "ethics")[] = [
-  "annual_report",   // 전자공시
-  "announcement",    // IR자료실
-  "ethics",          // 윤리강령
-];
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+const IR_TABS: IrTab[] = ["notice", "annual_report", "announcement", "ethics"];
 
 interface IrCategoryFilterProps {
   activeCategory: string | null;
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
-export function IrCategoryFilter({
-  activeCategory,
-}: IrCategoryFilterProps) {
+export function IrCategoryFilter({ activeCategory }: IrCategoryFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("ir");
 
-  const currentTab = activeCategory || "annual_report";
+  const currentTab = activeCategory || "notice";
 
   const handleTabChange = useCallback(
     (tab: string) => {
       const params = new URLSearchParams();
-      if (tab !== "annual_report") params.set("category", tab);
+      if (tab !== "notice") {
+        params.set("category", tab);
+      }
       const queryString = params.toString();
       const url = queryString ? `${pathname}?${queryString}` : pathname;
       router.push(url);
@@ -53,9 +33,10 @@ export function IrCategoryFilter({
   );
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2">
+    <div className="flex flex-wrap items-center justify-start gap-2">
       {IR_TABS.map((tab) => {
         const isActive = currentTab === tab;
+
         return (
           <button
             key={tab}
