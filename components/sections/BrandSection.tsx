@@ -48,22 +48,6 @@ const CERTIFICATIONS: CertificationItem[] = [
 // SVG Icons (인라인)
 // ---------------------------------------------------------------------------
 
-/** 큰 따옴표 장식 아이콘 — CEO 인사말 상단 */
-function QuoteIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="48"
-      height="48"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M11.3 2.7c-.4-.4-1-.5-1.5-.2C5.3 5.2 2 9.5 2 14.5 2 18.6 4.5 21 7.5 21c2.5 0 4.5-2 4.5-4.5 0-2.3-1.8-4.2-4-4.5.3-2.5 2-4.8 4.2-6.4.5-.4.6-1 .2-1.5l-1.1-1.4zM22.3 2.7c-.4-.4-1-.5-1.5-.2C16.3 5.2 13 9.5 13 14.5c0 4.1 2.5 6.5 5.5 6.5 2.5 0 4.5-2 4.5-4.5 0-2.3-1.8-4.2-4-4.5.3-2.5 2-4.8 4.2-6.4.5-.4.6-1 .2-1.5l-1.1-1.4z" />
-    </svg>
-  );
-}
 
 /** ISO 인증 아이콘 — 체크마크 서클 */
 function CertCheckIcon({ className }: { className?: string }) {
@@ -159,8 +143,7 @@ export function BrandSection() {
 
   // ----- useScrollFadeIn refs -----
   const headerRef = useScrollFadeIn({ direction: "up" });
-  const quoteRef = useScrollFadeIn({ direction: "up", duration: 1 });
-  const paragraphsRef = useScrollFadeIn({ direction: "up", stagger: 0.2 });
+const paragraphsRef = useScrollFadeIn({ direction: "up", stagger: 0.2 });
   const signatureRef = useScrollFadeIn({ direction: "up" });
   const certHeaderRef = useScrollFadeIn({ direction: "up" });
   const certGridRef = useScrollFadeIn({ direction: "up", stagger: 0.1 });
@@ -194,11 +177,6 @@ export function BrandSection() {
             2. CEO 인사말 영역
             ================================================================ */}
         <div className="max-w-3xl mx-auto mb-20 md:mb-24">
-          {/* 큰 따옴표 장식 아이콘 */}
-          <div ref={quoteRef} className="mb-8">
-            <QuoteIcon className="text-secondary/60" />
-          </div>
-
           {/* 3문단 인사말 텍스트 */}
           <div ref={paragraphsRef} className="space-y-8 md:space-y-10 text-center">
             {[
@@ -218,11 +196,6 @@ export function BrandSection() {
                 ))}
               </p>
             ))}
-          </div>
-
-          {/* 닫는 따옴표 장식 아이콘 */}
-          <div className="mt-8 flex justify-end">
-            <QuoteIcon className="text-secondary/60 rotate-180" />
           </div>
 
           {/* 서명 영역 */}
