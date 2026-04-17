@@ -58,6 +58,14 @@ function extractLocale(pathname: string): string {
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const host = request.headers.get('host')?.split(':')[0] ?? ''
+
+  if (host === 'cellromax.kr') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.hostname = 'www.cellromax.kr'
+    redirectUrl.protocol = 'https'
+    return NextResponse.redirect(redirectUrl, 308)
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // API / ttsyrup 경로 조기 반환
