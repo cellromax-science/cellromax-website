@@ -5,6 +5,7 @@ import {
   PRODUCT_CARD_SELECT,
   PRODUCT_SUBCATEGORY_FILTER_SELECT,
 } from "@/lib/products";
+import { buildSearchTagFilter } from "@/lib/product-search";
 import { createStaticClient } from "@/lib/supabase/server";
 import { ProductFilter } from "@/components/products/ProductFilter";
 import { ProductSearchBar } from "@/components/products/ProductSearchBar";
@@ -243,6 +244,10 @@ async function ProductContent({
       .or(subcategoryFilters.join(","));
 
     const orFilters = buildIlikeFilters(PRODUCT_SEARCH_FIELDS, keyword);
+    const searchTagFilter = buildSearchTagFilter(keyword);
+    if (searchTagFilter) {
+      orFilters.push(searchTagFilter);
+    }
 
     if (matchedCategories.length > 0) {
       orFilters.push(`category.in.(${matchedCategories.join(",")})`);

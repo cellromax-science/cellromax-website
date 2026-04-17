@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { toast } from "@/components/ui/Toast";
+import { joinSearchTags, splitSearchTags } from "@/lib/product-search";
 
 import type {
   Product,
@@ -171,6 +172,10 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   const [categorySortOrder, setCategorySortOrder] = useState(
     String(initialData?.category_sort_order ?? 0)
   );
+  const [searchTags, setSearchTags] = useState<string[]>(
+    initialData?.search_tags ? splitSearchTags(initialData.search_tags) : []
+  );
+  const [searchTagInput, setSearchTagInput] = useState("");
 
   // 이미지
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
@@ -361,6 +366,30 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
     []
   );
 
+  const addSearchTags = useCallback(() => {
+    const nextTags = splitSearchTags(searchTagInput);
+    if (nextTags.length === 0) {
+      return;
+    }
+
+    setSearchTags((prev) => Array.from(new Set([...prev, ...nextTags])));
+    setSearchTagInput("");
+  }, [searchTagInput]);
+
+  const removeSearchTag = useCallback((index: number) => {
+    setSearchTags((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const handleSearchTagKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" || e.key === ",") {
+        e.preventDefault();
+        addSearchTags();
+      }
+    },
+    [addSearchTags],
+  );
+
   // --------------------------------------------------------------------------
   // Gallery Image Handlers
   // --------------------------------------------------------------------------
@@ -450,6 +479,12 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
 
   const buildRequestBody = useCallback(
     (overrideActive?: boolean) => {
+      const combinedSearchTags = Array.from(
+        new Set([
+          ...searchTags,
+          ...splitSearchTags(searchTagInput),
+        ])
+      );
       // 갤러리 이미지: null 제거, 유효한 URL만 전송
       const validImages = galleryImages.filter(
         (url): url is string => url != null && url.trim() !== ""
@@ -493,6 +528,8 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         other_info_en: emptyToNull(otherInfoEn),
         other_info_zh: emptyToNull(otherInfoZh),
         other_info_vi: emptyToNull(otherInfoVi),
+        search_tags:
+          combinedSearchTags.length > 0 ? joinSearchTags(combinedSearchTags) : null,
         is_active: overrideActive ?? isActive,
         is_new: isNew,
         price: parseInt(price, 10) || 0,
@@ -533,6 +570,8 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
       otherInfoEn,
       otherInfoZh,
       otherInfoVi,
+      searchTags,
+      searchTagInput,
       isActive,
       isNew,
       price,
@@ -734,6 +773,57 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
             }
             disabled={!category || isLoadingSubcategories}
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            검색 태그
+          </label>
+          <p className="mb-2 text-xs text-gray-400">
+            검색어와 연결할 태그를 쉼표로 구분해 넣어주세요. 예: 키즈, 어린이, 시럽
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Input
+              value={searchTagInput}
+              onChange={(e) => setSearchTagInput(e.target.value)}
+              onKeyDown={handleSearchTagKeyDown}
+              onBlur={() => {
+                if (searchTagInput.trim()) {
+                  addSearchTags();
+                }
+              }}
+              placeholder="태그 입력 후 Enter"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="md"
+              onClick={addSearchTags}
+              disabled={!searchTagInput.trim()}
+            >
+              추가
+            </Button>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {searchTags.length > 0 ? (
+              searchTags.map((tag, index) => (
+                <button
+                  key={`${tag}-${index}`}
+                  type="button"
+                  onClick={() => removeSearchTag(index)}
+                  className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors hover:border-primary hover:text-primary"
+                >
+                  <span>{tag}</span>
+                  <span aria-hidden="true">×</span>
+                </button>
+              ))
+            ) : (
+              <span className="text-xs text-gray-400">
+                아직 등록된 검색 태그가 없습니다.
+              </span>
+            )}
+          </div>
         </div>
 
         {/* URL 슬러그 (고급 설정) */}

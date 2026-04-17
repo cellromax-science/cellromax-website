@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { ADMIN_PRODUCT_LIST_SELECT } from '@/lib/products'
+import { buildSearchTagFilter } from '@/lib/product-search'
 import { getUser } from '@/lib/supabase/auth'
 import { getAdminProfile } from '@/lib/supabase/admin'
 import type { ProductInsert } from '@/types/product'
@@ -50,14 +51,18 @@ export async function GET(request: NextRequest) {
       .select(ADMIN_PRODUCT_LIST_SELECT, { count: 'exact' })
 
     if (search) {
-      query = query.or(
-        [
-          `name_ko.ilike.%${search}%`,
-          `name_en.ilike.%${search}%`,
-          `name_zh.ilike.%${search}%`,
-          `name_vi.ilike.%${search}%`,
-        ].join(',')
-      )
+      const searchFilters = [
+        `name_ko.ilike.%${search}%`,
+        `name_en.ilike.%${search}%`,
+        `name_zh.ilike.%${search}%`,
+        `name_vi.ilike.%${search}%`,
+      ]
+      const searchTagFilter = buildSearchTagFilter(search)
+      if (searchTagFilter) {
+        searchFilters.push(searchTagFilter)
+      }
+
+      query = query.or(searchFilters.join(','))
     }
 
     if (category) {

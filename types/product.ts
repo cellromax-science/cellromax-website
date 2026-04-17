@@ -55,6 +55,7 @@ export interface Product {
   other_info_en: string | null;
   other_info_zh: string | null;
   other_info_vi: string | null;
+  search_tags: string | null;
   price: number;
   is_active: boolean;
   is_new: boolean;
@@ -100,6 +101,7 @@ export interface ProductInsert {
   other_info_en?: string | null;
   other_info_zh?: string | null;
   other_info_vi?: string | null;
+  search_tags?: string | null;
   price?: number;
   is_active?: boolean;
   is_new?: boolean;
