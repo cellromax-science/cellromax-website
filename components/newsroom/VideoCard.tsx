@@ -94,9 +94,9 @@ function PlayIcon() {
  */
 export function VideoCard({ post, locale }: VideoCardProps) {
   const title = getLocalizedTitle(post, locale);
-  const thumbnailSrc = post.youtube_id
-    ? getYouTubeThumbnail(post.youtube_id)
-    : null;
+  const thumbnailSrc =
+    post.thumbnail_url ||
+    (post.youtube_id ? getYouTubeThumbnail(post.youtube_id) : null);
 
   return (
     <Link
@@ -116,6 +116,7 @@ export function VideoCard({ post, locale }: VideoCardProps) {
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               quality={75}
+              unoptimized
               className="object-cover transition-transform duration-[250ms] ease-[var(--ease-default)] group-hover:scale-105"
             />
           ) : (
