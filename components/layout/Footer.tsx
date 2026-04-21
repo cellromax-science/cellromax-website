@@ -12,6 +12,7 @@ const quickLinks = [
 
 const legalLinks = [
   { labelKey: "privacy" as const, href: "/privacy" },
+  { labelKey: "internal_regulation" as const, href: "/internal-info-regulation" },
 ] as const;
 
 /* ==========================================================================
