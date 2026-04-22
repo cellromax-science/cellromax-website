@@ -1,33 +1,24 @@
-import { cache } from "react";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/lib/i18n/routing";
 import { createStaticClient } from "@/lib/supabase/server";
 import { Link } from "@/lib/i18n/navigation";
-import { Badge, getCategoryBadgeVariant, getCategoryLabel } from "@/components/ui/Badge";
+import {
+  Badge,
+  getCategoryBadgeVariant,
+  getCategoryLabel,
+} from "@/components/ui/Badge";
 import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
-import { AnimatedSection } from "@/components/products/AnimatedSection";
 import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
-
 import { JsonLd } from "@/components/seo/JsonLd";
 import { productJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import type { Product, ProductCategory } from "@/types/product";
 import type { Metadata } from "next";
 
-/* ==========================================================================
-   Product Detail Page — /[locale]/products/[slug]
-
-   제품 상세 페이지 (서버 컴포넌트).
-   - Supabase에서 slug 기반 단일 제품 패칭
-   - 카테고리별 탭 라벨 분기 처리
-   - 이미지 갤러리 + 정보 탭 + 약국 모달 + 상세 이미지
-   ========================================================================== */
-
-// 1분 ISR — 관리자가 제품을 수정하면 최대 1분 후 반영
 export const revalidate = 60;
 
-// 빌드 시 모든 로케일 × 제품 slug 조합을 미리 생성
 export async function generateStaticParams() {
   const supabase = createStaticClient();
   const { data: products } = await supabase
@@ -42,10 +33,6 @@ export async function generateStaticParams() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 type LocaleCode = "ko" | "en" | "zh" | "vi";
 
 type LocalizedFieldPrefix =
@@ -55,9 +42,6 @@ type LocalizedFieldPrefix =
   | "how_to_use"
   | "other_info";
 
-/**
- * 로케일별 필드 값 반환. 해당 로케일 값이 없으면 _ko 폴백.
- */
 function getLocalizedField(
   product: Product,
   field: LocalizedFieldPrefix,
@@ -68,7 +52,6 @@ function getLocalizedField(
   const value = product[key] as string | null;
   if (value) return value;
 
-  // ko 폴백
   if (localeCode !== "ko") {
     const fallbackKey = `${field}_ko` as keyof Product;
     return (product[fallbackKey] as string | null) || null;
@@ -76,9 +59,6 @@ function getLocalizedField(
   return null;
 }
 
-/**
- * 서브카테고리의 로케일별 이름 반환. 해당 로케일 값이 없으면 name_ko 폴백.
- */
 function getSubcategoryName(
   subcategory: Product["product_subcategories"],
   locale: string,
@@ -88,31 +68,20 @@ function getSubcategoryName(
   return (subcategory[key] as string | null) || subcategory.name_ko;
 }
 
-// ---------------------------------------------------------------------------
-// Tab Configuration by Category
-// ---------------------------------------------------------------------------
-
-/**
- * 카테고리별 탭 구성을 결정한다.
- * 서버에서 라벨을 결정하여 클라이언트 컴포넌트에 전달.
- */
 function buildDetailSections(
   product: Product,
   locale: string,
   t: Awaited<ReturnType<typeof getTranslations>>,
 ) {
   const category = product.category;
-
   const sections: { key: string; label: string; content: string | null }[] = [];
 
-  // 1. 주요성분 (모든 카테고리)
   sections.push({
     key: "ingredients",
     label: t("ingredients"),
     content: getLocalizedField(product, "ingredients", locale),
   });
 
-  // 2. 기능성/효능효과 (카테고리별 분기)
   if (category === "health_functional") {
     sections.push({
       key: "functionality",
@@ -126,9 +95,7 @@ function buildDetailSections(
       content: getLocalizedField(product, "functionality", locale),
     });
   }
-  // general_food, cosmetic, nutra_pet → 기능성 탭 없음
 
-  // 3. 복용/사용방법 (카테고리별 라벨 분기)
   const howToUseLabels: Record<ProductCategory, string> = {
     health_functional: t("intakeMethod"),
     general_food: t("intakeMethod"),
@@ -144,7 +111,6 @@ function buildDetailSections(
     content: getLocalizedField(product, "how_to_use", locale),
   });
 
-  // 4. 기타 정보 (모든 카테고리)
   sections.push({
     key: "otherInfo",
     label: t("otherInfo"),
@@ -154,28 +120,20 @@ function buildDetailSections(
   return sections.filter((section) => section.content !== null);
 }
 
-// ---------------------------------------------------------------------------
-// Data Fetching (React cache — per-request dedup)
-// ---------------------------------------------------------------------------
-
-/**
- * 동일 요청 내에서 generateMetadata와 Page 컴포넌트가 같은 slug를 조회할 때
- * React cache()로 Supabase 쿼리를 1회만 실행한다.
- */
-const getProduct = cache(async (slug: string) => {
-  const supabase = createStaticClient();
-  const { data } = await supabase
-    .from("products")
-    .select("*, product_subcategories(*)")
-    .eq("slug", slug)
-    .eq("is_active", true)
-    .single();
-  return data as Product | null;
-});
-
-// ---------------------------------------------------------------------------
-// Metadata
-// ---------------------------------------------------------------------------
+const getProduct = unstable_cache(
+  async (slug: string) => {
+    const supabase = createStaticClient();
+    const { data } = await supabase
+      .from("products")
+      .select("*, product_subcategories(*)")
+      .eq("slug", slug)
+      .eq("is_active", true)
+      .single();
+    return data as Product | null;
+  },
+  ["product-detail"],
+  { revalidate: 60 },
+);
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -206,35 +164,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// ---------------------------------------------------------------------------
-// Page Component
-// ---------------------------------------------------------------------------
-
 export default async function ProductDetailPage({ params }: PageProps) {
   const { locale: paramLocale, slug } = await params;
   setRequestLocale(paramLocale);
 
   const locale = paramLocale;
-  const t = await getTranslations("products.detail");
-  const tNav = await getTranslations("nav");
-
-  /* ---- Fetch product (cache hit if generateMetadata already called) ---- */
   const decodedSlug = decodeURIComponent(slug);
-  const product = await getProduct(decodedSlug);
+  const [t, tNav, product] = await Promise.all([
+    getTranslations("products.detail"),
+    getTranslations("nav"),
+    getProduct(decodedSlug),
+  ]);
 
   if (!product) {
     console.error("[ProductDetailPage] slug:", decodedSlug, "| not found");
     notFound();
   }
 
-  /* ---- Localized fields ---- */
   const productName = getLocalizedField(product, "name", locale) ?? product.name_ko;
   const subcategoryName = getSubcategoryName(product.product_subcategories, locale);
-
-  /* ---- Build detail sections ---- */
   const detailSections = buildDetailSections(product, locale, t);
-
-  /* ---- JSON-LD 구조화 데이터 ---- */
   const description = getLocalizedField(product, "ingredients", locale);
 
   return (
@@ -252,157 +201,144 @@ export default async function ProductDetailPage({ params }: PageProps) {
       />
       <div className="container-site">
         <div className="container-product-detail">
-        {/* ---- Breadcrumb (above-fold: 즉시 표시) ---- */}
-        <nav
-          aria-label="breadcrumb"
-          className="mb-8 text-sm text-gray-500"
-        >
-          <ol className="flex items-center gap-1.5 flex-wrap">
-            <li>
-              <Link href="/" className="hover:text-primary transition-colors">
-                {tNav("home")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="text-gray-300">/</li>
-            <li>
-              <Link href="/products" className="hover:text-primary transition-colors">
-                {tNav("products")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="text-gray-300">/</li>
-            <li className="text-primary font-medium truncate max-w-[200px]">
-              {productName}
-            </li>
-          </ol>
-        </nav>
+          <nav aria-label="breadcrumb" className="mb-8 text-sm text-gray-500">
+            <ol className="flex items-center gap-1.5 flex-wrap">
+              <li>
+                <Link href="/" className="hover:text-primary transition-colors">
+                  {tNav("home")}
+                </Link>
+              </li>
+              <li aria-hidden="true" className="text-gray-300">/</li>
+              <li>
+                <Link href="/products" className="hover:text-primary transition-colors">
+                  {tNav("products")}
+                </Link>
+              </li>
+              <li aria-hidden="true" className="text-gray-300">/</li>
+              <li className="text-primary font-medium truncate max-w-[200px]">
+                {productName}
+              </li>
+            </ol>
+          </nav>
 
-        {/* ---- 2-Column Grid (above-fold: 즉시 표시) ---- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Left: Image Gallery */}
-          <div>
-            <ProductImageGallery
-              images={product.images}
-              productName={productName}
-              thumbnailUrl={product.thumbnail_url}
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div>
+              <ProductImageGallery
+                images={product.images}
+                productName={productName}
+                thumbnailUrl={product.thumbnail_url}
+              />
+            </div>
 
-          {/* Right: Product Info */}
-          <div>
-            <div className="space-y-6">
-              {/* Badges */}
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant={getCategoryBadgeVariant(product.category)}>
-                  {getCategoryLabel(product.category)}
-                </Badge>
-                {subcategoryName && (
-                  <Badge variant="outline">{subcategoryName}</Badge>
-                )}
-                {product.is_new && (
-                  <Badge variant="error" dot>NEW</Badge>
+            <div>
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant={getCategoryBadgeVariant(product.category)}>
+                    {getCategoryLabel(product.category)}
+                  </Badge>
+                  {subcategoryName && <Badge variant="outline">{subcategoryName}</Badge>}
+                  {product.is_new && (
+                    <Badge variant="error" dot>
+                      NEW
+                    </Badge>
+                  )}
+                </div>
+
+                <h1 className="text-2xl md:text-3xl font-bold text-primary leading-tight">
+                  {productName}
+                </h1>
+
+                <div className="divider-gold" />
+
+                {detailSections.length > 0 && (
+                  <div className="space-y-6">
+                    {detailSections.map((section, index) => (
+                      <section
+                        key={section.key}
+                        className={index === 0 ? "" : "border-t border-gray-200 pt-6"}
+                      >
+                        <h2 className="text-base md:text-lg font-semibold text-primary">
+                          {section.label}
+                        </h2>
+                        <p className="mt-3 text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {section.content}
+                        </p>
+                      </section>
+                    ))}
+                  </div>
                 )}
               </div>
-
-              {/* Product Name */}
-              <h1 className="text-2xl md:text-3xl font-bold text-primary leading-tight">
-                {productName}
-              </h1>
-
-              {/* Gold Divider */}
-              <div className="divider-gold" />
-
-              {/* Detail Sections */}
-              {detailSections.length > 0 && (
-                <div className="space-y-6">
-                  {detailSections.map((section, index) => (
-                    <section
-                      key={section.key}
-                      className={index === 0 ? "" : "border-t border-gray-200 pt-6"}
-                    >
-                      <h2 className="text-base md:text-lg font-semibold text-primary">
-                        {section.label}
-                      </h2>
-                      <p className="mt-3 text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {section.content}
-                      </p>
-                    </section>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
-        </div>
 
-        {/* ---- Nearby Pharmacy Button + Detail Image ---- */}
-        <AnimatedSection direction="up" className="mt-16 space-y-8">
-          {/* Pharmacy Button */}
-          <div className="flex justify-center">
-            <NearbyPharmacyModal />
-          </div>
+          <div className="mt-16 space-y-8">
+            <div className="flex justify-center">
+              <NearbyPharmacyModal />
+            </div>
 
-          {/* Detail Section: 로케일별 HTML 우선, 없으면 ko → 구 detail_html → 이미지형 fallback */}
-          {(() => {
-            const detailHtml =
-              (product[`detail_html_${locale}` as keyof Product] as string | null) ||
-              product.detail_html_ko ||
-              product.detail_html;
-            if (detailHtml) return <HtmlDetailFrame html={detailHtml} />;
-            if (product.detail_image_url) return (
+            {(() => {
+              const detailHtml =
+                (product[`detail_html_${locale}` as keyof Product] as string | null) ||
+                product.detail_html_ko ||
+                product.detail_html;
+
+              if (detailHtml) return <HtmlDetailFrame html={detailHtml} />;
+              if (product.detail_image_url) {
+                return (
+                  <div className="flex justify-center">
+                    <div className="inline-block max-w-full squircle-xl overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={product.detail_image_url}
+                        alt={`${productName} - detail`}
+                        className="block w-auto h-auto max-w-full"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+
+            {product.nutrition_image_url && (
               <div className="flex justify-center">
                 <div className="inline-block max-w-full squircle-xl overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={product.detail_image_url}
-                    alt={`${productName} - detail`}
+                    src={product.nutrition_image_url}
+                    alt={`${productName} - nutrition`}
                     className="block w-auto h-auto max-w-full"
                     loading="eager"
                     decoding="async"
                   />
                 </div>
               </div>
-            );
-            return null;
-          })()}
+            )}
+          </div>
 
-          {/* Nutrition Image (영양정보) */}
-          {product.nutrition_image_url && (
-            <div className="flex justify-center">
-              <div className="inline-block max-w-full squircle-xl overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.nutrition_image_url}
-                  alt={`${productName} - nutrition`}
-                  className="block w-auto h-auto max-w-full"
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
-            </div>
-          )}
-        </AnimatedSection>
-
-        {/* ---- Back to List ---- */}
-        <AnimatedSection direction="up" className="mt-12 flex justify-center">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 px-6 py-3 squircle-md border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="size-4"
-              aria-hidden="true"
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 px-6 py-3 squircle-md border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors duration-150"
             >
-              <path
-                fillRule="evenodd"
-                d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {t("backToList")}
-          </Link>
-        </AnimatedSection>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="size-4"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {t("backToList")}
+            </Link>
+          </div>
         </div>
       </div>
     </section>

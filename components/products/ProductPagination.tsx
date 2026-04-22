@@ -36,17 +36,23 @@ export function ProductPagination({
       }
       const queryString = params.toString();
       const url = queryString ? `${pathname}?${queryString}` : pathname;
+      window.scrollTo({ top: 0, behavior: "smooth" });
       router.push(url);
     },
     [router, pathname, searchParams],
   );
 
   return (
-    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-      className="justify-center"
-    />
+    <div className="flex flex-col items-center gap-4">
+      <p className="text-sm text-gray-500">
+        Page {currentPage} of {totalPages}
+      </p>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        className="justify-center"
+      />
+    </div>
   );
 }
