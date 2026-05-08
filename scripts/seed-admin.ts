@@ -75,7 +75,7 @@ function getPasswordFromArgs(): string | undefined {
 // 3. Super Admin 설정
 // -----------------------------------------------------------------
 const SUPER_ADMIN = {
-  email: 'yanggoon@cellromax.com',
+  email: 'developer@cellromax.com',
   name: '양인규',
   role: 'super_admin' as const,
   department: null,

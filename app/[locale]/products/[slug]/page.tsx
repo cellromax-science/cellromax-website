@@ -282,7 +282,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 product.detail_html_ko ||
                 product.detail_html;
 
-              if (detailHtml) return <HtmlDetailFrame html={detailHtml} />;
+              if (detailHtml) {
+                return (
+                  <HtmlDetailFrame
+                    html={detailHtml}
+                    detailImages={product.detail_images ?? []}
+                  />
+                );
+              }
               if (product.detail_image_url) {
                 return (
                   <div className="flex justify-center">

@@ -1112,7 +1112,9 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
             <div className="space-y-3">
               <p className="text-xs text-gray-500">
                 detailpage-agent가 생성한 HTML 코드를 언어별로 붙여넣으세요.
-                한국어는 필수이며, 나머지 언어는 선택 사항입니다.
+                한국어는 필수이며, 나머지 언어는 선택 사항입니다. HTML 안에
+                `image/...` 같은 상대경로 이미지를 쓰면 아래의 상세페이지용
+                이미지 업로드 순서대로 자동 연결됩니다.
               </p>
 
               {/* 언어 탭 */}

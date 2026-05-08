@@ -1,16 +1,7 @@
-// ---------------------------------------------------------------------------
-// Inquiry Types — 탭 기반 3분류
-// ---------------------------------------------------------------------------
+export type InquiryType = "consumer" | "pharmacist" | "business";
+export type InquiryStatus = "pending" | "reviewing" | "replied" | "closed";
+export type EmailStatus = "pending" | "sent" | "failed";
 
-export type InquiryType = 'consumer' | 'pharmacist' | 'business';
-export type InquiryStatus = 'pending' | 'reviewing' | 'replied' | 'closed';
-export type EmailStatus = 'pending' | 'sent' | 'failed';
-
-// ---------------------------------------------------------------------------
-// 탭별 폼 데이터
-// ---------------------------------------------------------------------------
-
-/** 소비자 문의 폼 */
 export interface ConsumerFormData {
   name: string;
   email: string;
@@ -20,7 +11,6 @@ export interface ConsumerFormData {
   privacy: boolean;
 }
 
-/** 약사 문의 폼 */
 export interface PharmacistFormData {
   name: string;
   pharmacyName: string;
@@ -31,7 +21,6 @@ export interface PharmacistFormData {
   privacy: boolean;
 }
 
-/** 비즈니스 문의 폼 */
 export interface BusinessFormData {
   company: string;
   country: string;
@@ -43,10 +32,6 @@ export interface BusinessFormData {
   message: string;
   privacy: boolean;
 }
-
-// ---------------------------------------------------------------------------
-// DB 모델
-// ---------------------------------------------------------------------------
 
 export interface Inquiry {
   id: string;
@@ -89,4 +74,15 @@ export interface InquiryInsert {
   recipient_email?: string | null;
   recaptcha_score?: number | null;
   ip_address?: string | null;
+  email_status?: EmailStatus;
+  email_sent_at?: string | null;
+}
+
+export type ContactRecipientEmailMap = Record<InquiryType, string>;
+
+export interface ContactRecipientSetting {
+  inquiry_type: InquiryType;
+  recipient_email: string;
+  updated_at: string | null;
+  updated_by: string | null;
 }
