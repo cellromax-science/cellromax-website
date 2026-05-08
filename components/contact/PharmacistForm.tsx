@@ -28,6 +28,7 @@ export function PharmacistForm() {
     const name = (formData.get("name") as string).trim();
     const pharmacyName = (formData.get("pharmacyName") as string).trim();
     const pharmacyAddress = (formData.get("pharmacyAddress") as string).trim();
+    const phone = (formData.get("phone") as string).trim();
     const subject = (formData.get("subject") as string).trim();
     const message = (formData.get("message") as string).trim();
     const privacyChecked = formData.get("privacy") === "on";
@@ -36,6 +37,7 @@ export function PharmacistForm() {
     if (!name) newErrors.name = tv("required");
     if (!pharmacyName) newErrors.pharmacyName = tv("required");
     if (!pharmacyAddress) newErrors.pharmacyAddress = tv("required");
+    if (!phone) newErrors.phone = tv("required");
     if (!subject) newErrors.subject = tv("required");
     if (!message) newErrors.message = tv("required");
     if (!privacyChecked) newErrors.privacy = tv("privacyRequired");
@@ -47,7 +49,7 @@ export function PharmacistForm() {
 
     const data: PharmacistFormInput = {
       inquiryType: "pharmacist",
-      name, pharmacyName, pharmacyAddress, subject, message,
+      name, pharmacyName, pharmacyAddress, phone, subject, message,
       privacy: true,
     };
 
@@ -90,6 +92,14 @@ export function PharmacistForm() {
         placeholder={t("form.pharmacyAddressPlaceholder")}
         required
         error={errors.pharmacyAddress}
+      />
+      <Input
+        name="phone"
+        type="tel"
+        label={t("form.phone")}
+        placeholder={t("form.phonePlaceholder")}
+        required
+        error={errors.phone}
       />
       <Input
         name="subject"

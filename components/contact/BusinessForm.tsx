@@ -41,6 +41,7 @@ export function BusinessForm() {
     const departmentPosition = (formData.get("departmentPosition") as string).trim();
     const name = (formData.get("name") as string).trim();
     const email = (formData.get("email") as string).trim();
+    const phone = (formData.get("phone") as string).trim();
     const subject = (formData.get("subject") as string).trim();
     const message = (formData.get("message") as string).trim();
     const privacyChecked = formData.get("privacy") === "on";
@@ -52,6 +53,7 @@ export function BusinessForm() {
     if (!name) newErrors.name = tv("required");
     if (!email) newErrors.email = tv("required");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = tv("invalidEmail");
+    if (!phone) newErrors.phone = tv("required");
     if (!subject) newErrors.subject = tv("required");
     if (!message) newErrors.message = tv("required");
     if (!privacyChecked) newErrors.privacy = tv("privacyRequired");
@@ -63,7 +65,7 @@ export function BusinessForm() {
 
     const data: BusinessFormInput = {
       inquiryType: "business",
-      company, country, departmentPosition, name, email, subject, message,
+      company, country, departmentPosition, name, email, phone, subject, message,
       privacy: true,
     };
 
@@ -122,6 +124,14 @@ export function BusinessForm() {
         placeholder={t("form.emailPlaceholder")}
         required
         error={errors.email}
+      />
+      <Input
+        name="phone"
+        type="tel"
+        label={t("form.phone")}
+        placeholder={t("form.phonePlaceholder")}
+        required
+        error={errors.phone}
       />
       <Input
         name="subject"
