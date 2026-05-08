@@ -25,6 +25,7 @@ export interface PharmacistFormData {
   name: string;
   pharmacyName: string;
   pharmacyAddress: string;
+  phone: string;
   subject: string;
   message: string;
   privacy: boolean;
@@ -37,6 +38,7 @@ export interface BusinessFormData {
   departmentPosition: string;
   name: string;
   email: string;
+  phone: string;
   subject: string;
   message: string;
   privacy: boolean;

@@ -79,11 +79,13 @@ export async function submitInquiry(
   } else if (validated.inquiryType === "pharmacist") {
     insertData.pharmacy_name = validated.pharmacyName;
     insertData.pharmacy_address = validated.pharmacyAddress;
+    insertData.phone = validated.phone;
   } else if (validated.inquiryType === "business") {
     insertData.company = validated.company;
     insertData.country = validated.country;
     insertData.department_position = validated.departmentPosition;
     insertData.email = validated.email;
+    insertData.phone = validated.phone;
   }
 
   const { error: dbError } = await supabase
@@ -113,7 +115,7 @@ export async function submitInquiry(
   return { success: true };
 }
 
-function buildEmailHtml(data: ContactFormInput): string {
+function legacyBuildEmailHtml(data: ContactFormInput): string {
   const rows: string[] = [];
 
   rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>문의유형</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${INQUIRY_TYPE_LABEL[data.inquiryType]}</td></tr>`);
@@ -130,6 +132,40 @@ function buildEmailHtml(data: ContactFormInput): string {
     rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>국가</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.country)}</td></tr>`);
     rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>부서/직급</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.departmentPosition)}</td></tr>`);
     rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>이메일</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.email)}</td></tr>`);
+  }
+
+  rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>제목</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.subject)}</td></tr>`);
+  rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>내용</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.message).replace(/\n/g, "<br>")}</td></tr>`);
+
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #0a1628;">[${INQUIRY_TYPE_LABEL[data.inquiryType]}] 새 문의가 접수되었습니다</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        ${rows.join("")}
+      </table>
+    </div>
+  `;
+}
+
+function buildEmailHtml(data: ContactFormInput): string {
+  const rows: string[] = [];
+
+  rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>문의유형</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${INQUIRY_TYPE_LABEL[data.inquiryType]}</td></tr>`);
+  rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>성함</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.name)}</td></tr>`);
+
+  if (data.inquiryType === "consumer") {
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>이메일</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.email)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>연락처</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.phone)}</td></tr>`);
+  } else if (data.inquiryType === "pharmacist") {
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>약국명</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.pharmacyName)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>약국 주소</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.pharmacyAddress)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>연락처</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.phone)}</td></tr>`);
+  } else if (data.inquiryType === "business") {
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>회사명</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.company)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>국가</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.country)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>부서 / 직급</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.departmentPosition)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>이메일</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.email)}</td></tr>`);
+    rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>연락처</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.phone)}</td></tr>`);
   }
 
   rows.push(`<tr><td style="padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: nowrap; color: #666;"><strong>제목</strong></td><td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${escapeHtml(data.subject)}</td></tr>`);
