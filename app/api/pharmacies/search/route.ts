@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+const MAX_SEARCH_RESULTS = 50
+
 /**
  * 약국 텍스트 검색 API (공개용)
  *
@@ -29,7 +31,7 @@ export async function GET(request: NextRequest) {
       .from('pharmacies')
       .select('id, name, address, phone, latitude, longitude')
       .or(`name.ilike.%${keyword}%,address.ilike.%${keyword}%`)
-      .limit(20)
+      .limit(MAX_SEARCH_RESULTS)
 
     if (error) {
       console.error('[pharmacies/search] Supabase query error:', error)

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+const MAX_NEARBY_RESULTS = 50
+
 /**
  * 주변 약국 검색 API
  *
@@ -80,7 +82,7 @@ export async function GET(request: NextRequest) {
       user_lat: lat,
       user_lng: lng,
       radius_km: radius,
-      result_limit: 20,
+      result_limit: MAX_NEARBY_RESULTS,
     })
 
     if (error) {
