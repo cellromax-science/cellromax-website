@@ -55,6 +55,7 @@ export interface Inquiry {
   ip_address: string | null;
   email_sent_at: string | null;
   email_status: EmailStatus;
+  last_replied_channel: ReplyChannel | null;
   created_at: string;
   updated_at: string;
 }
@@ -76,6 +77,35 @@ export interface InquiryInsert {
   ip_address?: string | null;
   email_status?: EmailStatus;
   email_sent_at?: string | null;
+}
+
+export type ReplyChannel = "email" | "sms";
+export type ReplyStatus = "sent" | "failed";
+
+export interface InquiryReply {
+  id: string;
+  inquiry_id: string;
+  channel: ReplyChannel;
+  to_address: string;
+  subject: string | null;
+  body: string;
+  status: ReplyStatus;
+  provider_id: string | null;
+  error_message: string | null;
+  sent_by: string | null;
+  created_at: string;
+}
+
+export interface InquiryReplyTemplate {
+  id: string;
+  title: string;
+  channel: ReplyChannel | null;
+  subject: string | null;
+  body: string;
+  inquiry_type: InquiryType | null;
+  created_by: string | null;
+  updated_at: string;
+  created_at: string;
 }
 
 export type ContactRecipientEmailMap = Record<InquiryType, string>;

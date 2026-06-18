@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -15,8 +16,12 @@ import type {
   ContactRecipientEmailMap,
   ContactRecipientSetting,
   Inquiry,
+  InquiryReply,
+  InquiryReplyTemplate,
   InquiryStatus,
   InquiryType,
+  ReplyChannel,
+  ReplyStatus,
 } from "@/types/contact";
 
 interface InquiryListClientProps {
@@ -170,29 +175,132 @@ function InfoField({
   );
 }
 
+const REPLY_STATUS_BADGE: Record<
+  ReplyStatus,
+  { variant: BadgeVariant; label: string }
+> = {
+  sent: { variant: "success", label: "발송완료" },
+  failed: { variant: "error", label: "발송실패" },
+};
+
+const REPLY_CHANNEL_LABEL: Record<ReplyChannel, string> = {
+  email: "메일",
+  sms: "문자",
+};
+
 interface DetailModalProps {
   inquiry: Inquiry | null;
+  canReply: boolean;
   onClose: () => void;
   onSave: (id: string, status: InquiryStatus, adminMemo: string) => Promise<void>;
+  onReplied: (id: string, repliedAt: string, channel: ReplyChannel) => void;
 }
 
-function DetailModal({ inquiry, onClose, onSave }: DetailModalProps) {
+function SectionTitle({ children }: { children: ReactNode }) {
+  return <h3 className="mb-3 text-sm font-semibold text-gray-700">{children}</h3>;
+}
+
+function DetailModal({
+  inquiry,
+  canReply,
+  onClose,
+  onSave,
+  onReplied,
+}: DetailModalProps) {
   const [status, setStatus] = useState<InquiryStatus>("pending");
   const [adminMemo, setAdminMemo] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  // 답장 작성 상태
+  const [useEmail, setUseEmail] = useState(false);
+  const [useSms, setUseSms] = useState(false);
+  const [subject, setSubject] = useState("");
+  const [replyBody, setReplyBody] = useState("");
+  const [templates, setTemplates] = useState<InquiryReplyTemplate[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
+  const [isSending, setIsSending] = useState(false);
+
+  // 답장 이력 상태
+  const [replies, setReplies] = useState<InquiryReply[]>([]);
+  const [isLoadingReplies, setIsLoadingReplies] = useState(false);
+
+  const hasEmail = Boolean(inquiry?.email);
+  const hasPhone = Boolean(inquiry?.phone);
+
+  const loadReplies = useCallback(async () => {
+    if (!inquiry) return;
+
+    setIsLoadingReplies(true);
+    try {
+      const response = await fetch(`/api/inquiries/${inquiry.id}/reply`);
+      if (!response.ok) {
+        throw new Error("답장 이력을 불러오지 못했습니다.");
+      }
+      const data = await response.json();
+      setReplies(data.replies ?? []);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "답장 이력 조회에 실패했습니다.",
+      );
+    } finally {
+      setIsLoadingReplies(false);
+    }
+  }, [inquiry]);
+
+  // 모달이 열릴 때 상태 초기화 + 답장 이력 로드
   useEffect(() => {
     if (!inquiry) return;
 
     setStatus(inquiry.status);
     setAdminMemo(inquiry.admin_memo ?? "");
-  }, [inquiry]);
+    setUseEmail(Boolean(inquiry.email));
+    setUseSms(false);
+    setSubject("");
+    setReplyBody("");
+    setSelectedTemplateId("");
+    setReplies([]);
+    void loadReplies();
+  }, [inquiry, loadReplies]);
+
+  // 답장 권한이 있으면 템플릿 목록을 한 번 불러온다.
+  useEffect(() => {
+    if (!inquiry || !canReply) return;
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch("/api/inquiry-reply-templates");
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!cancelled) setTemplates(data.templates ?? []);
+      } catch {
+        // 템플릿 로드 실패는 조용히 무시 (직접 입력 가능)
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [inquiry, canReply]);
+
+  const applyTemplate = useCallback(
+    (templateId: string) => {
+      setSelectedTemplateId(templateId);
+      if (!templateId) return;
+
+      const template = templates.find((t) => t.id === templateId);
+      if (!template) return;
+
+      if (template.subject) setSubject(template.subject);
+      setReplyBody(template.body);
+    },
+    [templates],
+  );
 
   const handleSave = useCallback(async () => {
     if (!inquiry) return;
 
     setIsSaving(true);
-
     try {
       await onSave(inquiry.id, status, adminMemo);
       onClose();
@@ -201,10 +309,80 @@ function DetailModal({ inquiry, onClose, onSave }: DetailModalProps) {
     }
   }, [adminMemo, inquiry, onClose, onSave, status]);
 
+  const handleSend = useCallback(async () => {
+    if (!inquiry) return;
+
+    const channels: ReplyChannel[] = [];
+    if (useEmail) channels.push("email");
+    if (useSms) channels.push("sms");
+
+    if (channels.length === 0) {
+      toast.error("발송할 채널을 선택해주세요.");
+      return;
+    }
+
+    if (!replyBody.trim()) {
+      toast.error("답변 내용을 입력해주세요.");
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const response = await fetch(`/api/inquiries/${inquiry.id}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channels, subject, body: replyBody }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.error ?? "답장 발송에 실패했습니다.");
+      }
+
+      const results: { channel: ReplyChannel; status: string; error?: string }[] =
+        data?.results ?? [];
+
+      for (const result of results) {
+        const label = REPLY_CHANNEL_LABEL[result.channel];
+        if (result.status === "sent") {
+          toast.success(`${label} 답장을 발송했습니다.`);
+        } else {
+          toast.error(`${label} 발송 실패: ${result.error ?? "알 수 없는 오류"}`);
+        }
+      }
+
+      const sent = results.find((r) => r.status === "sent");
+      if (sent && data?.repliedAt) {
+        onReplied(inquiry.id, data.repliedAt, sent.channel);
+        setStatus("replied");
+      }
+
+      // 입력 내용 초기화 후 이력 즉시 갱신
+      setReplyBody("");
+      setSubject("");
+      setSelectedTemplateId("");
+      await loadReplies();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "답장 발송에 실패했습니다.",
+      );
+    } finally {
+      setIsSending(false);
+    }
+  }, [inquiry, useEmail, useSms, replyBody, subject, onReplied, loadReplies]);
+
   if (!inquiry) return null;
 
   const typeBadge = INQUIRY_TYPE_BADGE[inquiry.inquiry_type];
   const statusBadge = INQUIRY_STATUS_BADGE[inquiry.status];
+
+  const templateOptions = [
+    { value: "", label: "템플릿 선택 (직접 입력 가능)" },
+    ...templates
+      .filter((t) => t.channel !== "sms")
+      .map((t) => ({ value: t.id, label: t.title })),
+  ];
 
   return (
     <Modal open={Boolean(inquiry)} onClose={onClose} title="문의 상세" size="lg">
@@ -218,8 +396,9 @@ function DetailModal({ inquiry, onClose, onSave }: DetailModalProps) {
           </Badge>
         </div>
 
+        {/* 문의자 정보 */}
         <section>
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">문의자 정보</h3>
+          <SectionTitle>문의자 정보</SectionTitle>
           <dl className="grid grid-cols-1 gap-3 rounded-2xl bg-gray-50 p-4 sm:grid-cols-2">
             <InfoField label="이름" value={inquiry.name} />
             {inquiry.email ? <InfoField label="이메일" value={inquiry.email} /> : null}
@@ -249,24 +428,159 @@ function DetailModal({ inquiry, onClose, onSave }: DetailModalProps) {
           </dl>
         </section>
 
+        {/* 문의 내용 */}
         <section>
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">문의 내용</h3>
+          <SectionTitle>문의 내용</SectionTitle>
           {inquiry.subject ? (
             <p className="mb-2 text-sm font-medium text-gray-900">{inquiry.subject}</p>
           ) : null}
           <div className="rounded-2xl bg-gray-50 p-4 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
             {inquiry.message}
           </div>
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-gray-400">
+            <span>접수일: {formatDateTime(inquiry.created_at)}</span>
+            {inquiry.replied_at ? (
+              <span>답변일: {formatDateTime(inquiry.replied_at)}</span>
+            ) : null}
+            <span>메일 발송 상태: {inquiry.email_status}</span>
+          </div>
         </section>
 
-        <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400">
-          <span>접수일: {formatDateTime(inquiry.created_at)}</span>
-          {inquiry.replied_at ? (
-            <span>답변일: {formatDateTime(inquiry.replied_at)}</span>
-          ) : null}
-          <span>메일 발송 상태: {inquiry.email_status}</span>
-        </div>
+        {/* 답장하기 — 문의 내용 바로 아래 */}
+        {canReply ? (
+          <section className="space-y-4 border-t border-gray-100 pt-6">
+            <SectionTitle>답장하기</SectionTitle>
 
+            <div>
+              <p className="mb-2 text-sm font-medium text-gray-700">발송 채널</p>
+              <div className="flex flex-col gap-2">
+                <label
+                  className={`flex items-center gap-2 text-sm ${
+                    hasEmail ? "text-gray-900" : "text-gray-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={useEmail}
+                    disabled={!hasEmail}
+                    onChange={(event) => setUseEmail(event.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  메일 {hasEmail ? `(${inquiry.email})` : "(이메일 정보 없음)"}
+                </label>
+                <label
+                  className={`flex items-center gap-2 text-sm ${
+                    hasPhone ? "text-gray-900" : "text-gray-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={useSms}
+                    disabled={!hasPhone}
+                    onChange={(event) => setUseSms(event.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  문자 {hasPhone ? `(${inquiry.phone})` : "(전화번호 없음)"}
+                </label>
+              </div>
+            </div>
+
+            <Select
+              label="답변 템플릿"
+              value={selectedTemplateId}
+              onChange={(event) => applyTemplate(event.target.value)}
+              options={templateOptions}
+            />
+
+            <Input
+              label="메일 제목"
+              value={subject}
+              onChange={(event) => setSubject(event.target.value)}
+              placeholder="문의에 대한 답변입니다"
+              maxLength={300}
+            />
+
+            <Textarea
+              label="답변 내용"
+              placeholder="고객에게 보낼 답변 내용을 입력하세요."
+              value={replyBody}
+              onChange={(event) => setReplyBody(event.target.value)}
+              rows={8}
+              maxLength={5000}
+            />
+
+            <div className="rounded-2xl bg-gray-50 p-4 text-xs leading-relaxed text-gray-500">
+              발송 시 본문 하단에 &ldquo;발신 전용 메일이며 회신할 수 없습니다. 추가
+              문의는 홈페이지 문의하기로 새로 접수해 주세요&rdquo; 안내 문구가 자동으로
+              덧붙여집니다.
+            </div>
+
+            <div className="flex justify-end">
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleSend}
+                loading={isSending}
+                disabled={isSending}
+              >
+                답장 발송
+              </Button>
+            </div>
+          </section>
+        ) : null}
+
+        {/* 답장 이력 — 발송 즉시 갱신 */}
+        <section className="space-y-3 border-t border-gray-100 pt-6">
+          <SectionTitle>답장 이력</SectionTitle>
+          {isLoadingReplies ? (
+            <div className="space-y-2">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <div
+                  key={`reply-skeleton-${index}`}
+                  className="h-20 animate-pulse rounded-2xl bg-gray-100"
+                />
+              ))}
+            </div>
+          ) : replies.length === 0 ? (
+            <p className="py-6 text-center text-sm text-gray-400">
+              발송된 답장이 없습니다.
+            </p>
+          ) : (
+            replies.map((reply) => {
+              const replyStatusBadge = REPLY_STATUS_BADGE[reply.status];
+              return (
+                <div key={reply.id} className="rounded-2xl border border-gray-100 p-4">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" size="sm">
+                      {REPLY_CHANNEL_LABEL[reply.channel]}
+                    </Badge>
+                    <Badge variant={replyStatusBadge.variant} size="sm">
+                      {replyStatusBadge.label}
+                    </Badge>
+                    <span className="text-xs text-gray-400">
+                      {formatDateTime(reply.created_at)}
+                    </span>
+                  </div>
+                  {reply.subject ? (
+                    <p className="mb-1 text-sm font-medium text-gray-900">
+                      {reply.subject}
+                    </p>
+                  ) : null}
+                  <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap">
+                    {reply.body}
+                  </p>
+                  {reply.error_message ? (
+                    <p className="mt-2 text-xs text-red-500">
+                      오류: {reply.error_message}
+                    </p>
+                  ) : null}
+                </div>
+              );
+            })
+          )}
+        </section>
+
+        {/* 상태 / 메모 */}
         <section className="space-y-4 border-t border-gray-100 pt-6">
           <Select
             label="상태 변경"
@@ -555,6 +869,35 @@ export function InquiryListClient({
       toast.success("문의 정보가 저장되었습니다.");
     },
     [detailTarget?.replied_at],
+  );
+
+  const handleReplied = useCallback(
+    (id: string, repliedAt: string, channel: ReplyChannel) => {
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                status: "replied",
+                replied_at: repliedAt,
+                last_replied_channel: channel,
+              }
+            : item,
+        ),
+      );
+
+      setDetailTarget((prev) =>
+        prev && prev.id === id
+          ? {
+              ...prev,
+              status: "replied",
+              replied_at: repliedAt,
+              last_replied_channel: channel,
+            }
+          : prev,
+      );
+    },
+    [],
   );
 
   const openRecipientSettingsModal = useCallback(() => {
@@ -853,8 +1196,10 @@ export function InquiryListClient({
 
       <DetailModal
         inquiry={detailTarget}
+        canReply={canManageRecipientSettings}
         onClose={() => setDetailTarget(null)}
         onSave={handleDetailSave}
+        onReplied={handleReplied}
       />
 
       <RecipientSettingsModal
