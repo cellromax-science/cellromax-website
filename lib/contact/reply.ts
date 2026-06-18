@@ -13,7 +13,7 @@ export const REPLY_FROM_NAME =
   process.env.CONTACT_FROM_NAME ?? "셀로맥스사이언스";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://cellromax.com"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://cellromax.kr"
 ).replace(/\/$/, "");
 
 const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(
