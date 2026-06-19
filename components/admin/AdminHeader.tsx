@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { AdminProfile, AdminRole } from "@/types/admin";
 
 /* ==========================================================================
@@ -41,6 +43,8 @@ const ROLE_LABELS: Record<AdminRole, string> = {
 
 export function AdminHeader({ profile, onMenuToggle }: AdminHeaderProps) {
   const [isPending, setIsPending] = useState(false);
+  const pathname = usePathname();
+  const locale = pathname.split("/").filter(Boolean)[0] || "ko";
 
   /** 로그아웃 처리 — API 라우트로 POST 후 리다이렉트 */
   async function handleLogout() {
@@ -127,6 +131,38 @@ export function AdminHeader({ profile, onMenuToggle }: AdminHeaderProps) {
 
         {/* 구분선 */}
         <div className="hidden h-6 w-px bg-gray-200 sm:block" aria-hidden="true" />
+
+        {/* 비밀번호 변경 링크 */}
+        <Link
+          href={`/${locale}/admin/change-password`}
+          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <rect
+              x="3"
+              y="7"
+              width="10"
+              height="7"
+              rx="1.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M5.5 7V5C5.5 3.61929 6.61929 2.5 8 2.5C9.38071 2.5 10.5 3.61929 10.5 5V7"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+          <span className="hidden sm:inline">비밀번호 변경</span>
+        </Link>
 
         {/* 로그아웃 버튼 */}
         <button
