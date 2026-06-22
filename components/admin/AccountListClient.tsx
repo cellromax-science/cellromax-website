@@ -305,6 +305,7 @@ function CreateModal({ isCreating, onConfirm, onCancel }: CreateModalProps) {
             onChange={(e) => setPassword(e.target.value)}
             error={errors.password}
             helperText="최소 8자 이상의 비밀번호를 입력하세요."
+            autoComplete="new-password"
             required
             disabled={isCreating}
           />
@@ -406,12 +407,12 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
       newErrors.name = "이름을 입력해 주세요.";
     }
 
-    if (password || passwordConfirm) {
-      if (password.length < 8) {
+    if (password.trim() || passwordConfirm.trim()) {
+      if (password.trim().length < 8) {
         newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다.";
       }
 
-      if (!passwordConfirm) {
+      if (!passwordConfirm.trim()) {
         newErrors.passwordConfirm = "비밀번호 확인을 입력해 주세요.";
       } else if (password !== passwordConfirm) {
         newErrors.passwordConfirm = "비밀번호가 일치하지 않습니다.";
@@ -521,6 +522,7 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
             onChange={(e) => setPassword(e.target.value)}
             error={errors.password}
             helperText="입력한 경우에만 로그인 비밀번호가 변경됩니다."
+            autoComplete="new-password"
             disabled={isSaving}
           />
 
@@ -531,6 +533,7 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
             error={errors.passwordConfirm}
+            autoComplete="new-password"
             disabled={isSaving}
           />
         </div>
