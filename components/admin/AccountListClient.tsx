@@ -377,6 +377,8 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
   const [department, setDepartment] = useState(account.department ?? "");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  /** 비밀번호 변경 모드 (기본 false — 입력칸을 띄우지 않아 브라우저 자동완성 차단) */
+  const [changePassword, setChangePassword] = useState(false);
 
   // 유효성 검사 상태
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -407,7 +409,7 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
       newErrors.name = "이름을 입력해 주세요.";
     }
 
-    if (password.trim() || passwordConfirm.trim()) {
+    if (changePassword && (password.trim() || passwordConfirm.trim())) {
       if (password.trim().length < 8) {
         newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다.";
       }
@@ -421,7 +423,7 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name, password, passwordConfirm]);
+  }, [name, password, passwordConfirm, changePassword]);
 
   const handleSubmit = useCallback(() => {
     if (!validate()) return;
@@ -429,9 +431,9 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
       name: name.trim(),
       role,
       department: department.trim(),
-      password: password.trim(),
+      password: changePassword ? password.trim() : "",
     });
-  }, [validate, onConfirm, name, role, department, password]);
+  }, [validate, onConfirm, name, role, department, password, changePassword]);
 
   return (
     <>
@@ -514,28 +516,41 @@ function EditModal({ account, isSaving, onConfirm, onCancel }: EditModalProps) {
             disabled={isSaving}
           />
 
-          <Input
-            label="새 비밀번호"
-            type="password"
-            placeholder="변경할 때만 입력"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={errors.password}
-            helperText="입력한 경우에만 로그인 비밀번호가 변경됩니다."
-            autoComplete="new-password"
-            disabled={isSaving}
-          />
+          {changePassword ? (
+            <>
+              <Input
+                label="새 비밀번호"
+                type="password"
+                placeholder="8자 이상 입력"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={errors.password}
+                helperText="입력한 경우에만 로그인 비밀번호가 변경됩니다."
+                autoComplete="new-password"
+                disabled={isSaving}
+              />
 
-          <Input
-            label="비밀번호 확인"
-            type="password"
-            placeholder="새 비밀번호 다시 입력"
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-            error={errors.passwordConfirm}
-            autoComplete="new-password"
-            disabled={isSaving}
-          />
+              <Input
+                label="비밀번호 확인"
+                type="password"
+                placeholder="새 비밀번호 다시 입력"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                error={errors.passwordConfirm}
+                autoComplete="new-password"
+                disabled={isSaving}
+              />
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setChangePassword(true)}
+              disabled={isSaving}
+              className="self-start text-sm font-medium text-primary hover:underline disabled:opacity-60"
+            >
+              비밀번호 변경
+            </button>
+          )}
         </div>
 
         {/* 버튼 */}
