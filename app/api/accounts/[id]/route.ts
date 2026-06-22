@@ -105,8 +105,14 @@ export async function PATCH(
       updateData.is_active = body.is_active
     }
 
+    // 빈 문자열/공백은 "비밀번호 변경 안 함"으로 간주한다.
+    // (역할·부서만 수정할 때 클라이언트가 password: "" 를 보내도 통과해야 함)
+    const trimmedPassword =
+      typeof body.password === 'string' ? body.password.trim() : ''
     const nextPassword =
-      body.password !== undefined ? String(body.password).trim() : undefined
+      body.password !== undefined && trimmedPassword.length > 0
+        ? trimmedPassword
+        : undefined
 
     if (nextPassword !== undefined && nextPassword.length < 8) {
       return NextResponse.json(
