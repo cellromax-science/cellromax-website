@@ -19,7 +19,7 @@ const resend = process.env.RESEND_API_KEY
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY ?? "";
 const CONTACT_FROM_EMAIL =
-  process.env.CONTACT_FROM_EMAIL ?? "noreply@cellromax.com";
+  process.env.CONTACT_FROM_EMAIL ?? "noreply@cellromax.kr";
 const CONTACT_FROM_NAME =
   process.env.CONTACT_FROM_NAME ?? "셀로맥스사이언스";
 
