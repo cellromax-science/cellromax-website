@@ -15,6 +15,8 @@ export const pharmacistFormSchema = z.object({
   name: z.string().min(1).max(100),
   pharmacyName: z.string().min(1).max(200),
   pharmacyAddress: z.string().min(1).max(500),
+  // 이메일은 선택 입력. 빈 문자열은 허용하고, 값이 있으면 형식 검사.
+  email: z.union([z.literal(""), z.string().email().max(200)]).optional(),
   phone: z.string().min(1).max(30),
   subject: z.string().min(1).max(300),
   message: z.string().min(1).max(5000),

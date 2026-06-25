@@ -256,6 +256,7 @@
       "name": "성함",
       "namePlaceholder": "성함을 입력해 주세요",
       "email": "이메일",
+      "emailOptional": "이메일 (선택)",
       "emailPlaceholder": "이메일을 입력해 주세요",
       "phone": "연락처",
       "phonePlaceholder": "연락처를 입력해 주세요",
