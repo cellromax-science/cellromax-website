@@ -598,29 +598,11 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
         );
       }
 
-      const resData = await res.json().catch(() => null);
-      const productId = resData?.product?.id ?? initialData?.id;
-
       toast.success(
         mode === "create"
           ? "제품이 등록되었습니다."
           : "제품이 수정되었습니다."
       );
-
-      // 한국어 HTML 상세페이지가 있으면 자동 번역 (백그라운드)
-      if (body.detail_html_ko && productId) {
-        toast.success("다국어 상세페이지 자동 번역을 시작합니다...");
-        fetch(`/api/products/${productId}/translate`, { method: "POST" })
-          .then((r) => r.json())
-          .then((data) => {
-            if (data.message) {
-              toast.success(`다국어 번역 완료: ${data.message}`);
-            }
-          })
-          .catch(() => {
-            toast.error("다국어 자동 번역에 실패했습니다. 수동으로 진행해주세요.");
-          });
-      }
 
       router.push(`/${locale}/admin/products`);
     } catch (err) {
@@ -1028,8 +1010,8 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
                 HTML + 이미지를 폴더째 ZIP으로 압축해 언어별로 업로드하면
                 이미지·CSS·JS 경로가 자동 변환됩니다. 변환된 코드는 아래에서
                 직접 수정하거나 붙여넣을 수도 있습니다. 한국어는 필수이며 기본으로
-                사용됩니다. 영어·중국어·베트남어는 비워두면 한국어를 자동 번역해
-                채웁니다.
+                사용됩니다. 영어·중국어·베트남어는 선택 사항이며, 비워두면 해당
+                언어 페이지에 한국어가 표시됩니다.
               </p>
 
               {/* 언어 탭 */}
@@ -1292,7 +1274,7 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
  * 저장된 HTML 상세페이지 코드 편집기 (언어별 공통)
  *
  * ZIP 업로드로 변환된 HTML 이 채워지며, 관리자가 코드를 직접 보고 수정하거나
- * 직접 붙여넣을 수 있다. 비우면 한국어를 자동 번역해 표시한다(한국어는 필수).
+ * 직접 붙여넣을 수 있다. 비우면 해당 언어 페이지에 한국어가 표시된다(한국어는 필수).
  */
 function HtmlCodeField({
   value,
@@ -1336,7 +1318,7 @@ function HtmlCodeField({
         <p className="text-xs text-gray-400">
           {required
             ? "한국어 HTML은 필수 항목입니다."
-            : "비워두면 한국어를 자동 번역해 표시합니다."}
+            : "비워두면 해당 언어 페이지에 한국어가 표시됩니다."}
         </p>
       )}
     </div>
