@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { DetailBundleUploader } from "@/components/admin/DetailBundleUploader";
 import { toast } from "@/components/ui/Toast";
 import { joinSearchTags, splitSearchTags } from "@/lib/product-search";
 
@@ -54,8 +55,6 @@ const CATEGORY_OPTIONS: { value: string; label: string }[] = [
 /** 갤러리 이미지 최대 개수 */
 const MAX_GALLERY_IMAGES = 5;
 
-/** 상세페이지용 이미지 최대 개수 */
-const MAX_DETAIL_IMAGES = 10;
 
 /** 빈 문자열을 null로 변환 */
 function emptyToNull(value: string | null | undefined): string | null {
@@ -184,7 +183,9 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   const [galleryImages, setGalleryImages] = useState<(string | null)[]>(
     initialData?.images?.length ? initialData.images : []
   );
-  const [detailImages, setDetailImages] = useState<(string | null)[]>(
+  // 레거시 상세페이지용 이미지: UI 는 제거됐지만(ZIP 번들이 이미지를 처리),
+  // 기존 제품의 detail_images 데이터를 저장 시 보존하기 위해 읽기 전용으로 유지.
+  const [detailImages] = useState<(string | null)[]>(
     initialData?.detail_images?.length ? initialData.detail_images : []
   );
   const [detailImageUrl, setDetailImageUrl] = useState<string | null>(
@@ -197,6 +198,16 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
     (initialData?.detail_html_ko || initialData?.detail_html) ? "html" : "image"
   );
   const [detailHtmlLang, setDetailHtmlLang] = useState<"ko" | "en" | "zh" | "vi">("ko");
+  // ZIP 번들 에셋을 저장할 스토리지 네임스페이스용 상품 ID.
+  // 신규 등록 모드에는 아직 상품 ID 가 없으므로 임시 UUID 를 생성한다(스토리지
+  // 경로/인증에만 쓰이고 products 테이블 조회와 무관하여 그대로 사용 가능).
+  const [bundleProductId] = useState<string>(() => {
+    if (initialData?.id) return initialData.id;
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+      return crypto.randomUUID();
+    }
+    return "00000000-0000-0000-0000-000000000000";
+  });
   const [detailHtmlKo, setDetailHtmlKo] = useState(
     initialData?.detail_html_ko ?? initialData?.detail_html ?? ""
   );
@@ -416,31 +427,6 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   /** 갤러리 이미지 슬롯 삭제 */
   const removeGallerySlot = useCallback((index: number) => {
     setGalleryImages((prev) => prev.filter((_, i) => i !== index));
-  }, []);
-
-  // --------------------------------------------------------------------------
-  // Detail Images Handlers (상세페이지 전용 이미지)
-  // --------------------------------------------------------------------------
-
-  const addDetailImageSlot = useCallback(() => {
-    if (detailImages.length < MAX_DETAIL_IMAGES) {
-      setDetailImages((prev) => [...prev, null]);
-    }
-  }, [detailImages.length]);
-
-  const updateDetailImage = useCallback(
-    (index: number, url: string | null) => {
-      setDetailImages((prev) => {
-        const next = [...prev];
-        next[index] = url;
-        return next;
-      });
-    },
-    []
-  );
-
-  const removeDetailImageSlot = useCallback((index: number) => {
-    setDetailImages((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   // --------------------------------------------------------------------------
@@ -989,78 +975,6 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
           )}
         </div>
 
-        {/* 상세페이지용 이미지 (원료·소재 사진 등) */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                상세페이지용 이미지{" "}
-                <span className="text-gray-400 font-normal">
-                  ({detailImages.length}/{MAX_DETAIL_IMAGES})
-                </span>
-              </label>
-              <p className="text-xs text-gray-400 mt-0.5">
-                HTML 상세페이지에서만 사용되는 이미지입니다. 프론트 갤러리에는 표시되지 않습니다.
-              </p>
-            </div>
-            {detailImages.length < MAX_DETAIL_IMAGES && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="xs"
-                onClick={addDetailImageSlot}
-                disabled={isAnySubmitting}
-              >
-                <PlusIcon />
-                이미지 추가
-              </Button>
-            )}
-          </div>
-
-          {detailImages.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {detailImages.map((url, index) => (
-                <div key={index} className="relative">
-                  <ImageUploader
-                    label={`상세페이지용 ${index + 1}`}
-                    value={url}
-                    onChange={(newUrl) => updateDetailImage(index, newUrl)}
-                    bucket="products"
-                    maxSize={10 * 1024 * 1024}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeDetailImageSlot(index)}
-                    className="absolute top-0 right-0 -mt-2 -mr-2 flex items-center justify-center w-6 h-6 rounded-full bg-error text-white shadow-sm hover:bg-error-dark transition-colors duration-150 z-10"
-                    aria-label={`상세페이지용 이미지 ${index + 1} 삭제`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      width="12"
-                      height="12"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18 18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-400 py-4 text-center border-2 border-dashed border-gray-200 squircle-lg">
-              상세페이지에서 사용할 원료·소재 이미지를 추가하세요.
-            </p>
-          )}
-        </div>
-
         {/* 상세페이지 — 이미지형 / HTML형 탭 */}
         <div>
           <p className="text-sm font-medium text-gray-700 mb-2">상세페이지</p>
@@ -1111,10 +1025,11 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
           {detailMode === "html" && (
             <div className="space-y-3">
               <p className="text-xs text-gray-500">
-                detailpage-agent가 생성한 HTML 코드를 언어별로 붙여넣으세요.
-                한국어는 필수이며, 나머지 언어는 선택 사항입니다. HTML 안에
-                `image/...` 같은 상대경로 이미지를 쓰면 아래의 상세페이지용
-                이미지 업로드 순서대로 자동 연결됩니다.
+                HTML + 이미지를 폴더째 ZIP으로 압축해 언어별로 업로드하면
+                이미지·CSS·JS 경로가 자동 변환됩니다. 변환된 코드는 아래에서
+                직접 수정하거나 붙여넣을 수도 있습니다. 한국어는 필수이며 기본으로
+                사용됩니다. 영어·중국어·베트남어는 비워두면 한국어를 자동 번역해
+                채웁니다.
               </p>
 
               {/* 언어 탭 */}
@@ -1143,19 +1058,32 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
                 })}
               </div>
 
-              {/* 현재 선택된 언어의 textarea */}
-              {detailHtmlLang === "ko" && (
-                <HtmlTextarea value={detailHtmlKo} onChange={setDetailHtmlKo} required />
-              )}
-              {detailHtmlLang === "en" && (
-                <HtmlTextarea value={detailHtmlEn} onChange={setDetailHtmlEn} />
-              )}
-              {detailHtmlLang === "zh" && (
-                <HtmlTextarea value={detailHtmlZh} onChange={setDetailHtmlZh} />
-              )}
-              {detailHtmlLang === "vi" && (
-                <HtmlTextarea value={detailHtmlVi} onChange={setDetailHtmlVi} />
-              )}
+              {/* 현재 선택된 언어의 ZIP 업로더 */}
+              {(() => {
+                const langConfig = {
+                  ko: { label: "한국어", value: detailHtmlKo, setter: setDetailHtmlKo },
+                  en: { label: "영어", value: detailHtmlEn, setter: setDetailHtmlEn },
+                  zh: { label: "중국어", value: detailHtmlZh, setter: setDetailHtmlZh },
+                  vi: { label: "베트남어", value: detailHtmlVi, setter: setDetailHtmlVi },
+                } as const;
+                const cfg = langConfig[detailHtmlLang];
+                return (
+                  <div className="space-y-3">
+                    <DetailBundleUploader
+                      key={detailHtmlLang}
+                      productId={bundleProductId}
+                      langLabel={cfg.label}
+                      disabled={isAnySubmitting}
+                      onImported={(html) => cfg.setter(html)}
+                    />
+                    <HtmlCodeField
+                      value={cfg.value}
+                      onChange={cfg.setter}
+                      required={detailHtmlLang === "ko"}
+                    />
+                  </div>
+                );
+              })()}
             </div>
           )}
         </div>
@@ -1360,12 +1288,13 @@ export function ProductForm({ mode, initialData }: ProductFormProps) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Inline Icon Components
-// ---------------------------------------------------------------------------
-
-/** HTML 상세페이지 입력 textarea (언어별 공통) */
-function HtmlTextarea({
+/**
+ * 저장된 HTML 상세페이지 코드 편집기 (언어별 공통)
+ *
+ * ZIP 업로드로 변환된 HTML 이 채워지며, 관리자가 코드를 직접 보고 수정하거나
+ * 직접 붙여넣을 수 있다. 비우면 한국어를 자동 번역해 표시한다(한국어는 필수).
+ */
+function HtmlCodeField({
   value,
   onChange,
   required,
@@ -1376,26 +1305,47 @@ function HtmlTextarea({
 }) {
   return (
     <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <label className="text-xs font-medium text-gray-600">
+          저장된 HTML 코드 (직접 수정 가능)
+        </label>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-400">
+            {value.length.toLocaleString()}자
+          </span>
+          {value.length > 0 && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="text-xs text-error hover:underline"
+            >
+              전체 지우기
+            </button>
+          )}
+        </div>
+      </div>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="<!DOCTYPE html>..."
-        rows={12}
-        className="w-full px-3 py-2 text-sm font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"
+        placeholder="ZIP을 업로드하면 변환된 HTML이 여기에 채워집니다. 직접 붙여넣거나 수정할 수도 있습니다."
+        rows={14}
         spellCheck={false}
+        className="w-full px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"
       />
-      {value ? (
-        <p className="text-xs text-green-600">
-          ✓ HTML {value.length.toLocaleString()}자 입력됨
+      {value.trim().length === 0 && (
+        <p className="text-xs text-gray-400">
+          {required
+            ? "한국어 HTML은 필수 항목입니다."
+            : "비워두면 한국어를 자동 번역해 표시합니다."}
         </p>
-      ) : required ? (
-        <p className="text-xs text-gray-400">한국어 HTML은 필수 항목입니다.</p>
-      ) : (
-        <p className="text-xs text-gray-400">입력하지 않으면 한국어 버전이 표시됩니다.</p>
       )}
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Inline Icon Components
+// ---------------------------------------------------------------------------
 
 /** + 아이콘 (갤러리 이미지 추가 버튼용) */
 function PlusIcon() {

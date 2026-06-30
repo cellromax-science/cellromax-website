@@ -65,7 +65,7 @@ export async function POST(
 
     const { data: product, error: fetchError } = await supabase
       .from('products')
-      .select('id, name_ko, ingredients_ko, functionality_ko, how_to_use_ko, other_info_ko, detail_html_ko')
+      .select('id, name_ko, ingredients_ko, functionality_ko, how_to_use_ko, other_info_ko, detail_html_ko, detail_html_en, detail_html_zh, detail_html_vi')
       .eq('id', id)
       .single()
 
@@ -129,8 +129,11 @@ export async function POST(
         )
       }
 
-      // HTML 번역
-      if (hasHtml) {
+      // HTML 번역 — 이미 해당 언어 HTML 이 있으면(직접 ZIP 업로드 등) 건드리지 않는다.
+      const existingLocaleHtml = product[
+        `detail_html_${locale}` as keyof typeof product
+      ] as string | null
+      if (hasHtml && !existingLocaleHtml) {
         allTasks.push(
           translateHtml(anthropic, product.detail_html_ko!, locale)
             .then((translated) => {
