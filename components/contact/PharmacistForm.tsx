@@ -38,8 +38,8 @@ export function PharmacistForm() {
     if (!name) newErrors.name = tv("required");
     if (!pharmacyName) newErrors.pharmacyName = tv("required");
     if (!pharmacyAddress) newErrors.pharmacyAddress = tv("required");
-    // 이메일은 선택 입력 — 입력했을 때만 형식 검사
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    if (!email) newErrors.email = tv("required");
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       newErrors.email = tv("invalidEmail");
     if (!phone) newErrors.phone = tv("required");
     if (!subject) newErrors.subject = tv("required");
@@ -53,9 +53,8 @@ export function PharmacistForm() {
 
     const data: PharmacistFormInput = {
       inquiryType: "pharmacist",
-      name, pharmacyName, pharmacyAddress, phone, subject, message,
+      name, pharmacyName, pharmacyAddress, email, phone, subject, message,
       privacy: true,
-      ...(email ? { email } : {}),
     };
 
     setLoading(true);
@@ -101,8 +100,9 @@ export function PharmacistForm() {
       <Input
         name="email"
         type="email"
-        label={t("form.emailOptional")}
+        label={t("form.email")}
         placeholder={t("form.emailPlaceholder")}
+        required
         error={errors.email}
       />
       <Input

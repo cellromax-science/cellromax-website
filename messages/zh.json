@@ -244,7 +244,6 @@
       "name": "姓名",
       "namePlaceholder": "请输入姓名",
       "email": "邮箱",
-      "emailOptional": "邮箱（选填）",
       "emailPlaceholder": "请输入邮箱",
       "phone": "联系方式",
       "phonePlaceholder": "请输入联系方式",

@@ -62,11 +62,9 @@ function buildEmailHtml(data: ContactFormInput): string {
     rows.push(
       `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;vertical-align:top;white-space:nowrap;color:#666;"><strong>약국 주소</strong></td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${escapeHtml(data.pharmacyAddress)}</td></tr>`,
     );
-    if (data.email) {
-      rows.push(
-        `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;vertical-align:top;white-space:nowrap;color:#666;"><strong>이메일</strong></td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${escapeHtml(data.email)}</td></tr>`,
-      );
-    }
+    rows.push(
+      `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;vertical-align:top;white-space:nowrap;color:#666;"><strong>이메일</strong></td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${escapeHtml(data.email)}</td></tr>`,
+    );
     rows.push(
       `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;vertical-align:top;white-space:nowrap;color:#666;"><strong>연락처</strong></td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${escapeHtml(data.phone)}</td></tr>`,
     );
@@ -142,7 +140,7 @@ function getReplyTo(data: ContactFormInput): string | undefined {
   }
 
   if (data.inquiryType === "pharmacist") {
-    return data.email || undefined;
+    return data.email;
   }
 
   return undefined;
@@ -220,9 +218,7 @@ export async function submitInquiry(
     insertData.pharmacy_name = validated.pharmacyName;
     insertData.pharmacy_address = validated.pharmacyAddress;
     insertData.phone = validated.phone;
-    if (validated.email) {
-      insertData.email = validated.email;
-    }
+    insertData.email = validated.email;
   }
 
   if (validated.inquiryType === "business") {

@@ -256,7 +256,6 @@
       "name": "Name",
       "namePlaceholder": "Enter your name",
       "email": "Email",
-      "emailOptional": "Email (optional)",
       "emailPlaceholder": "Enter your email",
       "phone": "Phone",
       "phonePlaceholder": "Enter your phone number",
