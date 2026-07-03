@@ -8,7 +8,7 @@ import "server-only";
  */
 
 export const REPLY_FROM_EMAIL =
-  process.env.CONTACT_FROM_EMAIL ?? "noreply@cellromax.kr";
+  process.env.CONTACT_FROM_EMAIL ?? "noreply@cellromax.com";
 export const REPLY_FROM_NAME =
   process.env.CONTACT_FROM_NAME ?? "셀로맥스사이언스";
 
