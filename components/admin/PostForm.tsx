@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { toast } from "@/components/ui/Toast";
+import { createClient } from "@/lib/supabase/client";
 
 import type { Post, Attachment } from "@/types/newsroom";
 
@@ -225,35 +226,61 @@ export function PostForm({ mode, initialData }: PostFormProps) {
   // Attachment Handlers
   // --------------------------------------------------------------------------
 
-  /** 첨부파일 업로드 */
+  /**
+   * 첨부파일 업로드 (2단계)
+   *
+   * Vercel 서버리스 함수의 요청 본문 제한(4.5MB)을 우회하기 위해,
+   * 파일 바이트는 API 함수를 거치지 않고 Supabase Storage로 직접 전송한다.
+   *   1단계: /api/upload-file 에 작은 JSON을 보내 서명 업로드 토큰을 발급받는다.
+   *   2단계: uploadToSignedUrl 로 파일을 Storage에 직접 업로드한다.
+   */
   const handleFileUpload = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
     setIsUploading(true);
     try {
       const newAttachments: Attachment[] = [];
+      const supabase = createClient();
 
       for (const file of Array.from(files)) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("bucket", "newsroom");
-
+        // ---- 1단계: 서명 업로드 토큰 발급 (작은 JSON 요청) ----
         const res = await fetch("/api/upload-file", {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileName: file.name,
+            contentType: file.type,
+            fileSize: file.size,
+            bucket: "newsroom",
+          }),
         });
 
+        const data = await res.json().catch(() => null);
+
         if (!res.ok) {
-          const errData = await res.json().catch(() => null);
-          throw new Error(errData?.error || `${file.name} 업로드 실패`);
+          throw new Error(data?.error || `${file.name} 업로드 실패`);
         }
 
-        const data = await res.json();
+        if (!data?.path || !data?.token || !data?.publicUrl) {
+          throw new Error(`${file.name} 업로드 정보를 받지 못했습니다.`);
+        }
+
+        // ---- 2단계: Supabase Storage로 파일 직접 업로드 ----
+        const { error: upErr } = await supabase.storage
+          .from(String(data.bucket))
+          .uploadToSignedUrl(String(data.path), String(data.token), file, {
+            contentType: file.type || "application/octet-stream",
+          });
+
+        if (upErr) {
+          throw new Error(`${file.name} 업로드 실패: ${upErr.message}`);
+        }
+
         newAttachments.push({
-          url: data.url,
-          name: data.name,
-          size: data.size,
-          type: data.type,
+          url: String(data.publicUrl),
+          name: file.name,
+          size: file.size,
+          type: file.type || "application/octet-stream",
         });
       }
 

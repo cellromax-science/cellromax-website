@@ -219,17 +219,62 @@ export function ImageUploader({
   // Upload Handler
   // --------------------------------------------------------------------------
 
-  /** XMLHttpRequest 기반 파일 업로드 (프로그레스 지원) */
+  /**
+   * 파일 업로드 (2단계)
+   *
+   * Vercel 서버리스 함수의 요청 본문 제한(4.5MB)을 우회하기 위해,
+   * 파일 바이트는 우리 API 함수를 거치지 않고 Supabase Storage로 직접 전송한다.
+   *   1단계: /api/upload 에 작은 JSON을 보내 서명 업로드 URL을 발급받는다.
+   *   2단계: 발급받은 서명 URL로 파일을 직접 PUT한다 (프로그레스 지원 위해 XHR 사용).
+   */
   const uploadFile = useCallback(
-    (file: File) => {
+    async (file: File) => {
       setInternalError(null);
       setIsUploading(true);
       setProgress(0);
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("bucket", bucket);
+      // ---- 1단계: 서명 업로드 URL 발급 (작은 JSON 요청) ----
+      let signedUrl: string;
+      let publicUrl: string;
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileName: file.name,
+            contentType: file.type,
+            fileSize: file.size,
+            bucket,
+          }),
+        });
 
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          setInternalError(data?.error ?? "이미지 업로드에 실패했습니다.");
+          setIsUploading(false);
+          setProgress(0);
+          return;
+        }
+
+        signedUrl = data?.signedUrl;
+        publicUrl = data?.publicUrl;
+
+        if (!signedUrl || !publicUrl) {
+          setInternalError("서버 응답에서 업로드 정보를 찾을 수 없습니다.");
+          setIsUploading(false);
+          setProgress(0);
+          return;
+        }
+      } catch {
+        setInternalError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+        setIsUploading(false);
+        setProgress(0);
+        return;
+      }
+
+      // ---- 2단계: Supabase Storage로 파일 직접 PUT ----
+      // IrFileForm의 PDF 업로드와 동일한 방식 (서명 URL로 raw body PUT)
       const xhr = new XMLHttpRequest();
       xhrRef.current = xhr;
 
@@ -246,18 +291,7 @@ export function ImageUploader({
         xhrRef.current = null;
 
         if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            const response = JSON.parse(xhr.responseText);
-            // API 응답에서 업로드된 이미지 URL 추출
-            const uploadedUrl = response.url || response.publicUrl || response.data?.url;
-            if (uploadedUrl) {
-              onChange(uploadedUrl);
-            } else {
-              setInternalError("서버 응답에서 이미지 URL을 찾을 수 없습니다.");
-            }
-          } catch {
-            setInternalError("서버 응답을 처리할 수 없습니다.");
-          }
+          onChange(publicUrl);
         } else {
           // HTTP 에러 처리
           let errorMessage = "이미지 업로드에 실패했습니다.";
@@ -291,8 +325,9 @@ export function ImageUploader({
         setProgress(0);
       });
 
-      xhr.open("POST", "/api/upload");
-      xhr.send(formData);
+      xhr.open("PUT", signedUrl);
+      xhr.setRequestHeader("Content-Type", file.type);
+      xhr.send(file);
     },
     [bucket, onChange],
   );
