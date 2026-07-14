@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -26,8 +27,11 @@ export async function getSession() {
  *
  * Supabase 서버에서 JWT를 검증하므로 getSession()보다 안전합니다.
  * 서버 컴포넌트, Server Action에서 인증 확인 시 항상 이 함수를 사용하세요.
+ *
+ * React cache()로 감싸 같은 요청 안에서는(레이아웃 + 페이지 등)
+ * Supabase Auth 네트워크 왕복을 한 번만 수행합니다.
  */
-export async function getUser() {
+export const getUser = cache(async () => {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()
 
@@ -38,7 +42,7 @@ export async function getUser() {
   }
 
   return data.user
-}
+})
 
 /**
  * 이메일/비밀번호로 로그인합니다.

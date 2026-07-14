@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { cache } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import type { AdminRole, AdminProfile } from '@/types/admin'
 
@@ -36,23 +37,26 @@ export function createAdminClient() {
 /**
  * userId로 활성 상태인 관리자 프로필을 조회합니다.
  * 비활성(is_active=false) 계정은 null을 반환합니다.
+ *
+ * React cache()로 감싸 같은 요청 안에서는(레이아웃 + 페이지 등)
+ * DB 왕복을 한 번만 수행합니다.
  */
-export async function getAdminProfile(
-  userId: string
-): Promise<AdminProfile | null> {
-  const supabase = createAdminClient()
+export const getAdminProfile = cache(
+  async (userId: string): Promise<AdminProfile | null> => {
+    const supabase = createAdminClient()
 
-  const { data, error } = await supabase
-    .from('admin_profiles')
-    .select('*')
-    .eq('id', userId)
-    .eq('is_active', true)
-    .single()
+    const { data, error } = await supabase
+      .from('admin_profiles')
+      .select('*')
+      .eq('id', userId)
+      .eq('is_active', true)
+      .single()
 
-  if (error || !data) return null
+    if (error || !data) return null
 
-  return data as AdminProfile
-}
+    return data as AdminProfile
+  }
+)
 
 /**
  * 특정 사용자가 요구되는 역할을 가지고 있는지 확인합니다.
