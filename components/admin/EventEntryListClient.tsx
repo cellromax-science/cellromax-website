@@ -14,8 +14,8 @@ import type { EventEntry } from "@/types/event";
    이벤트 규모가 작아(수백 건) 검색·CSV 다운로드는 메모리에서 처리합니다.
 
    기능:
-   - 검색 (성함/면허번호/연락처/약국명)
-   - 참여자 테이블 (성함, 면허번호, 연락처, 약국명, 참여일시)
+   - 검색 (이벤트명/성함/면허번호/연락처/약국명)
+   - 참여자 테이블 (이벤트, 성함, 면허번호, 연락처, 약국명, 참여일시)
    - CSV 다운로드 (Excel 호환 UTF-8 BOM)
    ========================================================================== */
 
@@ -24,7 +24,6 @@ import type { EventEntry } from "@/types/event";
 // ---------------------------------------------------------------------------
 
 interface EventEntryListClientProps {
-  eventTitle: string;
   initialItems: EventEntry[];
   total: number;
 }
@@ -56,18 +55,18 @@ function csvField(value: string): string {
 // ---------------------------------------------------------------------------
 
 export function EventEntryListClient({
-  eventTitle,
   initialItems,
   total,
 }: EventEntryListClientProps) {
   const [search, setSearch] = useState("");
 
-  /** 검색 필터링 (성함/면허번호/연락처/약국명) */
+  /** 검색 필터링 (이벤트명/성함/면허번호/연락처/약국명) */
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return initialItems;
     return initialItems.filter(
       (item) =>
+        item.event_title.toLowerCase().includes(q) ||
         item.name.toLowerCase().includes(q) ||
         item.license_number.includes(q) ||
         item.phone.includes(q) ||
@@ -77,8 +76,16 @@ export function EventEntryListClient({
 
   /** CSV 다운로드 — Excel에서 한글이 깨지지 않도록 UTF-8 BOM 추가 */
   function handleDownloadCsv() {
-    const header = ["성함", "약사면허번호", "연락처", "약국명", "참여일시"];
+    const header = [
+      "이벤트",
+      "성함",
+      "약사면허번호",
+      "연락처",
+      "약국명",
+      "참여일시",
+    ];
     const rows = filtered.map((item) => [
+      item.event_title,
       item.name,
       item.license_number,
       item.phone,
@@ -98,7 +105,7 @@ export function EventEntryListClient({
     const today = new Date();
     const stamp = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}`;
     a.href = url;
-    a.download = `beberax-quiz-entries-${stamp}.csv`;
+    a.download = `event-entries-${stamp}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -114,7 +121,7 @@ export function EventEntryListClient({
             이벤트 관리
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            {eventTitle} · 총 {total.toLocaleString("ko-KR")}명 참여
+            총 {total.toLocaleString("ko-KR")}명 참여
           </p>
         </div>
 
@@ -156,7 +163,7 @@ export function EventEntryListClient({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1">
           <Input
-            placeholder="성함, 면허번호, 연락처, 약국명으로 검색..."
+            placeholder="이벤트명, 성함, 면허번호, 연락처, 약국명으로 검색..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -171,6 +178,9 @@ export function EventEntryListClient({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/60">
+                <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                  이벤트
+                </th>
                 <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   성함
                 </th>
@@ -191,7 +201,7 @@ export function EventEntryListClient({
             <tbody className="divide-y divide-gray-50">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-16 text-center">
+                  <td colSpan={6} className="py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
                       <div className="flex h-14 w-14 items-center justify-center squircle-lg bg-gray-100">
                         <svg
@@ -248,6 +258,9 @@ export function EventEntryListClient({
                     key={item.id}
                     className="transition-colors hover:bg-gray-50/50"
                   >
+                    <td className="px-5 py-3 text-gray-500 whitespace-nowrap max-w-[200px] truncate hidden lg:table-cell">
+                      {item.event_title}
+                    </td>
                     <td className="px-5 py-3 font-medium text-gray-900 whitespace-nowrap">
                       {item.name}
                     </td>

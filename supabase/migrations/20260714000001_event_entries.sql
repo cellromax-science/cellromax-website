@@ -18,6 +18,9 @@ CREATE TABLE event_entries (
   -- 이벤트 식별 슬러그 (예: 'beberax-quiz')
   event_slug TEXT NOT NULL,
 
+  -- 참여 이벤트 제목 (예: '베베락스액 퀴즈 이벤트') — 관리자 목록·CSV 표기용
+  event_title TEXT NOT NULL,
+
   -- 참여자 정보 (모두 필수)
   name TEXT NOT NULL,
   license_number TEXT NOT NULL,

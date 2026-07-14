@@ -6,6 +6,7 @@
 export interface EventEntry {
   id: string;
   event_slug: string;
+  event_title: string;
   name: string;
   license_number: string;
   phone: string;

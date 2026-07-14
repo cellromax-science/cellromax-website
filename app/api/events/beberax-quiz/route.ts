@@ -16,6 +16,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
  */
 
 const EVENT_SLUG = 'beberax-quiz'
+const EVENT_TITLE = '베베락스액 퀴즈 이벤트'
 
 /** 정답 인덱스 (0-based) — README 스펙: Q1·Q2 모두 1번 보기 */
 const CORRECT_ANSWERS = { q1: 0, q2: 0 }
@@ -101,6 +102,7 @@ export async function POST(request: NextRequest) {
 
     const { error: insertError } = await supabase.from('event_entries').insert({
       event_slug: EVENT_SLUG,
+      event_title: EVENT_TITLE,
       name,
       license_number: license.replace(/-/g, ''),
       phone,
