@@ -311,6 +311,54 @@ const MENU_ITEMS: MenuItem[] = [
     roles: ["super_admin", "marketing"],
   },
   {
+    label: "이벤트 관리",
+    path: "events",
+    icon: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M16.5 10V16.5H3.5V10"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <rect
+          x="2"
+          y="6.5"
+          width="16"
+          height="3.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10 16.5V6.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        <path
+          d="M10 6.5H6.75C5.7835 6.5 5 5.7165 5 4.75C5 3.7835 5.7835 3 6.75 3C9.2 3 10 6.5 10 6.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10 6.5H13.25C14.2165 6.5 15 5.7165 15 4.75C15 3.7835 14.2165 3 13.25 3C10.8 3 10 6.5 10 6.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    roles: ["super_admin", "marketing"],
+  },
+  {
     label: "계정 관리",
     path: "accounts",
     icon: (

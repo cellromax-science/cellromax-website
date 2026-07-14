@@ -1,0 +1,801 @@
+/* ==========================================================================
+   베베락스액 퀴즈 이벤트 랜딩 페이지 스타일
+
+   디자인 핸드오프의 :root 토큰을 .page 스코프로 이식.
+   iOS 26 Liquid Glass 톤 + 베베락스 그린. 모바일 우선, 최대 폭 480px.
+   ========================================================================== */
+
+.page {
+  /* 브랜드 */
+  --brand: #5a9939;
+  --brand-dark: #437028;
+  --brand-soft: rgba(90, 153, 57, 0.1);
+  --brand-line: rgba(90, 153, 57, 0.3);
+  /* 상태 */
+  --success: #34c759;
+  --success-soft: rgba(52, 199, 89, 0.14);
+  --warning: #ff9500;
+  --warning-soft: rgba(255, 149, 0, 0.13);
+  --danger: #ff3b30;
+  --danger-soft: rgba(255, 59, 48, 0.12);
+  /* 뉴트럴 */
+  --label: #1a1a1a;
+  --label-2: rgba(60, 60, 67, 0.62);
+  --label-3: rgba(60, 60, 67, 0.35);
+  --legal: #3a3a3c;
+  --bg: #fff;
+  --bg-grouped: #f2f2f7;
+  --separator: rgba(60, 60, 67, 0.2);
+  --separator-strong: rgba(60, 60, 67, 0.3);
+  --fill: rgba(118, 118, 128, 0.1);
+  /* Liquid Glass */
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-strong: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  /* Shadow */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(30, 50, 20, 0.07);
+  --shadow-glass: 0 8px 40px rgba(30, 50, 20, 0.14);
+  --shadow-sheet: 0 -8px 40px rgba(0, 0, 0, 0.16);
+  --shadow-btn: 0 6px 18px rgba(90, 153, 57, 0.34);
+
+  min-height: 100vh;
+  color: var(--label);
+  font-family: var(--font-inter), var(--font-pretendard), -apple-system,
+    system-ui, sans-serif;
+  background:
+    radial-gradient(1000px 600px at 85% -5%, rgba(90, 153, 57, 0.16), transparent 60%),
+    radial-gradient(800px 500px at -10% 12%, rgba(255, 180, 120, 0.13), transparent 55%),
+    radial-gradient(900px 700px at 50% 105%, rgba(120, 170, 255, 0.1), transparent 60%),
+    linear-gradient(180deg, #f7f9f4 0%, #fdfdfc 40%, #f4f7f1 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 26px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+}
+
+/* --------------------------------------------------------------------------
+   공통
+   -------------------------------------------------------------------------- */
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  margin: 0 0 14px;
+}
+
+.sectionTitle svg {
+  color: var(--brand);
+  flex-shrink: 0;
+}
+
+.card {
+  background: var(--bg);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 9999px;
+}
+
+/* --------------------------------------------------------------------------
+   S1 · 히어로
+   -------------------------------------------------------------------------- */
+
+.heroImageCard {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.heroImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.heroBadge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--glass-strong);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 9999px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--label);
+}
+
+.heroBadgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand);
+  flex-shrink: 0;
+}
+
+.heroText {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.heroKicker {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--label-2);
+  margin: 0;
+}
+
+.heroTitle {
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.7px;
+  margin: 6px 0 0;
+}
+
+.heroTitleBrand {
+  color: var(--brand);
+}
+
+.heroSub {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--label-2);
+  margin: 10px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   S1b · 영상
+   -------------------------------------------------------------------------- */
+
+.videoFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: var(--shadow-card);
+}
+
+.videoFrame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   S2 · 제품 특장점
+   -------------------------------------------------------------------------- */
+
+.featureStack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.featureImage {
+  width: 100%;
+  height: 224px;
+  object-fit: cover;
+  display: block;
+}
+
+.featureImageContain {
+  object-fit: contain;
+  background: #f0ece7;
+}
+
+.featureBody {
+  padding: 18px;
+}
+
+.featureTitle {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 10px 0 0;
+}
+
+.featureDesc {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--label-2);
+  margin: 7px 0 0;
+}
+
+.featureSub {
+  font-size: 13px;
+  color: var(--label-2);
+  margin: 4px 0 0;
+}
+
+.ingredientList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.ingredientRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  background: var(--bg-grouped);
+  border-radius: 14px;
+  padding: 12px 13px;
+}
+
+.ingredientNum {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ingredientName {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.ingredientDesc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--label-2);
+  margin: 2px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   S2b · 이런 분들께 권합니다
+   -------------------------------------------------------------------------- */
+
+.forWhom {
+  background: var(--brand-soft);
+  border-radius: 28px;
+  padding: 26px 20px 28px;
+}
+
+.forWhomOverline {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--brand-dark);
+  margin: 0;
+}
+
+.forWhomTitle {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 8px 0 18px;
+}
+
+.forWhomCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.forWhomCard {
+  background: var(--bg);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
+  padding: 22px 18px;
+  text-align: center;
+}
+
+.forWhomIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.forWhomCardTitle {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 12px 0 0;
+}
+
+.forWhomCardDesc {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--label-2);
+  margin: 7px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   S3 · 이벤트 안내
+   -------------------------------------------------------------------------- */
+
+.infoCard {
+  background: var(--bg);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
+  padding: 6px 18px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 0;
+}
+
+.infoRow + .infoRow {
+  border-top: 1px solid var(--separator);
+}
+
+.infoIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.infoLabel {
+  font-size: 12px;
+  color: var(--label-2);
+  margin: 0;
+}
+
+.infoValue {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 2px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   S4 + S5 · 참여 폼 + 퀴즈
+   -------------------------------------------------------------------------- */
+
+.formCard {
+  background: var(--bg);
+  border-radius: 28px;
+  box-shadow: var(--shadow-card);
+  padding: 24px 20px 26px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 13px 15px;
+  font-size: 16px; /* iOS 자동 줌 방지 */
+  font-family: inherit;
+  color: var(--label);
+  background: var(--bg);
+  border: 1.5px solid var(--separator);
+  border-radius: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--brand);
+}
+
+.inputError {
+  border-color: var(--danger);
+}
+
+.input::placeholder {
+  color: var(--label-3);
+}
+
+/* 동의 체크박스 */
+.consentRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.consentBox {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1.5px solid var(--separator-strong);
+  background: var(--bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.consentBoxChecked {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.consentBoxError {
+  border-color: var(--danger);
+}
+
+.consentText {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.consentNote {
+  background: var(--bg-grouped);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--label-2);
+  margin-top: 12px;
+}
+
+.formDivider {
+  height: 1px;
+  background: var(--separator);
+  margin: 24px 0;
+}
+
+.quizSub {
+  font-size: 13px;
+  color: var(--label-2);
+  margin: -8px 0 0;
+}
+
+.quizQuestion {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 20px 0 10px;
+}
+
+.optionStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionCell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  padding: 13px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  font-family: inherit;
+  color: var(--label);
+  background: var(--bg);
+  border: 1.5px solid var(--separator);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.12s;
+}
+
+.optionCell:active {
+  transform: scale(0.975);
+}
+
+.optionCellSelected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.optionRadio {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--separator-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.optionRadioSelected {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+/* 오답 인라인 배너 */
+.wrongBanner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--warning-soft);
+  color: #b46a00;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.wrongBanner svg {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+
+.formErrorText {
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 500;
+  margin: 14px 0 0;
+  text-align: center;
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 16px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: transform 0.12s, opacity 0.15s;
+}
+
+.submitBtn:active {
+  transform: scale(0.975);
+}
+
+.submitBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* --------------------------------------------------------------------------
+   S7 · 하단 법적 고지 + footer (유리질 아님 · 고대비 · 흰 배경)
+   -------------------------------------------------------------------------- */
+
+.legal {
+  margin-top: 38px;
+  background: #fff;
+  border-top: 1px solid var(--separator-strong);
+  padding: 24px 20px 30px;
+}
+
+.legalInner {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.legalHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--legal);
+  margin: 0 0 10px;
+}
+
+.legalList {
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.legalList li {
+  display: list-item;
+}
+
+.legalList li {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--legal);
+}
+
+.footerText {
+  margin: 18px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--label-2);
+}
+
+/* --------------------------------------------------------------------------
+   S6 · 결과 바텀 시트
+   -------------------------------------------------------------------------- */
+
+.sheetDim {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 18, 18, 0.34);
+  z-index: 90;
+  animation: dimIn 0.3s ease;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  box-shadow: var(--shadow-sheet);
+  padding: 10px 24px calc(28px + env(safe-area-inset-bottom));
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+  animation: sheetUp 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.sheetGrabber {
+  width: 38px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--separator);
+  margin: 0 auto 18px;
+}
+
+.sheetIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.sheetIconSuccess {
+  background: var(--success);
+  color: #fff;
+}
+
+.sheetIconWarning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.sheetIconDanger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.sheetTitle {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin: 16px 0 0;
+}
+
+.sheetBody {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--label-2);
+  margin: 9px 0 0;
+}
+
+.sheetBtn {
+  width: 100%;
+  margin-top: 22px;
+  padding: 15px;
+  border: 0;
+  border-radius: 9999px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.sheetBtn:active {
+  transform: scale(0.975);
+}
+
+.sheetBtnBrand {
+  background: var(--brand);
+  box-shadow: var(--shadow-btn);
+}
+
+.sheetBtnGray {
+  background: #8e8e93;
+}
+
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes dimIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

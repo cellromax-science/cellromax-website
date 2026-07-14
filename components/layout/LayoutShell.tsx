@@ -19,9 +19,11 @@ interface LayoutShellProps {
 
 export function LayoutShell({ children }: LayoutShellProps) {
   const pathname = usePathname();
-  const isAdmin = pathname.includes("/admin");
+  // admin: 자체 셸 사용, event: 독립형 랜딩 페이지 (사이트 Header/Footer 제외)
+  const isStandalone =
+    pathname.includes("/admin") || pathname.includes("/event/");
 
-  if (isAdmin) {
+  if (isStandalone) {
     return <main>{children}</main>;
   }
 
