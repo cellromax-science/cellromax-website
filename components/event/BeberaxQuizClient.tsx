@@ -21,7 +21,7 @@ const QUIZ = [
   {
     question: "Q1. 베베락스액의 주성분인 D-소르비톨은 어떤 성분일까요?",
     options: [
-      "과일 등 자연계에도 존재하는 당알코올 계열 성분",
+      "직장에서 작용하는 당알코올 계열 성분",
       "석유에서 합성한 인공 색소",
       "항생제 계열 성분",
       "스테로이드 성분",
@@ -257,11 +257,11 @@ export function BeberaxQuizClient() {
                   성분
                 </span>
                 <h3 className={styles.featureTitle}>
-                  자연계에도 존재하는 성분
+                  직장에서 작용하는 당알코올 계열 성분
                 </h3>
                 <p className={styles.featureDesc}>
-                  D-소르비톨은 과일 등 자연계에도 존재하는 당알코올 계열
-                  성분으로, 식품에도 널리 쓰입니다.
+                  D-소르비톨은 당알코올 계열의 성분으로, 직장 내에서 삼투
+                  작용으로 수분을 끌어오는 데 도움을 줍니다.
                 </p>
               </div>
             </div>
@@ -318,10 +318,12 @@ export function BeberaxQuizClient() {
                   <Icon d={ICON_PATHS.leaf} size={13} />
                   노즐
                 </span>
-                <h3 className={styles.featureTitle}>부드러운 노즐</h3>
+                <h3 className={styles.featureTitle}>
+                  매끄럽게 가공된 둥근 노즐
+                </h3>
                 <p className={styles.featureDesc}>
-                  별도 금형으로 제작해 팁을 둥글고 매끄럽게 처리한 노즐로,
-                  부드러운 사용감을 고려한 설계입니다.
+                  별도 금형으로 노즐을 제작하여 표면이 매끄럽고 팁이 둥글게
+                  처리되어 있으며, 입구 마감이 일정하도록 충진됩니다.
                 </p>
               </div>
             </div>
@@ -607,18 +609,16 @@ export function BeberaxQuizClient() {
               본 제품은 의약품이며, 의·약사와 상의 후 사용하십시오. 사용 전
               첨부 문서를 반드시 읽으십시오.
             </li>
-            {/* TODO: 심의 후 실제 번호 기재 */}
-            <li>의약품 광고 사전심의필 번호: (심의 후 기재)</li>
+            <li>의약품 광고 사전심의필 번호: 2026-1809-001700</li>
             <li>
               본 이벤트는 약사 대상 제품 인식조사·교육 목적이며, 의약품의
               발주·처방·판매실적과 무관합니다.
             </li>
           </ul>
-          {/* TODO: 실제 고객상담 전화번호로 교체 */}
           <p className={styles.footerText}>
             판매원 ㈜셀로맥스사이언스 · 제조원 ㈜퍼슨
             <br />
-            고객상담 02-0000-0000
+            고객상담 031-662-1395
           </p>
         </div>
       </footer>
