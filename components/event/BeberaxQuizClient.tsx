@@ -373,13 +373,12 @@ export function BeberaxQuizClient() {
               {
                 icon: ICON_PATHS.calendar,
                 label: "이벤트 기간",
-                // TODO: 실제 기간 확정 후 교체
-                value: "2026-07-20 ~ 2026-07-31 (잠정)",
+                value: "2026-07-20 ~ 2026-07-31",
               },
               {
                 icon: ICON_PATHS.gift,
                 label: "이벤트 경품",
-                value: "스타벅스 아메리카노 쿠폰 (추첨 100명)",
+                value: "투썸플레이스 아메리카노 쿠폰 (추첨 100명)",
               },
               {
                 icon: ICON_PATHS.pencil,
