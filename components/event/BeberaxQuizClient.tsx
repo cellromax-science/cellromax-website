@@ -373,12 +373,12 @@ export function BeberaxQuizClient() {
               {
                 icon: ICON_PATHS.calendar,
                 label: "이벤트 기간",
-                value: "2026-07-20 ~ 2026-07-31",
+                value: "2026-07-25 ~ 2026-08-08",
               },
               {
                 icon: ICON_PATHS.gift,
                 label: "이벤트 경품",
-                value: "투썸플레이스 아메리카노 쿠폰 (추첨 100명)",
+                value: "투썸플레이스 아이스 아메리카노 쿠폰 (추첨 100명)",
               },
               {
                 icon: ICON_PATHS.pencil,
