@@ -590,6 +590,16 @@ export function BeberaxQuizClient() {
                   ? "제출 중..."
                   : "이벤트 참여하기"}
             </button>
+
+            {/* 셀로맥스 가입문의 — 외부 링크 (새 창) */}
+            <a
+              href="https://www.cellromax.co.kr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.secondaryBtn}
+            >
+              셀로맥스 가입문의
+            </a>
           </div>
         </section>
       </div>
