@@ -614,6 +614,37 @@
   cursor: default;
 }
 
+/* 이벤트 종료 공지 */
+.endedNotice {
+  text-align: center;
+  padding: 18px 4px 8px;
+}
+
+.endedIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.endedTitle {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin: 16px 0 0;
+}
+
+.endedBody {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--label-2);
+  margin: 9px 0 6px;
+}
+
 /* 보조 버튼 — 셀로맥스 가입문의 (외부 링크) */
 .secondaryBtn {
   display: block;

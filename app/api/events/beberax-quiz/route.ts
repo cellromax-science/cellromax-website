@@ -18,6 +18,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
 const EVENT_SLUG = 'beberax-quiz'
 const EVENT_TITLE = '베베락스액 퀴즈 이벤트'
 
+/** 이벤트 종료 여부 — true면 신규 제출을 거부 (페이지의 EVENT_ENDED와 함께 관리) */
+const EVENT_CLOSED = true
+
 /** 정답 인덱스 (0-based) — README 스펙: Q1·Q2 모두 1번 보기 */
 const CORRECT_ANSWERS = { q1: 0, q2: 0 }
 
@@ -31,6 +34,14 @@ const MAX_LEN = {
 
 export async function POST(request: NextRequest) {
   try {
+    // --- 0. 이벤트 종료 확인 ---
+    if (EVENT_CLOSED) {
+      return NextResponse.json(
+        { result: 'error', error: '이벤트가 종료되었습니다.' },
+        { status: 410 }
+      )
+    }
+
     // --- 1. 요청 본문 파싱 ---
     let body: {
       name?: unknown

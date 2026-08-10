@@ -44,6 +44,9 @@ const QUIZ = [
 const YOUTUBE_EMBED_SRC =
   "https://www.youtube-nocookie.com/embed/mCeFMniVuE8?rel=0&modestbranding=1";
 
+/** 이벤트 종료 여부 — true면 참여 폼 대신 종료 공지를 표시 */
+const EVENT_ENDED: boolean = true;
+
 // ---------------------------------------------------------------------------
 // 인라인 아이콘 (Lucide 스타일 stroke SVG)
 // ---------------------------------------------------------------------------
@@ -404,6 +407,22 @@ export function BeberaxQuizClient() {
             ================================================================ */}
         <section aria-label="이벤트 참여">
           <div className={styles.formCard}>
+            {EVENT_ENDED ? (
+              /* ---- 이벤트 종료 공지 ---- */
+              <div className={styles.endedNotice}>
+                <span className={styles.endedIcon}>
+                  <Icon d={ICON_PATHS.calendar} size={28} strokeWidth={1.8} />
+                </span>
+                <h2 className={styles.endedTitle}>이벤트가 종료되었습니다</h2>
+                <p className={styles.endedBody}>
+                  참여해 주신 모든 분께 감사드립니다.
+                  <br />
+                  당첨자는 개별 안내드리며, 경품은 카카오톡 선물하기로
+                  발송됩니다.
+                </p>
+              </div>
+            ) : (
+              <>
             <h2 className={styles.sectionTitle}>참여 정보 입력</h2>
             <div className={styles.fieldGroup}>
               <div>
@@ -590,6 +609,8 @@ export function BeberaxQuizClient() {
                   ? "제출 중..."
                   : "이벤트 참여하기"}
             </button>
+              </>
+            )}
 
             {/* 셀로맥스 가입문의 — 외부 링크 (새 창) */}
             <a
