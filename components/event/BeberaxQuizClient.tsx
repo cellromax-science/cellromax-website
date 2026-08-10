@@ -417,8 +417,7 @@ export function BeberaxQuizClient() {
                 <p className={styles.endedBody}>
                   참여해 주신 모든 분께 감사드립니다.
                   <br />
-                  당첨자는 개별 안내드리며, 경품은 카카오톡 선물하기로
-                  발송됩니다.
+                  당첨자는 개별 안내드립니다.
                 </p>
               </div>
             ) : (
