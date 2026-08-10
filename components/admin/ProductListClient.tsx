@@ -466,7 +466,7 @@ export function ProductListClient({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1">
           <Input
-            placeholder="제품명으로 검색..."
+            placeholder="제품명 또는 주요성분으로 검색..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />

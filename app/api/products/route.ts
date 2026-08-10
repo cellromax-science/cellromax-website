@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
         `name_en.ilike.%${search}%`,
         `name_zh.ilike.%${search}%`,
         `name_vi.ilike.%${search}%`,
+        `ingredients_ko.ilike.%${search}%`,
       ]
       const searchTagFilter = buildSearchTagFilter(search)
       if (searchTagFilter) {
