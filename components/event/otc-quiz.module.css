@@ -1,0 +1,730 @@
+/* ==========================================================================
+   셀로맥스 OTC 퀴즈 이벤트 랜딩 페이지 스타일
+
+   디자인 핸드오프(index.html)의 :root 토큰·스타일을 .pageWrap 스코프로 이식.
+   iOS 블루 틴트, 모바일 우선, 최대 폭 460px.
+   ========================================================================== */
+
+.pageWrap {
+  --tint: #007aff;
+  --green: #34c759;
+  --red: #ff3b30;
+  --bg: #efeff4;
+  --card: #fff;
+  --fill: #f7f7f9;
+  --label: #1c1c1e;
+  --label-2: rgba(60, 60, 67, 0.6);
+  --label-3: rgba(60, 60, 67, 0.75);
+  --sep: rgba(60, 60, 67, 0.14);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.05);
+
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  color: #000;
+  letter-spacing: -0.02em;
+  font-family: var(--font-pretendard), Pretendard, -apple-system, system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pageWrap a {
+  color: var(--tint);
+  text-decoration: none;
+}
+
+.pageWrap a:hover {
+  color: #0060df;
+  text-decoration: underline;
+}
+
+.pageWrap input {
+  font-family: inherit;
+}
+
+.pageWrap input::placeholder {
+  color: rgba(60, 60, 67, 0.3);
+}
+
+.page {
+  width: 100%;
+  max-width: 460px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   히어로
+   -------------------------------------------------------------------------- */
+
+.hero {
+  background: linear-gradient(165deg, #0a84ff 0%, #4b5fd6 62%, #5856d6 100%);
+  padding: 56px 24px 32px;
+  color: #fff;
+}
+
+.badges {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 5px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.kicker {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.82;
+  margin-bottom: 8px;
+}
+
+.heroTitle {
+  font-size: 32px;
+  line-height: 1.18;
+  font-weight: 700;
+  margin: 0 0 12px;
+  letter-spacing: -0.04em;
+}
+
+.heroDesc {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 24px;
+  opacity: 0.88;
+  text-wrap: pretty;
+}
+
+.stats {
+  display: flex;
+  gap: 10px;
+}
+
+.stat {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.stat b {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+}
+
+.stat span {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   공통 섹션
+   -------------------------------------------------------------------------- */
+
+.block {
+  padding: 32px 16px 8px;
+}
+
+.blockSubmit {
+  padding-top: 24px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--label-2);
+  letter-spacing: 0.04em;
+  padding: 0 4px 10px;
+}
+
+.eyebrowRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 4px 10px;
+}
+
+.eyebrowRow .eyebrow {
+  padding: 0;
+}
+
+.score {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tint);
+}
+
+.secTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  padding: 0 4px;
+  letter-spacing: -0.03em;
+}
+
+.secDesc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--label-2);
+  margin: 0 0 18px;
+  padding: 0 4px;
+  text-wrap: pretty;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stackSteps {
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   제품 카드
+   -------------------------------------------------------------------------- */
+
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.prod {
+  display: flex;
+  gap: 16px;
+}
+
+.prod img {
+  width: 106px;
+  height: 134px;
+  object-fit: contain;
+  flex: none;
+}
+
+.prodBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.cat {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pname {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 3px 0 8px;
+  letter-spacing: -0.03em;
+}
+
+.pname small {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+.pnameGroup {
+  margin-bottom: 14px;
+}
+
+.flabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+.flabelMt {
+  margin-top: 7px;
+}
+
+.fval {
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 500;
+  margin-top: 2px;
+  text-wrap: pretty;
+}
+
+.fsub {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--label-3);
+  margin-top: 2px;
+  text-wrap: pretty;
+}
+
+.variant {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.vmeta {
+  font-size: 12px;
+  color: var(--label-2);
+  margin: 2px 0 8px;
+}
+
+.variantTop {
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.18);
+}
+
+.variantBottom {
+  padding-top: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   이벤트 안내
+   -------------------------------------------------------------------------- */
+
+.rows {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--sep);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowKey {
+  font-size: 15px;
+  color: var(--label-2);
+  flex: none;
+}
+
+.rowVal {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+  text-wrap: pretty;
+}
+
+.step {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stepNum {
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: var(--tint);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.stepTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.stepDesc {
+  font-size: 13px;
+  color: var(--label-2);
+  margin-top: 2px;
+}
+
+.note {
+  margin-top: 12px;
+  background: rgba(0, 122, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #0a4e9b;
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   참여자 정보 폼
+   -------------------------------------------------------------------------- */
+
+.field {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--sep);
+}
+
+.field:last-child {
+  border-bottom: none;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--label-2);
+  margin-bottom: 4px;
+}
+
+.field input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 2px 0;
+  letter-spacing: -0.02em;
+  background: transparent;
+  color: var(--label);
+}
+
+.consentCard {
+  margin-top: 12px;
+}
+
+.consentTitle {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.consentBody {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(60, 60, 67, 0.72);
+  background: var(--fill);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-wrap: pretty;
+}
+
+.consentCheck {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  text-align: left;
+}
+
+.consentBox {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  border: 1.5px solid rgba(60, 60, 67, 0.28);
+  background: transparent;
+}
+
+.consentBoxOn {
+  background: var(--tint);
+  border-color: var(--tint);
+}
+
+.consentLbl {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--label);
+}
+
+/* --------------------------------------------------------------------------
+   퀴즈
+   -------------------------------------------------------------------------- */
+
+.qcard {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 18px 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.qmeta {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tint);
+  letter-spacing: 0.02em;
+}
+
+.qtext {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+  margin: 6px 0 14px;
+  letter-spacing: -0.03em;
+  text-wrap: pretty;
+}
+
+.opts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.opt {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 13px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14.5px;
+  line-height: 1.4;
+  font-weight: 500;
+  background: var(--fill);
+  border: 1.5px solid transparent;
+  color: var(--label);
+  transition: transform 0.12s ease-out;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.opt:active {
+  transform: scale(0.98);
+}
+
+.optNum {
+  font-weight: 700;
+  flex: none;
+  opacity: 0.7;
+}
+
+.optTxt {
+  flex: 1;
+  text-wrap: pretty;
+}
+
+.optMark {
+  flex: none;
+  font-weight: 700;
+}
+
+.optRight {
+  background: rgba(52, 199, 89, 0.12);
+  border-color: var(--green);
+  color: #1b6e31;
+}
+
+.optWrong {
+  background: rgba(255, 59, 48, 0.1);
+  border-color: var(--red);
+  color: #c4291f;
+}
+
+.wrongmsg {
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--red);
+}
+
+.exp {
+  margin-top: 12px;
+  background: rgba(52, 199, 89, 0.09);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.expH {
+  font-size: 12px;
+  font-weight: 700;
+  color: #248a3d;
+  letter-spacing: 0.02em;
+  margin-bottom: 5px;
+}
+
+.expT {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--label);
+  text-wrap: pretty;
+}
+
+.expLi {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--label);
+  margin-top: 7px;
+  padding-left: 10px;
+  border-left: 2px solid rgba(52, 199, 89, 0.4);
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   제출
+   -------------------------------------------------------------------------- */
+
+.submit {
+  background: rgba(60, 60, 67, 0.28);
+  color: #fff;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 17px;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: -0.02em;
+  border: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+.submitOn {
+  background: var(--tint);
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.22);
+}
+
+.hint {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--label-2);
+  text-align: center;
+  margin-top: 10px;
+  text-wrap: pretty;
+}
+
+.hintError {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.done {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.doneTick {
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.doneH {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.doneD {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(60, 60, 67, 0.7);
+  margin-top: 8px;
+  text-wrap: pretty;
+}
+
+.doneF {
+  font-size: 13px;
+  color: var(--label-2);
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--sep);
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   법적 고지
+   -------------------------------------------------------------------------- */
+
+.legal {
+  background: #fff;
+  margin-top: 32px;
+  padding: 28px 20px 40px;
+}
+
+.legalH {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin-bottom: 12px;
+}
+
+.legal p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--label);
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+
+.legalItems {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--label);
+}
+
+.legalMeta {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(60, 60, 67, 0.2);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #3c3c43;
+}
+
+.legalMeta > div:last-child {
+  margin-top: 8px;
+}
