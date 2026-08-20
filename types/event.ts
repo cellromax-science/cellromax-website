@@ -30,3 +30,16 @@ export interface QuizEntryRequest {
 
 /** 퀴즈 이벤트 제출 결과 */
 export type QuizSubmitResult = "success" | "wrong" | "duplicate" | "error";
+
+/** event_destruction_logs 테이블 행 — 개인정보 파기 이력 */
+export interface EventDestructionLog {
+  id: string;
+  event_slug: string;
+  event_title: string;
+  destroyed_count: number;
+  entries_from: string | null;
+  entries_to: string | null;
+  destroyed_by: string | null;
+  destroyed_by_name: string;
+  created_at: string;
+}
