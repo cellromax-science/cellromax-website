@@ -116,7 +116,8 @@ export async function POST(request: NextRequest) {
       event_title: EVENT_TITLE,
       name,
       license_number: license.replace(/-/g, ''),
-      phone,
+      // 하이픈을 입력해도 숫자만 저장
+      phone: phone.replace(/-/g, ''),
       pharmacy_name: pharmacy,
       consent: true,
       q1,
