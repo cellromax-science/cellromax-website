@@ -257,7 +257,7 @@ export function OtcQuizClient() {
           <div className={styles.stats}>
             <div className={styles.stat}>
               <b>기간</b>
-              <span>9.1 – 9.15</span>
+              <span>8.29 – 9.12</span>
             </div>
             <div className={styles.stat}>
               <b>추첨</b>
@@ -363,7 +363,7 @@ export function OtcQuizClient() {
           <div className={styles.rows}>
             <div className={styles.row}>
               <div className={styles.rowKey}>기간</div>
-              <div className={styles.rowVal}>2026. 9. 1 – 9. 15</div>
+              <div className={styles.rowVal}>2026. 8. 29 – 9. 12</div>
             </div>
             <div className={styles.row}>
               <div className={styles.rowKey}>경품</div>
