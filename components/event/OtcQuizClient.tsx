@@ -661,8 +661,6 @@ export function OtcQuizClient() {
               · 본 페이지의 효능·효과는 식품의약품안전처 허가사항을 인용한
               것입니다.
             </div>
-            {/* TODO: 품목별 의약품 광고 사전심의필 번호 확정 후 기재 (공개 전 필수) */}
-            <div>· 의약품 광고 사전심의필 번호: (품목별 심의 후 기재)</div>
             <div>
               <Link href="/ko/privacy">개인정보 처리방침</Link>
             </div>
