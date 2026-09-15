@@ -1,6 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { ADMIN_PRODUCT_LIST_SELECT } from '@/lib/products'
+import { ADMIN_PRODUCT_LIST_SELECT, stripExcelCrArtifacts } from '@/lib/products'
 import { buildSearchTagFilter } from '@/lib/product-search'
 import { getUser } from '@/lib/supabase/auth'
 import { getAdminProfile } from '@/lib/supabase/admin'
@@ -111,7 +111,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })
     }
 
-    const body: ProductInsert = await request.json()
+    // 엑셀 붙여넣기로 들어온 _x000D_ 흔적 정규화 후 저장
+    const body: ProductInsert = stripExcelCrArtifacts(await request.json())
 
     if (!body.name_ko || !body.slug || !body.category) {
       return NextResponse.json(

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUser } from '@/lib/supabase/auth'
 import { getAdminProfile } from '@/lib/supabase/admin'
+import { stripExcelCrArtifacts } from '@/lib/products'
 
 /**
  * 제품 수정 API (관리자용)
@@ -43,7 +44,8 @@ export async function PUT(
       )
     }
 
-    const body = await request.json()
+    // 엑셀 붙여넣기로 들어온 _x000D_ 흔적 정규화 후 저장
+    const body = stripExcelCrArtifacts(await request.json())
 
     if (!body || Object.keys(body).length === 0) {
       return NextResponse.json(
