@@ -43,7 +43,7 @@ const pretendard = localFont({
   display: "swap",
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cellromax.kr";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.cellromax.kr";
 
 export const viewport: Viewport = {
   width: "device-width",

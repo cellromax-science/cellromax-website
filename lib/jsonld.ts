@@ -9,7 +9,7 @@ import type { Post } from "@/types/newsroom";
    페이지에서 <script type="application/ld+json">으로 삽입.
    ========================================================================== */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cellromax.kr";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.cellromax.kr";
 
 // ---------------------------------------------------------------------------
 // Organization — 회사 정보 (전체 사이트 공통)

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cellromax.kr";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.cellromax.kr";
 const locales = ["ko", "en", "zh", "vi"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
