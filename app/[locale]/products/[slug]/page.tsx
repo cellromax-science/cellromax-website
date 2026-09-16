@@ -239,11 +239,25 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const productName = getLocalizedField(product, "name", locale) ?? product.name_ko;
   const subcategoryName = getSubcategoryName(product.product_subcategories, locale);
   const detailSections = buildDetailSections(product, locale, t);
-  const description = getLocalizedField(product, "ingredients", locale);
+  const description = buildProductDescription(product, locale, t("ingredients"));
+  const jsonLdProperties = detailSections
+    .filter((section) => isMeaningfulFieldValue(section.content))
+    .map((section) => ({
+      name: section.label,
+      value: flattenFieldValue(section.content as string),
+    }));
 
   return (
     <section className="section bg-surface">
-      <JsonLd data={productJsonLd(product, locale, productName, description)} />
+      <JsonLd
+        data={productJsonLd(
+          product,
+          locale,
+          productName,
+          description,
+          jsonLdProperties,
+        )}
+      />
       <JsonLd
         data={breadcrumbJsonLd(
           [

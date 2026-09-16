@@ -72,21 +72,29 @@ const CATEGORY_MAP: Record<string, string> = {
   other: "기타",
 };
 
+export interface ProductJsonLdProperty {
+  name: string;
+  value: string;
+}
+
 export function productJsonLd(
   product: Product,
   locale: string,
   productName: string,
   description?: string | null,
+  additionalProperties?: ProductJsonLdProperty[],
 ) {
-  const image = product.thumbnail_url
-    ? product.thumbnail_url
-    : undefined;
+  // 대표 이미지 + 갤러리 이미지 (중복 제거)
+  const images = [
+    ...(product.thumbnail_url ? [product.thumbnail_url] : []),
+    ...(product.images ?? []),
+  ].filter((url, index, arr) => Boolean(url) && arr.indexOf(url) === index);
 
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: productName,
-    ...(image && { image }),
+    ...(images.length > 0 && { image: images }),
     ...(description && { description }),
     brand: {
       "@type": "Brand",
@@ -98,6 +106,16 @@ export function productJsonLd(
     },
     category: CATEGORY_MAP[product.category] ?? product.category,
     url: `${BASE_URL}/${locale}/products/${product.slug}`,
+    inLanguage: locale,
+    // 화면의 제품정보 섹션과 같은 라벨·값을 그대로 사용 (단일 원천)
+    ...(additionalProperties &&
+      additionalProperties.length > 0 && {
+        additionalProperty: additionalProperties.map((property) => ({
+          "@type": "PropertyValue",
+          name: property.name,
+          value: property.value,
+        })),
+      }),
     ...(product.price > 0 && {
       offers: {
         "@type": "Offer",
