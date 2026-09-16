@@ -30,3 +30,28 @@ export function stripExcelCrArtifacts<T>(value: T): T {
   }
   return value;
 }
+
+/** 메타·JSON-LD에 실을 가치가 없는 자리표시용 값 목록 */
+const MEANINGLESS_FIELD_VALUES = new Set(["해당없음", "해당 없음", "없음"]);
+
+/**
+ * 제품 텍스트 필드가 검색 노출(메타태그·JSON-LD)에 실을 만한 실제 값인지 판별합니다.
+ * "." 같은 구두점 뿐인 값, 2자 미만, "해당없음" 류의 자리표시 값을 걸러냅니다.
+ */
+export function isMeaningfulFieldValue(
+  value: string | null | undefined,
+): value is string {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (trimmed.length < 2) return false;
+  if (/^[.\-–—·•,~\s]+$/.test(trimmed)) return false;
+  return !MEANINGLESS_FIELD_VALUES.has(trimmed);
+}
+
+/** 여러 줄 필드 값을 한 줄 요약용으로 정리합니다 (줄바꿈 → ", ", 공백 압축). */
+export function flattenFieldValue(value: string): string {
+  return value
+    .replace(/\s*\n+\s*/g, ", ")
+    .replace(/\s+/g, " ")
+    .trim();
+}

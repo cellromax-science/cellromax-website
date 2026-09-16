@@ -14,6 +14,7 @@ import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { productJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { isMeaningfulFieldValue, flattenFieldValue } from "@/lib/products";
 import type { Product, ProductCategory } from "@/types/product";
 import type { Metadata } from "next";
 
@@ -120,6 +121,44 @@ function buildDetailSections(
   return sections.filter((section) => section.content !== null);
 }
 
+const META_DESCRIPTION_MAX = 160;
+
+/**
+ * 제품 데이터로 검색용 설명문을 만듭니다 (meta description · JSON-LD 공용).
+ * 기능정보를 우선 사용하고 주요성분을 덧붙이며, 자리표시 값(".", "해당없음" 등)은
+ * 걸러서 의미 있는 값이 없으면 null을 반환합니다 (→ 사이트 공통 문구 유지).
+ */
+function buildProductDescription(
+  product: Product,
+  locale: string,
+  ingredientsLabel: string,
+  maxLength?: number,
+): string | null {
+  const rawIngredients = getLocalizedField(product, "ingredients", locale);
+  const rawFunctionality = getLocalizedField(product, "functionality", locale);
+
+  const ingredients = isMeaningfulFieldValue(rawIngredients)
+    ? flattenFieldValue(rawIngredients)
+    : null;
+  const functionality = isMeaningfulFieldValue(rawFunctionality)
+    ? flattenFieldValue(rawFunctionality)
+    : null;
+
+  let description: string | null = null;
+  if (functionality && ingredients) {
+    description = `${functionality} · ${ingredientsLabel}: ${ingredients}`;
+  } else if (functionality) {
+    description = functionality;
+  } else if (ingredients) {
+    description = `${ingredientsLabel}: ${ingredients}`;
+  }
+
+  if (description && maxLength && description.length > maxLength) {
+    description = `${description.slice(0, maxLength - 1).trimEnd()}…`;
+  }
+  return description;
+}
+
 const getProduct = unstable_cache(
   async (slug: string) => {
     const supabase = createStaticClient();
@@ -141,14 +180,29 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const product = await getProduct(decodeURIComponent(slug));
+  const [product, t] = await Promise.all([
+    getProduct(decodeURIComponent(slug)),
+    getTranslations({ locale, namespace: "products.detail" }),
+  ]);
 
   if (!product) return { title: "Product Not Found" };
 
   const name = getLocalizedField(product, "name", locale) ?? product.name_ko;
+  const description = buildProductDescription(
+    product,
+    locale,
+    t("ingredients"),
+    META_DESCRIPTION_MAX,
+  );
+  const keywords = (product.search_tags ?? "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 
   return {
     title: name,
+    ...(description && { description }),
+    ...(keywords.length > 0 && { keywords }),
     alternates: {
       canonical: `/${locale}/products/${slug}`,
       languages: Object.fromEntries(
@@ -157,6 +211,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     openGraph: {
       title: name,
+      ...(description && { description }),
       locale,
       type: "website",
       ...(product.thumbnail_url ? { images: [{ url: product.thumbnail_url }] } : {}),
