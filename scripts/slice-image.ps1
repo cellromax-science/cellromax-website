@@ -1,6 +1,8 @@
-# 세로로 긴 상세 이미지를 OCR용 조각으로 자른다 (JPEG, 겹침 포함).
-# 사용: powershell -File slice-image.ps1 -Source <원본> -OutPrefix <출력접두어>
-# stdout: 생성된 조각 수
+# Slice a tall detail image into OCR-friendly JPEG segments with overlap.
+# Usage: powershell -File slice-image.ps1 -Source <path> -OutPrefix <prefix>
+# stdout: number of segments created
+# NOTE: keep this file ASCII-only; Windows PowerShell 5.1 misreads UTF-8
+#       scripts without a BOM and fails to parse non-ASCII comments.
 param(
   [Parameter(Mandatory = $true)][string]$Source,
   [Parameter(Mandatory = $true)][string]$OutPrefix,
