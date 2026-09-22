@@ -141,7 +141,8 @@ function inlineContent(nodes: DomNode[] | undefined): string {
     if (DROP_TAGS.has(name) || isHidden(node)) continue;
 
     if (name === "br") {
-      out += "<br>";
+      // 디자인용 강제 줄바꿈은 텍스트 뷰에선 공백으로 충분하다
+      out += " ";
       continue;
     }
     const keep = INLINE_KEEP[name];
@@ -163,17 +164,36 @@ function inlineContent(nodes: DomNode[] | undefined): string {
   return out;
 }
 
-/** <br> 반복·빈 문단 등 출력 잡음 정리 */
+/** 한 단어짜리 문단이 연달아 나오면(성분 칩 등) 하나로 병합한다 */
+function mergeShortParagraphs(html: string): string {
+  return html.replace(
+    /(?:<p>[^<]{1,14}<\/p>\s*){2,}/g,
+    (run) => {
+      const items = [...run.matchAll(/<p>([^<]{1,14})<\/p>/g)].map((m) =>
+        m[1].trim(),
+      );
+      return `<p>${items.join(" · ")}</p>`;
+    },
+  );
+}
+
+/** 빈 문단·장식 조각 등 출력 잡음 정리 */
 function tidyFragment(html: string): string {
-  return html
-    .replace(/(?:<br>\s*){2,}/g, "<br>")
-    .replace(/(?:<br>\s*)+<\/p>/g, "</p>")
-    .replace(/<p>(?:\s|<br>)*<\/p>/g, "")
-    // 스텝 번호·화살표 등 그래픽 장식에서 나온 기호뿐인 문단 제거
-    .replace(/<p>[\s\d→←↔↑↓·•\-–—+*=~※○●◇◆□■✓]{1,6}<\/p>/g, "")
-    .replace(/\s+<\/(p|h3|h4|li|th|td|dt|dd|caption)>/g, "</$1>")
-    .replace(/<(p|h3|h4|li|th|td|dt|dd|caption)>\s+/g, "<$1>")
-    .trim();
+  return mergeShortParagraphs(
+    html
+      .replace(/ {2,}/g, " ")
+      .replace(/<p>\s*<\/p>/g, "")
+      // 스텝 번호·화살표 등 그래픽 장식에서 나온 기호뿐인 문단 제거
+      .replace(/<p>[\s\d→←↔↑↓·•\-–—+*=~※○●◇◆□■✓]{1,6}<\/p>/g, "")
+      // 제목 바로 앞의 영문 장식 라벨(MOMENT, INSIDE 등) 제거
+      .replace(
+        /<p>[A-Za-z0-9 .,:;&#'’!?()+\-–—·•*%$]{1,40}<\/p>(?=<h[34]>)/g,
+        "",
+      )
+      .replace(/\s+<\/(p|h3|h4|li|th|td|dt|dd|caption)>/g, "</$1>")
+      .replace(/<(p|h3|h4|li|th|td|dt|dd|caption)>\s+/g, "<$1>")
+      .trim(),
+  );
 }
 
 function renderList(node: DomNode, tag: "ul" | "ol"): string {
@@ -270,7 +290,7 @@ function blockContent(
     if (DROP_TAGS.has(name) || isHidden(node)) continue;
 
     if (name === "br") {
-      buffer += "<br>";
+      buffer += " ";
       continue;
     }
     if (INLINE_KEEP[name] || UNWRAP_INLINE.has(name)) {
