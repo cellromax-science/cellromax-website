@@ -125,12 +125,6 @@ function buildDetailSections(
 const META_DESCRIPTION_MAX = 160;
 
 /**
- * 상세 텍스트 섹션 파일럿 대상 (2단계).
- * 검증 후 전체 확대(3단계) 시 이 화이트리스트 조건을 제거한다.
- */
-const DETAIL_TEXT_PILOT_SLUGS = new Set(["셀로맥스-슈퍼엔오밤", "gf-070"]);
-
-/**
  * 제품 데이터로 검색용 설명문을 만듭니다 (meta description · JSON-LD 공용).
  * 기능정보를 우선 사용하고 주요성분을 덧붙이며, 자리표시 값(".", "해당없음" 등)은
  * 걸러서 의미 있는 값이 없으면 null을 반환합니다 (→ 사이트 공통 문구 유지).
@@ -399,7 +393,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            {detailHtml && DETAIL_TEXT_PILOT_SLUGS.has(product.slug) && (
+            {detailHtml && (
               <DetailTextSection html={detailHtml} label={t("textVersion")} />
             )}
           </div>
