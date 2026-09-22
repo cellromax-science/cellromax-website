@@ -137,7 +137,8 @@
       "pharmacyModalTitle": "주변 약국",
       "backToList": "제품 목록으로",
       "noInfo": "정보가 없습니다.",
-      "otherInfo": "기타 정보"
+      "otherInfo": "기타 정보",
+      "textVersion": "상세정보 텍스트로 보기"
     },
     "noProducts": "등록된 제품이 없습니다.",
     "loadMore": "더 보기",

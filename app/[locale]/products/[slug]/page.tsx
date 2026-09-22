@@ -12,6 +12,7 @@ import {
 import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 import { NearbyPharmacyModal } from "@/components/products/NearbyPharmacyModal";
 import { HtmlDetailFrame } from "@/components/products/HtmlDetailFrame";
+import { DetailTextSection } from "@/components/products/DetailTextSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { productJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import { isMeaningfulFieldValue, flattenFieldValue } from "@/lib/products";
@@ -122,6 +123,12 @@ function buildDetailSections(
 }
 
 const META_DESCRIPTION_MAX = 160;
+
+/**
+ * 상세 텍스트 섹션 파일럿 대상 (2단계).
+ * 검증 후 전체 확대(3단계) 시 이 화이트리스트 조건을 제거한다.
+ */
+const DETAIL_TEXT_PILOT_SLUGS = new Set(["셀로맥스-슈퍼엔오밤", "gf-070"]);
 
 /**
  * 제품 데이터로 검색용 설명문을 만듭니다 (meta description · JSON-LD 공용).
@@ -246,6 +253,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
       name: section.label,
       value: flattenFieldValue(section.content as string),
     }));
+  const detailHtml =
+    (product[`detail_html_${locale}` as keyof Product] as string | null) ||
+    product.detail_html_ko ||
+    product.detail_html;
 
   return (
     <section className="section bg-surface">
@@ -346,11 +357,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
             </div>
 
             {(() => {
-              const detailHtml =
-                (product[`detail_html_${locale}` as keyof Product] as string | null) ||
-                product.detail_html_ko ||
-                product.detail_html;
-
               if (detailHtml) {
                 return (
                   <HtmlDetailFrame
@@ -391,6 +397,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   />
                 </div>
               </div>
+            )}
+
+            {detailHtml && DETAIL_TEXT_PILOT_SLUGS.has(product.slug) && (
+              <DetailTextSection html={detailHtml} label={t("textVersion")} />
             )}
           </div>
 

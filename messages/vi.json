@@ -137,7 +137,8 @@
       "pharmacyModalTitle": "Nhà thuốc gần đây",
       "backToList": "Quay lại danh sách",
       "noInfo": "Không có thông tin",
-      "otherInfo": "Thông tin khác"
+      "otherInfo": "Thông tin khác",
+      "textVersion": "Xem chi tiết dạng văn bản"
     },
     "noProducts": "Chưa có sản phẩm nào.",
     "loadMore": "Xem thêm",
