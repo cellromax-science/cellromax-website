@@ -1,20 +1,29 @@
-import { extractDetailText } from "@/lib/detail-text";
+import { extractDetailText, plainTextToDetailHtml } from "@/lib/detail-text";
 
 interface DetailTextSectionProps {
-  /** 상세 HTML 원본 (detail_html_*) */
-  html: string;
+  /** 상세 HTML 원본 (detail_html_*) — HTML형 제품 */
+  html?: string | null;
+  /** 검수된 평문 (detail_text_*) — 이미지형 제품의 OCR 결과 */
+  plainText?: string | null;
   /** 접기 버튼 라벨 (로케일별 번역) */
   label: string;
 }
 
 /**
- * 상세 HTML에서 추출한 텍스트를 하단 접이식 섹션으로 렌더링한다.
- * - 서버에서 추출해 초기 HTML에 포함되므로 검색엔진·AI가 접힌 상태로도 수집한다.
- * - 추출 결과가 기준 미만(이미지 위주 상세)이면 아무것도 렌더링하지 않는다.
- * - 삽입되는 HTML은 extractDetailText가 화이트리스트 태그만 남긴 소독된 조각이다.
+ * 상세 텍스트를 하단 접이식 섹션으로 렌더링한다.
+ * - HTML형은 detail_html에서 자동 추출, 이미지형은 검수된 detail_text 사용.
+ *   HTML 추출이 기준 미만이면(이미지 위주 번들) detail_text로 폴백한다.
+ * - 서버에서 만들어 초기 HTML에 포함되므로 검색엔진·AI가 접힌 상태로도 수집한다.
+ * - 삽입되는 HTML은 화이트리스트 태그만 남긴 소독된 조각이다.
  */
-export function DetailTextSection({ html, label }: DetailTextSectionProps) {
-  const extracted = extractDetailText(html);
+export function DetailTextSection({
+  html,
+  plainText,
+  label,
+}: DetailTextSectionProps) {
+  const extracted =
+    (html ? extractDetailText(html) : null) ??
+    (plainText ? plainTextToDetailHtml(plainText) : null);
   if (!extracted) return null;
 
   return (

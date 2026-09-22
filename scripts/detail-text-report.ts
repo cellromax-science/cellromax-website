@@ -1,36 +1,59 @@
 /**
  * 상세 텍스트 추출 전수 리포트 (로컬 검수용)
  *
- * HTML형 상세(detail_html_ko)를 가진 활성 제품 전체에 extractDetailText를
- * 돌려서 품질 확인용 리포트를 만든다. 운영에는 아무 영향이 없다.
+ * ① HTML형 상세(detail_html_ko) — extractDetailText 자동 추출 결과
+ * ② 이미지형 상세 — DB에 반영된 detail_text_ko (컬럼이 있으면)
+ * ③ 이미지형 상세 — OCR 초안 (<OCR_DIR>/*.txt, 검수 전)
+ * 을 한 리포트로 만든다. 운영에는 아무 영향이 없다.
  *
  * 실행:
- *   npx tsx scripts/detail-text-report.ts <SUPABASE_URL> <ANON_KEY> <OUT_DIR>
+ *   npx tsx scripts/detail-text-report.ts <SUPABASE_URL> <ANON_KEY> <OUT_DIR> [OCR_DIR]
  *
  * 산출물:
- *   <OUT_DIR>/report.html          — 전 제품 추출 결과 검수 페이지
- *   <OUT_DIR>/fragments/<slug>.html — 제품별 추출 조각
+ *   <OUT_DIR>/report.html           — 전체 검수 페이지
+ *   <OUT_DIR>/fragments/<slug>.html — 제품별 추출 조각 (HTML형)
  *   stdout                          — 요약 표
  */
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
-import { extractDetailText, MIN_DETAIL_TEXT_LENGTH } from "../lib/detail-text";
+import {
+  extractDetailText,
+  plainTextToDetailHtml,
+  MIN_DETAIL_TEXT_LENGTH,
+} from "../lib/detail-text";
 
-const [, , SUPABASE_URL, ANON_KEY, OUT_DIR] = process.argv;
+const [, , SUPABASE_URL, ANON_KEY, OUT_DIR, OCR_DIR] = process.argv;
 
 if (!SUPABASE_URL || !ANON_KEY || !OUT_DIR) {
   console.error(
-    "사용법: npx tsx scripts/detail-text-report.ts <SUPABASE_URL> <ANON_KEY> <OUT_DIR>",
+    "사용법: npx tsx scripts/detail-text-report.ts <SUPABASE_URL> <ANON_KEY> <OUT_DIR> [OCR_DIR]",
   );
   process.exit(1);
 }
 
-interface Row {
+const HEADERS = {
+  apikey: ANON_KEY!,
+  Authorization: `Bearer ${ANON_KEY}`,
+};
+
+interface HtmlRow {
   slug: string;
   name_ko: string;
   category: string;
   detail_html_ko: string;
+}
+
+interface Entry {
+  group: "html" | "db" | "draft";
+  slug: string;
+  name: string;
+  rawTextLen: number;
+  extractedTextLen: number;
+  included: boolean;
+  fragment: string;
+  note: string;
 }
 
 /** 원본에서 보이는 텍스트 길이 (추출 손실률 진단용) */
@@ -51,103 +74,152 @@ function esc(text: string): string {
     .replace(/>/g, "&gt;");
 }
 
+const GROUP_LABEL: Record<Entry["group"], string> = {
+  html: "HTML형 · 자동 추출",
+  db: "이미지형 · DB 반영분",
+  draft: "이미지형 · OCR 초안 (검수 전)",
+};
+
 async function main() {
-  const query =
-    `${SUPABASE_URL}/rest/v1/products` +
-    `?select=slug,name_ko,category,detail_html_ko` +
-    `&is_active=eq.true&detail_html_ko=not.is.null&order=name_ko.asc`;
-  const res = await fetch(query, {
-    headers: { apikey: ANON_KEY!, Authorization: `Bearer ${ANON_KEY}` },
-  });
-  if (!res.ok) throw new Error(`Supabase 조회 실패: ${res.status}`);
-  const rows = (await res.json()) as Row[];
+  const entries: Entry[] = [];
+
+  /* ── ① HTML형: detail_html_ko 자동 추출 ─────────────────────────── */
+  const htmlRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/products?select=slug,name_ko,category,detail_html_ko&is_active=eq.true&detail_html_ko=not.is.null&order=name_ko.asc`,
+    { headers: HEADERS },
+  );
+  if (!htmlRes.ok) throw new Error(`Supabase 조회 실패: ${htmlRes.status}`);
+  const htmlRows = (await htmlRes.json()) as HtmlRow[];
 
   await mkdir(path.join(OUT_DIR!, "fragments"), { recursive: true });
 
-  const results = rows.map((row) => {
+  for (const row of htmlRows) {
     const extracted = extractDetailText(row.detail_html_ko);
     const rawLen = rawVisibleTextLength(row.detail_html_ko);
-    return {
+    const entry: Entry = {
+      group: "html",
       slug: row.slug,
       name: row.name_ko,
-      category: row.category,
-      originalBytes: row.detail_html_ko.length,
       rawTextLen: rawLen,
       extractedTextLen: extracted?.textLength ?? 0,
-      coverage: rawLen > 0 ? (extracted?.textLength ?? 0) / rawLen : 0,
       included: extracted !== null,
       fragment: extracted?.html ?? "",
+      note: extracted
+        ? `보존율 ${rawLen > 0 ? Math.round(((extracted.textLength ?? 0) / rawLen) * 100) : 0}%`
+        : `텍스트 ${MIN_DETAIL_TEXT_LENGTH}자 미만 — 섹션 생략(정상)`,
     };
-  });
-
-  // 제품별 조각 파일
-  for (const r of results) {
-    if (r.included) {
+    entries.push(entry);
+    if (entry.included) {
       await writeFile(
-        path.join(OUT_DIR!, "fragments", `${r.slug}.html`),
-        r.fragment,
+        path.join(OUT_DIR!, "fragments", `${row.slug}.html`),
+        entry.fragment,
         "utf8",
       );
     }
   }
 
-  // 요약 표 (stdout)
-  console.log(
-    ["slug", "포함", "원본자수", "추출자수", "보존율", "제품명"].join("\t"),
+  /* ── ② 이미지형: DB에 반영된 detail_text_ko (컬럼 없으면 건너뜀) ── */
+  const dbRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/products?select=slug,name_ko,detail_text_ko&is_active=eq.true&detail_text_ko=not.is.null&order=name_ko.asc`,
+    { headers: HEADERS },
   );
-  for (const r of results) {
+  let dbColumnExists = dbRes.ok;
+  if (dbRes.ok) {
+    const dbRows = (await dbRes.json()) as {
+      slug: string;
+      name_ko: string;
+      detail_text_ko: string;
+    }[];
+    for (const row of dbRows) {
+      const converted = plainTextToDetailHtml(row.detail_text_ko);
+      entries.push({
+        group: "db",
+        slug: row.slug,
+        name: row.name_ko,
+        rawTextLen: row.detail_text_ko.length,
+        extractedTextLen: converted?.textLength ?? 0,
+        included: converted !== null,
+        fragment: converted?.html ?? "",
+        note: converted ? "검수 완료본" : "기준 미달",
+      });
+    }
+  }
+
+  /* ── ③ 이미지형: OCR 초안 (로컬 검수 전 텍스트) ─────────────────── */
+  if (OCR_DIR && existsSync(OCR_DIR)) {
+    const dbSlugs = new Set(
+      entries.filter((e) => e.group === "db").map((e) => e.slug),
+    );
+    const files = (await readdir(OCR_DIR)).filter((f) => f.endsWith(".txt"));
+    for (const file of files.sort()) {
+      const slug = file.replace(/\.txt$/, "");
+      if (dbSlugs.has(slug)) continue; // DB 반영분이 있으면 초안은 생략
+      const text = await readFile(path.join(OCR_DIR, file), "utf8");
+      const converted = plainTextToDetailHtml(text);
+      entries.push({
+        group: "draft",
+        slug,
+        name: slug,
+        rawTextLen: text.length,
+        extractedTextLen: converted?.textLength ?? 0,
+        included: converted !== null,
+        fragment: converted?.html ?? "",
+        note: converted ? "검수 대기" : "기준 미달",
+      });
+    }
+  }
+
+  /* ── 요약 표 (stdout) ───────────────────────────────────────────── */
+  console.log(["구분", "slug", "포함", "추출자수", "비고", "제품명"].join("\t"));
+  for (const e of entries) {
     console.log(
       [
-        r.slug,
-        r.included ? "O" : "생략",
-        r.rawTextLen,
-        r.extractedTextLen,
-        `${Math.round(r.coverage * 100)}%`,
-        r.name,
+        e.group,
+        e.slug,
+        e.included ? "O" : "생략",
+        e.extractedTextLen,
+        e.note,
+        e.name,
       ].join("\t"),
     );
   }
 
-  // 검수용 리포트 페이지
-  const included = results.filter((r) => r.included);
-  const skipped = results.filter((r) => !r.included);
-
-  const cards = included
+  /* ── 검수용 리포트 페이지 ───────────────────────────────────────── */
+  const summaryRows = entries
     .map(
-      (r) => `
-    <article class="card" id="${esc(r.slug)}">
+      (e) =>
+        `<tr>
+          <td><span class="tag tag-${e.group}">${GROUP_LABEL[e.group]}</span></td>
+          <td>${e.included ? `<a href="#${esc(e.slug)}">${esc(e.name)}</a>` : esc(e.name)}</td>
+          <td>${e.included ? "포함" : "<em>생략</em>"}</td>
+          <td class="num">${e.extractedTextLen.toLocaleString()}</td>
+          <td>${esc(e.note)}</td>
+        </tr>`,
+    )
+    .join("\n");
+
+  const cards = entries
+    .filter((e) => e.included)
+    .map(
+      (e) => `
+    <article class="card" id="${esc(e.slug)}">
       <header>
-        <h2>${esc(r.name)}</h2>
+        <h2>${esc(e.name)} <span class="tag tag-${e.group}">${GROUP_LABEL[e.group]}</span></h2>
         <p class="meta">
-          <a href="https://www.cellromax.kr/ko/products/${encodeURIComponent(r.slug)}" target="_blank" rel="noreferrer">${esc(r.slug)}</a>
-          · 원본 ${r.rawTextLen.toLocaleString()}자 → 추출 ${r.extractedTextLen.toLocaleString()}자
-          (보존율 ${Math.round(r.coverage * 100)}%)
+          <a href="https://www.cellromax.kr/ko/products/${encodeURIComponent(e.slug)}" target="_blank" rel="noreferrer">${esc(e.slug)}</a>
+          · 추출 ${e.extractedTextLen.toLocaleString()}자 · ${esc(e.note)}
         </p>
       </header>
-      <div class="fragment">${r.fragment}</div>
+      <div class="fragment">${e.fragment}</div>
     </article>`,
     )
     .join("\n");
 
-  const skippedRows = skipped
-    .map(
-      (r) =>
-        `<tr><td>${esc(r.name)}</td><td>${esc(r.slug)}</td><td>${r.rawTextLen}자</td><td>텍스트 ${MIN_DETAIL_TEXT_LENGTH}자 미만 — 섹션 생략(정상)</td></tr>`,
-    )
-    .join("\n");
-
-  const summaryRows = results
-    .map(
-      (r) =>
-        `<tr>
-          <td>${r.included ? `<a href="#${esc(r.slug)}">${esc(r.name)}</a>` : esc(r.name)}</td>
-          <td>${r.included ? "포함" : "<em>생략</em>"}</td>
-          <td class="num">${r.rawTextLen.toLocaleString()}</td>
-          <td class="num">${r.extractedTextLen.toLocaleString()}</td>
-          <td class="num">${r.included ? Math.round(r.coverage * 100) + "%" : "—"}</td>
-        </tr>`,
-    )
-    .join("\n");
+  const counts = {
+    html: entries.filter((e) => e.group === "html").length,
+    db: entries.filter((e) => e.group === "db").length,
+    draft: entries.filter((e) => e.group === "draft").length,
+  };
 
   const report = `<title>상세 텍스트 추출 리포트</title>
 <style>
@@ -163,6 +235,10 @@ async function main() {
   th { background:#eef1f6; color:var(--navy); font-weight:700; }
   tr:last-child td { border-bottom:0; }
   td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .tag { display:inline-block; font-size:11px; font-weight:700; border-radius:999px; padding:2px 10px; vertical-align:1px; }
+  .tag-html { background:#e7eef9; color:#1a2d4a; }
+  .tag-db { background:#e5f4ec; color:#1e6b45; }
+  .tag-draft { background:#fdf3dc; color:#8a6d2f; }
   h2.section { font-size:17px; color:var(--navy); margin:36px 0 12px; }
   .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 26px; margin:18px 0; }
   .card h2 { font-size:17px; color:var(--navy); margin:0 0 2px; }
@@ -177,12 +253,11 @@ async function main() {
   a { color:var(--navy); }
 </style>
 <h1>상세 텍스트 추출 리포트</h1>
-<p class="sub">HTML형 상세를 가진 활성 제품 ${results.length}개 · 포함 ${included.length} / 생략 ${skipped.length} · 기준: 순수 텍스트 ${MIN_DETAIL_TEXT_LENGTH}자 이상 · 생성 ${new Date().toISOString().slice(0, 10)}</p>
+<p class="sub">HTML형 ${counts.html} · 이미지형 DB 반영 ${counts.db}${dbColumnExists ? "" : " (detail_text_ko 컬럼 미생성)"} · OCR 초안 ${counts.draft} · 기준: 순수 텍스트 ${MIN_DETAIL_TEXT_LENGTH}자 이상 · 생성 ${new Date().toISOString().slice(0, 10)}</p>
 <table>
-  <tr><th>제품</th><th>판정</th><th>원본 텍스트</th><th>추출 텍스트</th><th>보존율</th></tr>
+  <tr><th>구분</th><th>제품</th><th>판정</th><th>추출 텍스트</th><th>비고</th></tr>
   ${summaryRows}
 </table>
-${skipped.length ? `<h2 class="section">생략 판정 (${skipped.length})</h2>\n<table><tr><th>제품</th><th>slug</th><th>원본 텍스트</th><th>사유</th></tr>${skippedRows}</table>` : ""}
 <h2 class="section">추출 결과 전문</h2>
 ${cards}
 `;

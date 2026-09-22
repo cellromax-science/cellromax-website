@@ -376,6 +376,57 @@ function blockContent(
 }
 
 /**
+ * 검수된 평문(detail_text_* — 이미지형 상세의 OCR 결과)을 조각으로 변환한다.
+ * 줄 단위 가벼운 마커 지원: "# 제목"→h3, "## 소제목"→h4, "- 항목"→목록, 그 외 줄→문단.
+ * 텍스트 분량이 기준 미만이면 null (extractDetailText와 동일 규칙).
+ */
+export function plainTextToDetailHtml(
+  text: string,
+): ExtractedDetailText | null {
+  if (!text || !text.trim()) return null;
+
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  let html = "";
+  let listItems: string[] = [];
+
+  const flushList = () => {
+    if (listItems.length > 0) {
+      html += `<ul>${listItems.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+      listItems = [];
+    }
+  };
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      flushList();
+      continue;
+    }
+    if (line.startsWith("## ")) {
+      flushList();
+      html += `<h4>${escapeText(normalizeText(line.slice(3)))}</h4>`;
+    } else if (line.startsWith("# ")) {
+      flushList();
+      html += `<h3>${escapeText(normalizeText(line.slice(2)))}</h3>`;
+    } else if (/^[-•·]\s+/.test(line)) {
+      listItems.push(escapeText(normalizeText(line.replace(/^[-•·]\s+/, ""))));
+    } else {
+      flushList();
+      html += `<p>${escapeText(normalizeText(line))}</p>`;
+    }
+  }
+  flushList();
+
+  const textLength = html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim().length;
+
+  if (textLength < MIN_DETAIL_TEXT_LENGTH) return null;
+  return { html, textLength };
+}
+
+/**
  * 상세 HTML에서 검색용 텍스트 조각을 추출한다.
  * 텍스트 분량이 기준 미만이면(이미지 위주 상세) null.
  */

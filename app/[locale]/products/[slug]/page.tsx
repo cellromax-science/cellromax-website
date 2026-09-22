@@ -416,8 +416,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            {detailHtml && (
-              <DetailTextSection html={detailHtml} label={t("textVersion")} />
+            {(detailHtml || product.detail_text_ko) && (
+              <DetailTextSection
+                html={detailHtml}
+                plainText={product.detail_text_ko}
+                label={t("textVersion")}
+              />
             )}
           </div>
 

@@ -39,6 +39,8 @@ export interface Product {
   detail_html_en: string | null;
   detail_html_zh: string | null;
   detail_html_vi: string | null;
+  /** 이미지형 상세의 검색용 텍스트 (OCR 추출 후 관리자 검수본). 컬럼 미생성 환경에선 undefined */
+  detail_text_ko?: string | null;
   ingredients_ko: string | null;
   ingredients_en: string | null;
   ingredients_zh: string | null;
@@ -85,6 +87,7 @@ export interface ProductInsert {
   detail_html_en?: string | null;
   detail_html_zh?: string | null;
   detail_html_vi?: string | null;
+  detail_text_ko?: string | null;
   ingredients_ko?: string | null;
   ingredients_en?: string | null;
   ingredients_zh?: string | null;
