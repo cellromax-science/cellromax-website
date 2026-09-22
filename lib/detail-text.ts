@@ -46,7 +46,6 @@ const DROP_TAGS = new Set([
   "select",
   "option",
   "textarea",
-  "button",
   "link",
   "meta",
   "base",
@@ -90,8 +89,11 @@ const HEADING_MAP: Record<string, string> = {
   h6: "h4",
 };
 
-/** 문단형 리프 블록 (내용은 인라인으로 평탄화) */
-const PARAGRAPH_LIKE = new Set(["p", "figcaption", "blockquote", "pre"]);
+/**
+ * 문단형 리프 블록 (내용은 인라인으로 평탄화).
+ * button은 이 사이트 번들에서 FAQ 질문 아코디언으로만 쓰여 문단으로 살린다.
+ */
+const PARAGRAPH_LIKE = new Set(["p", "figcaption", "blockquote", "pre", "button"]);
 
 type DomNode = {
   type: string;
@@ -125,6 +127,19 @@ function isTag(node: DomNode): boolean {
   return node.type === "tag" || node.type === "script" || node.type === "style";
 }
 
+/**
+ * 숫자 카운트업 애니메이션 요소의 실제 값.
+ * 이런 요소는 텍스트가 "0"이고 진짜 수치가 data-* 속성에 있다.
+ */
+function counterValue(node: DomNode): string | null {
+  const attribs = node.attribs ?? {};
+  const raw =
+    attribs["data-target"] ?? attribs["data-count"] ?? attribs["data-value"];
+  if (raw === undefined) return null;
+  const trimmed = raw.trim();
+  return /^[\d.,]+$/.test(trimmed) ? trimmed : null;
+}
+
 /** 자식들을 인라인 텍스트로 평탄화 (strong/em/br만 허용) */
 function inlineContent(nodes: DomNode[] | undefined): string {
   if (!nodes) return "";
@@ -140,6 +155,11 @@ function inlineContent(nodes: DomNode[] | undefined): string {
     const name = (node.name ?? "").toLowerCase();
     if (DROP_TAGS.has(name) || isHidden(node)) continue;
 
+    const counter = counterValue(node);
+    if (counter !== null) {
+      out += escapeText(counter);
+      continue;
+    }
     if (name === "br") {
       // 디자인용 강제 줄바꿈은 텍스트 뷰에선 공백으로 충분하다
       out += " ";
@@ -164,7 +184,10 @@ function inlineContent(nodes: DomNode[] | undefined): string {
   return out;
 }
 
-/** 한 단어짜리 문단이 연달아 나오면(성분 칩 등) 하나로 병합한다 */
+/**
+ * 한 단어짜리 문단이 연달아 나오면(성분 칩 등) 하나로 병합한다.
+ * 문장형(마침표·물음표 등으로 끝나는) 문단은 병합하지 않고 그대로 둔다.
+ */
 function mergeShortParagraphs(html: string): string {
   return html.replace(
     /(?:<p>[^<]{1,14}<\/p>\s*){2,}/g,
@@ -172,6 +195,7 @@ function mergeShortParagraphs(html: string): string {
       const items = [...run.matchAll(/<p>([^<]{1,14})<\/p>/g)].map((m) =>
         m[1].trim(),
       );
+      if (items.some((item) => /[.!?]$/.test(item))) return run;
       return `<p>${items.join(" · ")}</p>`;
     },
   );
@@ -179,17 +203,27 @@ function mergeShortParagraphs(html: string): string {
 
 /** 빈 문단·장식 조각 등 출력 잡음 정리 */
 function tidyFragment(html: string): string {
-  return mergeShortParagraphs(
-    html
-      .replace(/ {2,}/g, " ")
+  let out = html.replace(/ {2,}/g, " ");
+
+  // 조각 하나를 지우면 새로 인접해지는 조각이 생기므로 안정될 때까지 반복
+  for (let pass = 0; pass < 3; pass += 1) {
+    const before = out;
+    out = out
       .replace(/<p>\s*<\/p>/g, "")
       // 스텝 번호·화살표 등 그래픽 장식에서 나온 기호뿐인 문단 제거
       .replace(/<p>[\s\d→←↔↑↓·•\-–—+*=~※○●◇◆□■✓]{1,6}<\/p>/g, "")
       // 제목 바로 앞의 영문 장식 라벨(MOMENT, INSIDE 등) 제거
       .replace(
-        /<p>[A-Za-z0-9 .,:;&#'’!?()+\-–—·•*%$]{1,40}<\/p>(?=<h[34]>)/g,
+        /<p>[A-Za-z0-9 .,:;&#'’!?()+\-–—·•*%$]{1,40}<\/p>(?=\s*<h[34]>)/g,
         "",
       )
+      // FAQ 아코디언 버튼 꼬리의 "+" 장식 제거
+      .replace(/\s+\+\s*<\/p>/g, "</p>");
+    if (out === before) break;
+  }
+
+  return mergeShortParagraphs(
+    out
       .replace(/\s+<\/(p|h3|h4|li|th|td|dt|dd|caption)>/g, "</$1>")
       .replace(/<(p|h3|h4|li|th|td|dt|dd|caption)>\s+/g, "<$1>")
       .trim(),
@@ -289,6 +323,11 @@ function blockContent(
     const name = (node.name ?? "").toLowerCase();
     if (DROP_TAGS.has(name) || isHidden(node)) continue;
 
+    const counter = counterValue(node);
+    if (counter !== null) {
+      buffer += escapeText(counter);
+      continue;
+    }
     if (name === "br") {
       buffer += " ";
       continue;

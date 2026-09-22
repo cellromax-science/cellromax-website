@@ -155,7 +155,30 @@ function buildProductDescription(
   }
 
   if (description && maxLength && description.length > maxLength) {
-    description = `${description.slice(0, maxLength - 1).trimEnd()}…`;
+    // 문장이 중간에 잘리지 않도록 문장 경계(마침표 등)에서 자르고,
+    // 문장 경계가 없으면 절 경계(쉼표)에서 자른다.
+    const slice = description.slice(0, maxLength);
+    let sentenceEnd = -1;
+    const sentenceBoundary = /[.!?](?=\s|$)/g;
+    let match: RegExpExecArray | null;
+    while ((match = sentenceBoundary.exec(slice)) !== null) {
+      sentenceEnd = match.index;
+    }
+    if (sentenceEnd >= 60) {
+      description = slice.slice(0, sentenceEnd + 1);
+    } else {
+      // 기능성 문구는 마침표 없이 절이 이어지므로("~에 필요, ~에 도움을 줌")
+      // 절이 끝나는 표현 뒤에서 자른다. 그마저 없으면 말줄임 처리.
+      let clauseEnd = -1;
+      const clauseBoundary = /(?:필요|있음|줌|함)(?=,|\s·|$)/g;
+      while ((match = clauseBoundary.exec(slice)) !== null) {
+        clauseEnd = match.index + match[0].length;
+      }
+      description =
+        clauseEnd >= 60
+          ? slice.slice(0, clauseEnd)
+          : `${slice.slice(0, maxLength - 1).trimEnd()}…`;
+    }
   }
   return description;
 }
