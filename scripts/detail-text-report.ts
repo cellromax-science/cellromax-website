@@ -151,15 +151,35 @@ async function main() {
       entries.filter((e) => e.group === "db").map((e) => e.slug),
     );
     const files = (await readdir(OCR_DIR)).filter((f) => f.endsWith(".txt"));
-    for (const file of files.sort()) {
-      const slug = file.replace(/\.txt$/, "");
-      if (dbSlugs.has(slug)) continue; // DB 반영분이 있으면 초안은 생략
-      const text = await readFile(path.join(OCR_DIR, file), "utf8");
+    const draftSlugs = files
+      .map((file) => file.replace(/\.txt$/, ""))
+      .filter((slug) => !dbSlugs.has(slug)); // DB 반영분이 있으면 초안은 생략
+
+    // 초안 slug → 상품명 조회
+    const nameBySlug = new Map<string, string>();
+    if (draftSlugs.length > 0) {
+      const inFilter = `in.(${draftSlugs.map((s) => `"${s}"`).join(",")})`;
+      const nameRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/products?select=slug,name_ko&slug=${encodeURIComponent(inFilter)}`,
+        { headers: HEADERS },
+      );
+      if (nameRes.ok) {
+        for (const row of (await nameRes.json()) as {
+          slug: string;
+          name_ko: string;
+        }[]) {
+          nameBySlug.set(row.slug, row.name_ko);
+        }
+      }
+    }
+
+    for (const slug of draftSlugs) {
+      const text = await readFile(path.join(OCR_DIR!, `${slug}.txt`), "utf8");
       const converted = plainTextToDetailHtml(text);
       entries.push({
         group: "draft",
         slug,
-        name: slug,
+        name: nameBySlug.get(slug) ?? slug,
         rawTextLen: text.length,
         extractedTextLen: converted?.textLength ?? 0,
         included: converted !== null,
