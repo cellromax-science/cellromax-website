@@ -140,7 +140,7 @@ async function main() {
         extractedTextLen: converted?.textLength ?? 0,
         included: converted !== null,
         fragment: converted?.html ?? "",
-        note: converted ? "검수 완료본" : "기준 미달",
+        note: converted ? "DB 반영본" : "기준 미달",
       });
     }
   }
