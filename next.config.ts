@@ -74,6 +74,10 @@ const nextConfig: NextConfig = {
         source: '/jsc',
         destination: '/jsc/index.html',
       },
+      {
+        source: '/book',
+        destination: '/book/index.html',
+      },
     ];
   },
   async redirects() {
