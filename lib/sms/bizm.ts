@@ -16,6 +16,12 @@ import "server-only";
  *   BIZM_PROFILE_KEY   발신프로필키 (alpha-numeric 40자)
  *   BIZM_SENDER_NUMBER 등록·승인된 발신번호 (예: 0212345678)
  *   BIZM_API_HOST      (선택) 기본값: 운영서버 https://alimtalk-api.bizmsg.kr
+ *   BIZM_PROXY_URL     (선택) 고정 IP 중계 스크립트 URL (scripts/bizm-relay/relay.php)
+ *   BIZM_PROXY_TOKEN   (선택) 중계 스크립트와 공유하는 인증 토큰
+ *
+ * 비즈엠은 등록된 IP에서만 발송을 허용하는데 Vercel 서버리스는 고정 IP가 없다.
+ * BIZM_PROXY_URL/BIZM_PROXY_TOKEN 이 설정되면 고정 IP를 가진 중계 서버
+ * (카페24 등)에 올린 relay.php 를 경유해 발송한다.
  */
 
 const OPERATION_HOST = "https://alimtalk-api.bizmsg.kr";
@@ -67,6 +73,9 @@ interface BizmConfig {
   profileKey: string;
   senderNumber: string;
   host: string;
+  /** 설정 시 고정 IP 중계 서버(relay.php)를 경유해 발송한다 */
+  proxyUrl: string | null;
+  proxyToken: string | null;
 }
 
 function readConfig(): BizmConfig | { error: string } {
@@ -85,7 +94,17 @@ function readConfig(): BizmConfig | { error: string } {
     };
   }
 
-  return { userId, profileKey, senderNumber, host };
+  const proxyUrl = process.env.BIZM_PROXY_URL?.trim() || null;
+  const proxyToken = process.env.BIZM_PROXY_TOKEN?.trim() || null;
+
+  if (proxyUrl && !proxyToken) {
+    return {
+      error:
+        "BIZM_PROXY_URL 이 설정되었지만 BIZM_PROXY_TOKEN 이 없습니다. 두 값을 함께 설정해주세요.",
+    };
+  }
+
+  return { userId, profileKey, senderNumber, host, proxyUrl, proxyToken };
 }
 
 /**
@@ -130,15 +149,22 @@ export async function sendSms({
     payload.smsLmsTit = lmsTitle.slice(0, LMS_TITLE_MAX);
   }
 
+  // 중계 서버가 설정되면 relay.php 가 비즈엠으로 포워딩한다 (고정 IP 확보용).
+  const endpoint = config.proxyUrl ?? `${config.host}/v2/sender/send`;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    userid: config.userId,
+  };
+  if (config.proxyUrl && config.proxyToken) {
+    headers["X-Relay-Token"] = config.proxyToken;
+  }
+
   let response: Response;
   try {
-    response = await fetch(`${config.host}/v2/sender/send`, {
+    response = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        userid: config.userId,
-      },
+      headers,
       body: JSON.stringify([payload]),
     });
   } catch (error) {
