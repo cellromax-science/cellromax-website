@@ -22,7 +22,7 @@ Vercel (유동 IP) → relay.php (카페24 고정 IP) → 비즈엠 API
 2. **relay.php 수정** — 파일 상단의 `RELAY_TOKEN` 값을 위 토큰으로 교체한다.
    (교체하지 않으면 스크립트가 500 오류로 동작을 거부한다)
 
-3. **카페24 업로드** — FTP 또는 파일관리자로 `/kshpnew2/www/plugin/bizm-relay/` 에
+3. **카페24 업로드** — FTP 또는 파일관리자로 `/kshpnew/www/plugin/bizm-relay/` 에
    `relay.php` 업로드. 호스팅 관리에서 PHP 버전이 7 이상인지 확인 (5.6 이상이면 동작은 함).
 
 4. **서버 IP 확인** — 아래 요청으로 카페24 서버 IP를 확인한다.
