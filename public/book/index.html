@@ -207,19 +207,12 @@ ul,ol{list-style:none}
 .toc__extra{display:flex;flex-wrap:wrap;gap:8px 28px;padding:20px 0;border-top:2px solid var(--ink);font-size:15px;color:var(--ink-2)}
 .toc__extra b{color:var(--ink);margin-right:8px;font-weight:700}
 .part{border-top:1px solid var(--line)}
-.part:last-of-type{border-bottom:1px solid var(--line)}
-.part summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:120px 1fr 48px;gap:24px;align-items:center;padding:32px 0;transition:background .3s}
-.part summary::-webkit-details-marker{display:none}
+.part:last-of-type{border-bottom:0}
+.part__head{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:center;padding:40px 0 28px}
 .part__no{font-family:var(--serif-en);font-size:clamp(48px,5vw,72px);line-height:1;color:var(--burgundy);letter-spacing:-.02em}
 .part__no small{font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:0;margin-left:2px}
 .part__title{font-size:clamp(22px,2.6vw,34px);font-weight:800;letter-spacing:-.04em;line-height:1.3}
 .part__ask{display:block;margin-top:8px;font-size:clamp(15px,1.3vw,17px);font-weight:500;color:var(--ink-3)}
-.part__toggle{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);position:relative;transition:background .3s,border-color .3s,transform .4s var(--ease)}
-.part__toggle::before,.part__toggle::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:2px;margin:-1px 0 0 -8px;background:currentColor;border-radius:2px;transition:transform .4s var(--ease)}
-.part__toggle::after{transform:rotate(90deg)}
-.part[open] .part__toggle{background:var(--burgundy);border-color:var(--burgundy);color:#fff}
-.part[open] .part__toggle::after{transform:rotate(0)}
-.part summary:hover .part__title{color:var(--burgundy)}
 .part__body{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:0 0 48px}
 .part__desc{grid-column:2;font-size:clamp(17px,1.5vw,20px);font-weight:600;color:var(--burgundy);line-height:1.7;max-width:760px;margin-bottom:28px}
 .part__list{grid-column:2;display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
@@ -264,9 +257,13 @@ ul,ol{list-style:none}
 .rec.is-open .rec__quote{margin-bottom:0}
 .rec__foot{margin-top:auto;padding-top:8px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
 .rec__who b{display:block;font-size:18px;font-weight:800;color:var(--cream-title);letter-spacing:-.02em}
-.rec__who span{display:block;margin-top:2px;font-size:14px;font-weight:500;color:#c9a46b}
-.rec__more{flex-shrink:0;font-size:13px;font-weight:600;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:2px}
-.rec__more:hover{color:#fff}
+.rec__who span{display:block;margin-top:4px;font-size:14px;font-weight:500;line-height:1.4;color:#c9a46b;word-break:keep-all}
+.rec__more{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 20px;border-radius:999px;background:var(--cream-title);color:var(--burgundy-deep);font-size:15px;font-weight:700;letter-spacing:-.02em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18);transition:background .3s,color .3s,transform .3s var(--ease),box-shadow .3s}
+.rec__more::after{content:"";width:18px;height:18px;border-radius:50%;background:var(--burgundy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 5v8M5 9h8' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center/18px no-repeat;transition:transform .4s var(--ease)}
+.rec__more:hover{background:#fff;transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.rec__more:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.rec__more[aria-expanded="true"]{background:transparent;color:var(--cream-title);box-shadow:inset 0 0 0 1px rgba(242,226,208,.5)}
+.rec__more[aria-expanded="true"]::after{transform:rotate(45deg)}
 
 /* =========================================================
    Buy banners
@@ -382,8 +379,7 @@ ul,ol{list-style:none}
   .toc__head{grid-template-columns:1fr}
   .toc__meta{justify-content:flex-start}
   .toc__meta div{text-align:left}
-  .part summary{grid-template-columns:72px 1fr 40px;gap:14px;padding:24px 0}
-  .part__toggle{width:40px;height:40px}
+  .part__head{grid-template-columns:72px 1fr;gap:14px;padding:32px 0 20px}
   .part__body{grid-template-columns:1fr;padding-bottom:36px}
   .part__desc,.part__list{grid-column:1}
   .part__list{grid-template-columns:1fr}
@@ -435,13 +431,11 @@ ul,ol{list-style:none}
   .stat__desc{font-size:13px}
 
   /* 목차 */
-  .part summary{grid-template-columns:48px 1fr 36px;gap:12px;padding:22px 0}
+  .part__head{grid-template-columns:48px 1fr;gap:12px;padding:28px 0 18px}
   .part__no{font-size:40px}
   .part__no small{font-size:12px}
   .part__title{font-size:19px}
   .part__ask{font-size:13px;margin-top:6px}
-  .part__toggle{width:36px;height:36px}
-  .part__toggle::before,.part__toggle::after{width:12px;margin-left:-6px}
   .part__list li{font-size:15px;padding:11px 0}
 
   /* 추천사: 가로 스와이프 */
@@ -733,97 +727,90 @@ ul,ol{list-style:none}
       <span><b>추천의 글</b></span>
       <span><b>이 책을 읽기 전에</b></span>
     </div>
-      <details class="part rv" open>
-        <summary>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">1<small>부</small></span>
           <span class="part__title">왜 약사는 경영을 배워야 하는가<span class="part__ask">“면허만 있으면 다 되는 줄 알았습니다.”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">처방약 조제 실력만으로는 살아남지 못한다. 역사와 인구가 이미 보여주고 있는 전체적인 흐름을 먼저 읽는 사람이 시장에서 이긴다.</p>
           <ol class="part__list">
             <li class="pick"><span>001</span>조제만 잘하면 충분하다는 착각</li><li><span>002</span>왜 약사의 삶은 나아지지 않는가</li><li><span>003</span>패권은 기술이 결정한다</li><li><span>004</span>몸에 밴 노예근성에서 벗어나는 법</li><li class="pick"><span>005</span>의대만 가면 인생이 바뀔까</li><li><span>006</span>MBA가 약사에게 정말 필요할까</li><li><span>007</span>인구학이 알려주는 미래</li><li><span>008</span>세계가 주목하는 인구 위기</li><li><span>009</span>최고 엘리트도 흔들리는 이유</li><li><span>010</span>정해진 미래를 준비하는 자세</li>
           </ol>
         </div>
-      </details>
-      <details class="part rv">
-        <summary>
+      </div>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">2<small>부</small></span>
           <span class="part__title">약국 상담대 앞, 3초 심리학<span class="part__ask">“분명 열심히 설명했는데 왜 안 통할까요?”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">손님은 설명이 아니라 태도를 기억한다. 20년간 상담대 앞에서 확인한, 사람을 움직이는 방식이란 무엇인가.</p>
           <ol class="part__list">
             <li><span>011</span>약국의 보이지 않는 저력</li><li class="pick"><span>012</span>손님은 존중받고 있다는 걸 느낀다</li><li class="pick"><span>013</span>설교하지 마라</li><li><span>014</span>고수일수록 듣는다</li><li><span>015</span>손님이 원하는 것을 먼저 보라</li><li><span>016</span>준비된 상담이 진짜 상담이다</li><li class="pick"><span>017</span>확신은 90%, 기대는 10%</li><li class="pick"><span>018</span>진상이 충성 고객으로 바뀌는 순간</li><li><span>019</span>진심 없는 관찰은 공허하다</li><li><span>020</span>80퍼센트는 친화력이다</li><li><span>021</span>지식과 싸울 때, 사람과 다툴 때</li><li><span>022</span>환자의 마음으로 생각하는 법</li><li><span>023</span>정면이 아니라 측면을 공략하라</li><li><span>024</span>상대의 눈높이에 맞추는 대화</li><li><span>025</span>소개받은 손님은 다르게 대하라</li><li><span>026</span>사람의 마음은 설명이 아니라 이미지로 움직인다</li><li><span>027</span>설득에는 세 가지 요소가 있다</li><li><span>028</span>손님은 비교당할 때 마음을 정한다</li><li><span>029</span>왜 뭉치면 안심되고 드물면 갖고 싶을까</li>
           </ol>
         </div>
-      </details>
-      <details class="part rv">
-        <summary>
+      </div>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">3<small>부</small></span>
           <span class="part__title">열심히 할수록 매출이 더 안 오르는 이유<span class="part__ask">“약국에는 어떤 전략적인 마케팅이 필요할까요?”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">매출은 운이 아니라 구조다. 감으로 하는 게 아닌, 관찰과 원칙으로 매출을 쌓는 법에 관해 이야기한다.</p>
           <ol class="part__list">
             <li><span>030</span>이윤보다 가치를 좇아라</li><li><span>031</span>나를 알면 약국도 보인다</li><li><span>032</span>왜 이 일을 하는지 다시 자문해보라</li><li><span>033</span>약한 고리에서 강한 인연이 나온다</li><li><span>034</span>고객 관리가 매출의 8할이다</li><li><span>035</span>당신의 고객은 누구입니까</li><li><span>036</span>사람마다 공정의 기준이 다르다</li><li><span>037</span>1인 상담 약국에는 남다른 원칙이 필요하다</li><li><span>038</span>고객순자산가치가 오래가는 약국을 만든다</li><li class="pick"><span>039</span>도박과 약국 경영의 공통점</li><li><span>040</span>주 고객으로 삼아야 할 부류는 누구인가</li><li><span>041</span>평판을 결정짓는 단 하나의 법칙</li><li><span>042</span>전략을 내놓기 전 감성을 설계하라</li><li><span>043</span>말투가 곧 브랜드가 되는 시대</li><li><span>044</span>팔려는 마음을 버려야 팔린다</li><li><span>045</span>영업의 귀재가 되는 법</li>
           </ol>
         </div>
-      </details>
-      <details class="part rv">
-        <summary>
+      </div>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">4<small>부</small></span>
           <span class="part__title">대체 불가능한 약국이 이긴다<span class="part__ask">“옆 약국과 똑같아 보이는데 뭐가 다른지 모르겠습니다.”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">같은 약을 팔아도 다르게 보일 수 있다. 대체할 수 없는 존재가 돼라. 그게 진짜 경쟁력이다.</p>
           <ol class="part__list">
             <li class="pick"><span>046</span>자기만의 색깔이 없는 약국은 위험하다</li><li><span>047</span>생존을 가르는 건 콘셉트다</li><li><span>048</span>보이지 않는 손의 진실, 다른 차원의 혁신</li><li><span>049</span>노하우는 개념을 만날 때 힘이 된다</li><li><span>050</span>천천히, 서둘러 가는 법</li><li><span>051</span>하나로 꿰뚫는 공부법</li><li><span>052</span>멘털 50%, 공감 40%, 지식 10%</li><li><span>053</span>앞으로의 승패는 고객관계관리에 달려 있다</li><li><span>054</span>고객의 기를 올려주는 것이 브랜딩이다</li><li class="pick"><span>055</span>대체 불가능한 존재감이 성공을 만든다</li>
           </ol>
         </div>
-      </details>
-      <details class="part rv">
-        <summary>
+      </div>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">5<small>부</small></span>
           <span class="part__title">어떠한 경우에도 적을 만들지 마라<span class="part__ask">“내가 차린 약국에는 왜 자꾸 이상한 사람만 엮일까요?”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">약국을 흔드는 건 손님인 것 같지만, 실은 거래처와 지인 뒤에 숨은 이해관계다. 금전을 노리고 접근하는 사람을 걸러내는 법에 대하여.</p>
           <ol class="part__list">
             <li><span>056</span>속임수는 언제나 우리 곁에 있다</li><li><span>057</span>화려한 이력이 만드는 함정</li><li><span>058</span>욕심이 화를 부른다</li><li><span>059</span>안 좋은 일은 몰려서 온다</li><li><span>060</span>로마는 하루아침에 무너지지 않는다</li><li><span>061</span>세상에 좋은 건물주는 없다</li><li><span>062</span>나에게 득이 되는 사람은 열에 한둘뿐</li><li><span>063</span>이름값이 곧 신뢰는 아니다</li><li class="pick"><span>064</span>전문가를 자처하는 생계형 사기꾼</li><li><span>065</span>장밋빛 전망을 믿지 말고 사람을 보라</li>
           </ol>
         </div>
-      </details>
-      <details class="part rv">
-        <summary>
+      </div>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">6<small>부</small></span>
           <span class="part__title">30년 버티는 약사가 되는 법<span class="part__ask">“이 일을 오래 하고 싶습니다. 어떻게 해야 지속 가능할까요?”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">오래 버티는 사람이 결국 남는다. 지치지 않고 이 일을 계속하는 자기관리의 기술을 말한다.</p>
           <ol class="part__list">
             <li><span>066</span>세금이 무서워지는 순간</li><li><span>067</span>왜 열정은 식어가는가</li><li><span>068</span>일 밖에서 나를 채우는 법</li><li><span>069</span>즐길 줄 아는 삶이 오래가는 비결</li><li><span>070</span>나는 왜 이 일을 하는가</li><li><span>071</span>개와 늑대의 시간</li><li><span>072</span>인맥 쌓기에 시간 낭비하지 마라</li><li><span>073</span>꿈꾸기 전 계획부터 세워라</li><li class="pick"><span>074</span>프로는 늘 최고의 컨디션을 유지한다</li>
           </ol>
         </div>
-      </details>
-      <details class="part rv">
-        <summary>
+      </div>
+      <div class="part rv">
+        <div class="part__head">
           <span class="part__no">7<small>부</small></span>
           <span class="part__title">인문학은 어떻게 밥벌이가 되는가<span class="part__ask">“왜 우리 약사들의 삶은 나아지지가 않는 걸까요?”</span></span>
-          <span class="part__toggle" aria-hidden="true"></span>
-        </summary>
+        </div>
         <div class="part__body">
           <p class="part__desc">이제부터는 전술이 아니라 안목의 문제다. 종교·역사·철학·심리학이라는 낯선 렌즈로 세상을 들여다볼 때 우리를 옥죄는 구조가 보이고, 거기서 벗어날 길도 보인다.</p>
           <ol class="part__list">
             <li><span>075</span>종교는 어떻게 사람을 지배해왔는가</li><li><span>076</span>십자군 전쟁이 남긴 것</li><li><span>077</span>자본주의는 어떻게 우리를 착취하는가</li><li><span>078</span>제약사가 약국에 재고를 떠넘길 때</li><li><span>079</span>이데올로기가 만들어지는 과정</li><li><span>080</span>프랜차이즈 약국의 함정</li><li><span>081</span>플랫폼 기업이 약국을 위협하는 법</li><li><span>082</span>악의 평범성, 우리는 왜 시스템에 순응하는가</li><li class="pick"><span>083</span>환자가 아니라 사람으로 보라</li><li><span>084</span>타인의 시선이라는 감옥</li><li><span>085</span>언론이 만든 이기주의 프레임</li><li><span>086</span>자기기만이라는 함정</li><li><span>087</span>거인의 위협, 로켓의 해법</li><li><span>088</span>나는 왜 남의 욕망을 욕망하는가</li><li><span>089</span>금쪽이가 알려주는 분노의 뿌리</li><li><span>090</span>고통에서 영원히 벗어나는 법</li><li><span>091</span>생각에 관한 생각</li><li><span>092</span>시스템1과 시스템2</li><li><span>093</span>쇼펜하우어가 말하는 야만적 공부</li><li><span>094</span>아킬레우스는 왜 분노했는가</li><li><span>095</span>버림받은 영웅의 활</li><li><span>096</span>문명은 무엇으로 붕괴하는가</li><li class="pick"><span>097</span>아마존은 어떻게 세상을 삼켰나</li><li><span>098</span>독점기업 시대의 생존법</li><li><span>099</span>손님은 언제 생각 없이 지갑을 여는가</li><li><span>100</span>우리는 늘 합리적이라는 착각</li><li><span>101</span>휴리스틱의 명과 암</li><li><span>102</span>편향에서 벗어나는 법</li><li><span>103</span>통계와 확률 세계로의 초대</li><li><span>104</span>주사위와 수소폭탄, 몬테카를로의 두 얼굴</li><li class="pick"><span>105</span>패턴을 읽는 눈</li>
           </ol>
         </div>
-      </details>
+      </div>
     <div class="toc__extra rv" style="border-top:0">
       <span><b>EPILOGUE</b>지금 이 순간에도 약국을 지키고 있을 당신에게</span>
       <span><b>참고문헌</b></span>
