@@ -61,6 +61,22 @@ function csvField(value: string): string {
   return value;
 }
 
+/** 연락처 하이픈 표기 (01012345678 → 010-1234-5678) */
+function formatPhone(phone: string): string {
+  const d = phone.replace(/\D/g, "");
+  if (d.length === 11) return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+  if (d.length === 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
+  return phone;
+}
+
+/**
+ * 숫자로 된 값을 Excel이 텍스트로 읽게 하는 CSV 표기 (="06236").
+ * 우편번호·면허번호처럼 앞자리 0이 사라지면 안 되는 값에 사용.
+ */
+function excelText(value: string): string {
+  return value ? `="${value}"` : "";
+}
+
 /** 구분 코드 → 한글 라벨 */
 const CATEGORY_LABELS: Record<string, string> = {
   pharmacist: "약사",
@@ -178,6 +194,8 @@ export function EventEntryListClient({
   /** 이벤트 필터 + 검색 필터링 (이벤트명/성함/면허번호/연락처/소속/주소) */
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
+    // 연락처는 하이픈 입력 여부와 무관하게 숫자만으로 비교
+    const qDigits = q.replace(/\D/g, "");
     return initialItems.filter((item) => {
       if (eventFilter && item.event_title !== eventFilter) return false;
       if (!q) return true;
@@ -185,7 +203,7 @@ export function EventEntryListClient({
         item.event_title.toLowerCase().includes(q) ||
         item.name.toLowerCase().includes(q) ||
         (item.license_number ?? "").includes(q) ||
-        item.phone.includes(q) ||
+        (qDigits.length > 0 && item.phone.includes(qDigits)) ||
         (item.pharmacy_name ?? "").toLowerCase().includes(q) ||
         (item.affiliation ?? "").toLowerCase().includes(q) ||
         (item.address ?? "").toLowerCase().includes(q)
@@ -239,10 +257,10 @@ export function EventEntryListClient({
       item.event_title,
       item.name,
       categoryLabel(item),
-      item.license_number ?? "",
-      item.phone,
+      excelText(item.license_number ?? ""),
+      formatPhone(item.phone),
       item.pharmacy_name ?? item.affiliation ?? "",
-      item.zipcode ?? "",
+      excelText(item.zipcode ?? ""),
       item.address ?? "",
       item.address_detail ?? "",
       String(item.file_paths?.length ?? 0),
@@ -463,7 +481,7 @@ export function EventEntryListClient({
                       {item.license_number ?? "-"}
                     </td>
                     <td className="px-5 py-3 text-gray-500 whitespace-nowrap hidden md:table-cell">
-                      {item.phone}
+                      {formatPhone(item.phone)}
                     </td>
                     <td className="px-5 py-3 text-gray-500 whitespace-nowrap max-w-[180px] truncate">
                       {affiliationLabel(item)}
@@ -608,7 +626,7 @@ export function EventEntryListClient({
               구매 인증 첨부
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              {attachTarget.name} · {attachTarget.phone}
+              {attachTarget.name} · {formatPhone(attachTarget.phone)}
             </p>
 
             {attachLoading ? (
