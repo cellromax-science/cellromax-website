@@ -32,8 +32,9 @@ ALTER TABLE event_entries ADD COLUMN zipcode TEXT;
 ALTER TABLE event_entries ADD COLUMN address TEXT;
 ALTER TABLE event_entries ADD COLUMN address_detail TEXT;
 
--- 구매 인증 파일 (event-uploads 버킷 내 객체 경로, 예: 'book-event/<uuid>.jpg')
-ALTER TABLE event_entries ADD COLUMN file_path TEXT;
+-- 구매 인증 파일 (event-uploads 버킷 내 객체 경로 배열, 최대 5개,
+-- 예: ARRAY['book-preorder/<uuid>.jpg', ...])
+ALTER TABLE event_entries ADD COLUMN file_paths TEXT[];
 
 -- 제출 시점에 노출된 동의 문구 버전 (분쟁 대비 증빙용, 예: 'book-event-v1')
 ALTER TABLE event_entries ADD COLUMN consent_version TEXT;

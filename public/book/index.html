@@ -459,6 +459,144 @@ ul,ol{list-style:none}
 }
 @media (min-width:861px){.recs__hint{display:none}}
 .recs__hint{margin-top:16px;font-size:13px;color:rgba(255,255,255,.55)}
+
+/* =========================================================
+   Event : 사전예약 구매 인증 EVENT
+   ========================================================= */
+.event{position:relative;background:var(--burgundy-deep);color:var(--cream);padding:var(--sec) 0 clamp(80px,10vw,132px);overflow:hidden}
+.event::before{content:"";position:absolute;left:50%;top:-18%;width:min(980px,130vw);aspect-ratio:1;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(67,168,74,.2) 0%,rgba(67,168,74,.06) 42%,transparent 66%);pointer-events:none}
+.event .wrap{position:relative;z-index:1}
+.event__head{text-align:center;max-width:880px;margin:0 auto}
+.event__badge{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 18px;border-radius:99px;
+  background:var(--green);color:#fff;font-size:13px;font-weight:800;letter-spacing:.1em}
+.event__title{margin-top:24px;font-size:clamp(30px,4.6vw,58px);font-weight:800;line-height:1.22;letter-spacing:-.045em;color:var(--cream-title)}
+.event__lead{margin-top:20px;font-size:clamp(16px,1.5vw,20px);line-height:1.75;color:rgba(241,230,210,.72)}
+.event__period{display:inline-flex;align-items:center;gap:12px;margin-top:28px;height:46px;padding:0 24px;border-radius:99px;
+  border:1px solid rgba(241,230,210,.26);background:rgba(0,0,0,.14);font-size:15px;font-weight:600;color:rgba(241,230,210,.7)}
+.event__period b{color:#fff;font-weight:700;letter-spacing:-.01em;font-size:16px}
+
+.event__prize{margin:clamp(54px,7vw,92px) auto 0;max-width:760px;text-align:center}
+.event__prize-top{font-size:clamp(16px,1.6vw,19px);font-weight:600;color:rgba(241,230,210,.78)}
+.event__num{display:flex;align-items:baseline;justify-content:center;gap:.06em;margin-top:4px;
+  font-weight:800;line-height:1;letter-spacing:-.055em;color:var(--cream-title)}
+.event__num b{font-size:clamp(66px,11vw,144px);font-weight:800;color:var(--green);text-shadow:0 10px 50px rgba(67,168,74,.3)}
+.event__num span{font-size:clamp(25px,4vw,50px)}
+.event__prize-item{margin-top:22px;font-size:clamp(20px,2.4vw,30px);font-weight:700;letter-spacing:-.03em;color:#fff}
+.event__prize-sub{margin-top:8px;font-size:clamp(15px,1.4vw,17px);color:rgba(241,230,210,.6)}
+.event__prize-note{margin-top:22px;font-size:14px;line-height:1.7;color:rgba(241,230,210,.52)}
+
+/* ---------- 참여 방법 ---------- */
+.evsteps{background:var(--cream-soft);padding:var(--sec) 0}
+.evsteps__head{text-align:center}
+.evsteps__head .h2{margin-top:16px}
+.evsteps__head p{margin-top:18px}
+.evsteps__grid{margin-top:clamp(44px,5.5vw,72px);display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,3.4vw,52px)}
+.evstep{padding-top:24px;border-top:2px solid var(--burgundy)}
+.evstep__no{font-family:var(--serif-en);font-size:clamp(34px,3.8vw,48px);line-height:1;letter-spacing:-.02em;color:var(--burgundy)}
+.evstep__t{margin-top:14px;font-size:clamp(19px,1.9vw,23px);font-weight:700;letter-spacing:-.03em;color:var(--ink)}
+.evstep__d{margin-top:12px;font-size:15px;line-height:1.72;color:var(--ink-2)}
+.evstep__d li{position:relative;padding-left:14px;margin-top:4px}
+.evstep__d li::before{content:"";position:absolute;left:0;top:.66em;width:5px;height:5px;border-radius:50%;background:var(--burgundy);opacity:.55}
+
+/* ---------- 참여 신청 폼 ---------- */
+.evform{background:var(--white);padding:var(--sec) 0}
+.evform__head{text-align:center;max-width:680px;margin:0 auto}
+.evform__head .h2{margin-top:16px}
+.evform__head p{margin-top:18px}
+.evform__form{max-width:720px;margin:clamp(44px,5.5vw,68px) auto 0}
+
+fieldset.fld{min-width:0;border:0;margin:36px 0 0;padding:0}
+fieldset.fld > legend{padding:0;float:left;width:100%}
+fieldset.fld > .radios{clear:both}
+.fld{margin-top:36px}
+.fld:first-child{margin-top:0}
+.fld__label{display:block;font-size:14px;font-weight:700;letter-spacing:.03em;color:var(--ink-2)}
+.fld__label .req{color:var(--burgundy);margin-left:4px}
+.fld__hint{margin-top:7px;font-size:13px;line-height:1.65;color:var(--ink-3)}
+.inp{display:block;width:100%;margin-top:10px;padding:12px 2px;border:0;border-bottom:1.5px solid var(--line);background:transparent;
+  font:inherit;font-size:17px;color:var(--ink);border-radius:0;transition:border-color .3s var(--ease)}
+.inp::placeholder{color:#c3bbbc}
+.inp:focus{outline:none;border-bottom-color:var(--burgundy)}
+.inp.is-err{border-bottom-color:var(--burgundy);background:rgba(130,33,38,.04)}
+.inp:disabled{color:var(--ink-3)}
+.fld__err{margin-top:8px;font-size:13px;font-weight:600;color:var(--burgundy);display:none}
+.fld.is-err .fld__err{display:block}
+
+.radios{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.radio input{position:absolute;width:1px;height:1px;opacity:0}
+.radio span{display:inline-flex;align-items:center;justify-content:center;min-width:106px;height:50px;padding:0 22px;border-radius:99px;
+  border:1.5px solid var(--line);font-size:16px;font-weight:600;color:var(--ink-2);cursor:pointer;
+  transition:background .25s var(--ease),border-color .25s var(--ease),color .25s var(--ease)}
+.radio span:hover{border-color:rgba(130,33,38,.45);color:var(--burgundy)}
+.radio input:checked + span{background:var(--burgundy);border-color:var(--burgundy);color:#fff}
+.radio input:focus-visible + span{outline:2px solid var(--green);outline-offset:3px}
+
+.addr-row{display:flex;gap:10px;align-items:flex-end}
+.addr-row .inp{flex:1 1 auto;min-width:0}
+.btn-zip{flex:0 0 auto;height:48px;padding:0 22px;border-radius:99px;border:1.5px solid var(--burgundy);background:#fff;
+  color:var(--burgundy);font-size:15px;font-weight:700;white-space:nowrap;transition:background .25s var(--ease),color .25s var(--ease)}
+.btn-zip:hover{background:var(--burgundy);color:#fff}
+
+.file__input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.file__zone{display:flex;align-items:center;gap:16px;margin-top:12px;padding:22px 24px;border-radius:18px;
+  border:1.5px dashed rgba(130,33,38,.38);background:rgba(130,33,38,.025);cursor:pointer;
+  transition:border-color .25s var(--ease),background .25s var(--ease)}
+.file__zone:hover,.file.is-drag .file__zone{border-color:var(--burgundy);background:rgba(130,33,38,.07)}
+.file__ic{flex:0 0 46px;height:46px;border-radius:50%;background:var(--burgundy);color:#fff;display:grid;place-items:center}
+.file__ic svg{width:20px;height:20px}
+.file__txt b{display:block;font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.file__txt small{display:block;margin-top:3px;font-size:13px;color:var(--ink-3)}
+.file__list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.file__item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;background:var(--cream-soft);font-size:14px}
+.file__item span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--ink)}
+.file__item em{flex:0 0 auto;font-style:normal;font-size:13px;color:var(--ink-3)}
+.file__del{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--ink-3);transition:background .2s,color .2s}
+.file__del:hover{background:rgba(130,33,38,.1);color:var(--burgundy)}
+.file__del svg{width:14px;height:14px}
+
+.agree{margin-top:40px;padding-top:32px;border-top:1px solid var(--line)}
+.agree__box{padding:20px 22px;border-radius:14px;background:var(--cream-soft);font-size:13.5px;line-height:1.8;color:var(--ink-2)}
+.agree__box b{display:block;margin-bottom:8px;font-size:14px;color:var(--ink)}
+.agree__box dl{display:grid;grid-template-columns:auto 1fr;gap:3px 16px}
+.agree__box dt{color:var(--ink-3)}
+.chk{display:flex;align-items:flex-start;gap:11px;margin-top:18px;font-size:15.5px;font-weight:600;color:var(--ink);cursor:pointer}
+.chk input{appearance:none;-webkit-appearance:none;flex:0 0 23px;height:23px;margin:1px 0 0;border:1.5px solid var(--line);border-radius:7px;
+  background:#fff;cursor:pointer;transition:background .2s,border-color .2s}
+.chk input:checked{border-color:var(--burgundy);background:var(--burgundy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/14px no-repeat}
+.chk input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.chk .req{color:var(--burgundy)}
+
+.evform__submit{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:64px;margin-top:38px;border-radius:16px;
+  background:var(--burgundy);color:#fff;font-size:18px;font-weight:700;letter-spacing:-.02em;
+  transition:transform .3s var(--ease),box-shadow .4s var(--ease),opacity .2s}
+.evform__submit:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(60,10,14,.26)}
+.evform__submit:disabled{opacity:.45;transform:none;box-shadow:none;cursor:not-allowed}
+.evform__submit svg{width:19px;height:19px}
+.evform__msg{margin-top:18px;min-height:24px;text-align:center;font-size:15px;font-weight:600;line-height:1.6}
+.evform__msg.is-ok{color:var(--green)}
+.evform__msg.is-err{color:var(--burgundy)}
+.evform__note{margin-top:26px;text-align:center;font-size:13px;line-height:1.75;color:var(--ink-3)}
+
+@media (max-width:860px){
+  .evsteps__grid{grid-template-columns:1fr;gap:28px}
+  .evstep{padding-top:18px}
+  .event__period{height:auto;padding:12px 20px;flex-wrap:wrap;justify-content:center;text-align:center}
+  .radios{gap:8px;flex-wrap:nowrap}
+  .radio{flex:1 1 0;min-width:0}
+  .radio span{display:flex;width:100%;min-width:0;height:48px;padding:0 8px;font-size:15px}
+  .addr-row{flex-wrap:wrap}
+  .addr-row .inp{flex:1 1 140px}
+  .file__zone{padding:18px;gap:13px}
+  .file__ic{flex-basis:40px;height:40px}
+  .file__txt b{font-size:15px}
+  .evform__submit{height:58px;font-size:17px}
+}
+@media (max-width:520px){
+  .event__num b{text-shadow:none}
+  .agree__box dl{grid-template-columns:1fr;gap:0}
+  .agree__box dt{margin-top:8px}
+}
 </style>
 </head>
 <body>
@@ -473,6 +611,7 @@ ul,ol{list-style:none}
       <a href="#author">저자</a>
       <a href="#recs">추천사</a>
       <a href="#buy">구매하기</a>
+      <a href="#event">이벤트</a>
     </nav>
     <a class="hd__cta" href="#buy">사전예약 하기</a>
     <button class="hd__menu" type="button" aria-label="메뉴 열기" aria-expanded="false"><i></i><i></i><i></i></button>
@@ -945,6 +1084,147 @@ ul,ol{list-style:none}
   </div>
 </section>
 
+
+<!-- ================= Event : 사전예약 구매 인증 ================= -->
+<section class="event" id="event" aria-labelledby="eventTitle">
+  <div class="wrap">
+    <div class="event__head">
+      <span class="event__badge rv">사전예약 구매 인증 EVENT</span>
+      <h2 class="event__title rv rv-d1" id="eventTitle">먼저 읽고,<br>특별한 선물까지 받아가세요</h2>
+      <p class="event__lead rv rv-d2">『약국경영학개론』을 사전예약으로 구매하고 구매 내역을 인증해주신 분들께<br class="m-br"> 추첨을 통해 선물을 드립니다</p>
+      <p class="event__period rv rv-d3"><span>이벤트 기간</span><b>2026. 10. 16 – 10. 27</b></p>
+    </div>
+
+    <div class="event__prize rv rv-d2">
+      <p class="event__prize-top">구매 인증해주신 분들 중</p>
+      <p class="event__num"><b data-count="1000">0</b><span>명 추첨</span></p>
+      <p class="event__prize-item">셀로맥스 제품 증정</p>
+      <p class="event__prize-sub">제품 선정 후 제품명으로 변경 예정</p>
+      <p class="event__prize-note">※ 증정 제품은 최종 결정 후 별도로 안내드리겠습니다</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Event : 참여 방법 ================= -->
+<section class="evsteps" aria-labelledby="evstepsTitle">
+  <div class="wrap">
+    <div class="evsteps__head">
+      <span class="eyebrow rv">How to Join</span>
+      <h2 class="h2 rv" id="evstepsTitle">참여 방법</h2>
+    </div>
+    <ol class="evsteps__grid">
+      <li class="evstep rv rv-d1">
+        <p class="evstep__no">01</p>
+        <h3 class="evstep__t">사전예약 구매 완료</h3>
+        <div class="evstep__d">
+          <p>온라인 또는 오프라인 서점에서 『약국경영학개론』을 사전예약 구매합니다</p>
+        </div>
+      </li>
+      <li class="evstep rv rv-d2">
+        <p class="evstep__no">02</p>
+        <h3 class="evstep__t">구매 내역 인증</h3>
+        <div class="evstep__d">
+          <ul>
+            <li>온라인 구매: 주문내역 또는 결제내역 화면 캡처</li>
+            <li>오프라인 구매: 구매 영수증 사진</li>
+          </ul>
+        </div>
+      </li>
+      <li class="evstep rv rv-d3">
+        <p class="evstep__no">03</p>
+        <h3 class="evstep__t">이벤트 참여 신청</h3>
+        <div class="evstep__d">
+          <p>아래 참여 신청란에 구매 인증 자료와 정보를 제출하면 신청이 완료됩니다</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= Event : 참여 신청 ================= -->
+<section class="evform" id="apply" aria-labelledby="applyTitle">
+  <div class="wrap">
+    <div class="evform__head">
+      <span class="eyebrow rv">Entry Form</span>
+      <h2 class="h2 rv" id="applyTitle">이벤트 참여 신청</h2>
+      <p class="lead rv">아래 정보를 입력하고 구매 인증 자료를 첨부해주세요</p>
+    </div>
+
+    <form class="evform__form rv" id="eventForm" novalidate>
+      <div class="fld">
+        <label class="fld__label" for="ev-name">성함<span class="req" aria-hidden="true">*</span></label>
+        <input class="inp" type="text" id="ev-name" name="name" autocomplete="name" placeholder="홍길동" required>
+        <p class="fld__err">성함을 입력해주세요</p>
+      </div>
+
+      <div class="fld">
+        <label class="fld__label" for="ev-tel">연락처<span class="req" aria-hidden="true">*</span></label>
+        <input class="inp" type="tel" id="ev-tel" name="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" maxlength="13" required>
+        <p class="fld__hint">당첨 안내 및 경품 발송을 위해 연락 가능한 번호를 입력해주세요</p>
+        <p class="fld__err">올바른 연락처를 입력해주세요</p>
+      </div>
+
+      <fieldset class="fld" id="ev-typeField">
+        <legend class="fld__label">구분<span class="req" aria-hidden="true">*</span></legend>
+        <div class="radios">
+          <label class="radio"><input type="radio" name="type" value="약사" required><span>약사</span></label>
+          <label class="radio"><input type="radio" name="type" value="약대생"><span>약대생</span></label>
+          <label class="radio"><input type="radio" name="type" value="일반인"><span>일반인</span></label>
+        </div>
+        <p class="fld__err">구분을 선택해주세요</p>
+      </fieldset>
+
+      <div class="fld" id="ev-orgField">
+        <label class="fld__label" for="ev-org"><span id="ev-orgLabel">소속명</span><span class="req" id="ev-orgReq" aria-hidden="true">*</span></label>
+        <input class="inp" type="text" id="ev-org" name="org" placeholder="구분을 먼저 선택해주세요">
+        <p class="fld__hint" id="ev-orgHint">약사는 약국명, 약대생은 학교명을 입력해주세요. 일반인은 소속이 있는 경우에만 기재하시면 됩니다</p>
+        <p class="fld__err">소속명을 입력해주세요</p>
+      </div>
+
+      <div class="fld" id="ev-addrField">
+        <label class="fld__label" for="ev-zip">경품 수령 주소<span class="req" aria-hidden="true">*</span></label>
+        <div class="addr-row">
+          <input class="inp" type="text" id="ev-zip" name="zip" placeholder="우편번호" autocomplete="postal-code" style="flex:0 1 180px" required>
+          <button class="btn-zip" type="button" id="ev-zipBtn">주소 찾기</button>
+        </div>
+        <input class="inp" type="text" id="ev-addr1" name="addr1" placeholder="기본주소" autocomplete="address-line1" required>
+        <input class="inp" type="text" id="ev-addr2" name="addr2" placeholder="상세주소 (동·호수 등)" autocomplete="address-line2">
+        <p class="fld__err">우편번호와 기본주소를 입력해주세요</p>
+      </div>
+
+      <div class="fld file" id="ev-fileField">
+        <span class="fld__label">구매 인증 파일 첨부<span class="req" aria-hidden="true">*</span></span>
+        <p class="fld__hint">온라인 구매는 주문내역·결제내역 캡처, 오프라인 구매는 구매 영수증 사진을 첨부해주세요</p>
+        <input class="file__input" type="file" id="ev-file" name="proof" accept="image/*,.pdf,.heic,.heif" multiple>
+        <label class="file__zone" for="ev-file">
+          <span class="file__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>
+          <span class="file__txt"><b>파일을 선택하거나 이곳에 끌어다 놓으세요</b><small>JPG · PNG · HEIC · PDF / 1개당 최대 10MB, 최대 5개</small></span>
+        </label>
+        <ul class="file__list" id="ev-fileList"></ul>
+        <p class="fld__err">구매 인증 파일을 첨부해주세요</p>
+      </div>
+
+      <div class="agree" id="ev-agreeField">
+        <div class="agree__box">
+          <b>개인정보 수집 및 이용 안내</b>
+          <dl>
+            <dt>수집 항목</dt><dd>성함, 연락처, 구분, 소속명, 경품 수령 주소, 구매 인증 자료</dd>
+            <dt>이용 목적</dt><dd>이벤트 당첨자 확인 및 경품 발송</dd>
+            <dt>보유 기간</dt><dd>경품 발송 완료 후 3개월 이내 파기</dd>
+          </dl>
+          <p style="margin-top:8px">동의를 거부하실 수 있으나, 이 경우 이벤트 참여가 제한됩니다</p>
+        </div>
+        <label class="chk"><input type="checkbox" id="ev-agree" name="agree" required><span>개인정보 수집 및 이용에 동의합니다<span class="req" aria-hidden="true">*</span></span></label>
+        <p class="fld__err">개인정보 수집 및 이용에 동의해주세요</p>
+      </div>
+
+      <button class="evform__submit" type="submit" id="ev-submit">이벤트 참여 신청하기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="evform__msg" id="ev-msg" role="status" aria-live="polite"></p>
+      <p class="evform__note">이벤트 기간 내 사전예약 구매자에 한해 참여 가능하며, 중복 신청 시 1건만 인정됩니다<br>당첨자는 입력해주신 연락처로 개별 안내드립니다</p>
+    </form>
+  </div>
+</section>
+
 </main>
 
 <!-- ================= Footer ================= -->
@@ -1124,6 +1404,205 @@ ul,ol{list-style:none}
     b.textContent = open ? '접기' : '전문 보기';
     b.setAttribute('aria-expanded', String(open));
   }));
+
+  /* =========================================================
+     이벤트 참여 신청 폼
+     ---------------------------------------------------------
+     제출 흐름 (Vercel 요청 본문 4.5MB 제한 때문에 파일은 서버를 거치지 않음):
+       1) POST {EVENT_ENDPOINT}/upload-urls → 1회용 서명 업로드 URL 발급
+       2) 각 파일을 스토리지에 직접 PUT
+       3) POST {EVENT_ENDPOINT} 에 입력값 + 업로드된 파일 경로(JSON) 제출
+     ========================================================= */
+  const EVENT_ENDPOINT = '/api/events/book-preorder';
+  const MAX_FILES = 5;
+  const MAX_SIZE = 10 * 1024 * 1024; /* 10MB */
+
+  const form = $('#eventForm');
+  if (form) {
+    const msg = $('#ev-msg');
+    const submitBtn = $('#ev-submit');
+    const fieldOf = el => el.closest('.fld, .agree');
+    const clearErr = el => { const f = fieldOf(el); if (f) f.classList.remove('is-err'); el.classList?.remove('is-err'); };
+    const markErr = el => { const f = fieldOf(el); if (f) f.classList.add('is-err'); el.classList?.add('is-err'); };
+
+    /* ---------- 연락처 자동 하이픈 ---------- */
+    const tel = $('#ev-tel');
+    tel.addEventListener('input', () => {
+      const d = tel.value.replace(/\D/g, '').slice(0, 11);
+      tel.value = d.length < 4 ? d
+        : d.length < 8 ? d.slice(0, 3) + '-' + d.slice(3)
+        : d.slice(0, 3) + '-' + d.slice(3, d.length - 4) + '-' + d.slice(-4);
+      clearErr(tel);
+    });
+
+    /* ---------- 구분에 따라 소속명 라벨 전환 ---------- */
+    const org = $('#ev-org'), orgLabel = $('#ev-orgLabel'), orgReq = $('#ev-orgReq'), orgHint = $('#ev-orgHint');
+    const ORG = {
+      '약사':   { label: '약국명',  ph: '○○약국',          hint: '근무 중이신 약국명을 입력해주세요',              req: true },
+      '약대생': { label: '학교명',  ph: '○○대학교 약학대학', hint: '재학 중이신 학교명을 입력해주세요',             req: true },
+      '일반인': { label: '소속명',  ph: '소속이 있는 경우 입력', hint: '소속이 있는 경우에만 기재하시면 됩니다 (선택)', req: false }
+    };
+    $$('input[name="type"]').forEach(r => r.addEventListener('change', () => {
+      const c = ORG[r.value];
+      orgLabel.textContent = c.label;
+      org.placeholder = c.ph;
+      orgHint.textContent = c.hint;
+      org.required = c.req;
+      orgReq.style.display = c.req ? '' : 'none';
+      clearErr(org);
+      clearErr(r);
+    }));
+
+    /* ---------- 우편번호 찾기 (다음 우편번호 서비스) ---------- */
+    const zip = $('#ev-zip'), addr1 = $('#ev-addr1'), addr2 = $('#ev-addr2');
+    const openPostcode = () => new daum.Postcode({
+      oncomplete: d => {
+        zip.value = d.zonecode;
+        addr1.value = d.roadAddress || d.jibunAddress;
+        clearErr(zip);
+        addr2.focus();
+      }
+    }).open();
+    $('#ev-zipBtn').addEventListener('click', () => {
+      if (window.daum && window.daum.Postcode) return openPostcode();
+      const s = document.createElement('script');
+      s.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+      s.onload = openPostcode;
+      s.onerror = () => { zip.focus(); setMsg('주소 찾기를 불러오지 못했습니다. 우편번호와 주소를 직접 입력해주세요', 'is-err'); };
+      document.head.appendChild(s);
+    });
+
+    /* ---------- 파일 첨부 ---------- */
+    const fileInput = $('#ev-file'), fileList = $('#ev-fileList'), fileWrap = $('#ev-fileField');
+    let files = [];
+    const kb = n => n < 1024 * 1024 ? Math.round(n / 1024) + 'KB' : (n / 1048576).toFixed(1) + 'MB';
+    const syncInput = () => { const dt = new DataTransfer(); files.forEach(f => dt.items.add(f)); fileInput.files = dt.files; };
+    const renderFiles = () => {
+      fileList.innerHTML = '';
+      files.forEach((f, i) => {
+        const li = document.createElement('li');
+        li.className = 'file__item';
+        li.innerHTML = '<span></span><em>' + kb(f.size) + '</em>' +
+          '<button class="file__del" type="button" aria-label="첨부 삭제"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>';
+        li.firstChild.textContent = f.name;
+        $('.file__del', li).addEventListener('click', () => { files.splice(i, 1); syncInput(); renderFiles(); });
+        fileList.appendChild(li);
+      });
+      syncInput();
+      if (files.length) clearErr(fileInput);
+    };
+    const addFiles = list => {
+      const rejected = [];
+      [...list].forEach(f => {
+        if (files.length >= MAX_FILES) return rejected.push(f.name + ' (최대 ' + MAX_FILES + '개)');
+        if (f.size > MAX_SIZE) return rejected.push(f.name + ' (10MB 초과)');
+        if (files.some(x => x.name === f.name && x.size === f.size)) return;
+        files.push(f);
+      });
+      renderFiles();
+      if (rejected.length) setMsg('첨부하지 못한 파일: ' + rejected.join(', '), 'is-err');
+      else if (msg.classList.contains('is-err')) setMsg('');
+    };
+    fileInput.addEventListener('change', () => addFiles(fileInput.files));
+    ['dragenter', 'dragover'].forEach(t => fileWrap.addEventListener(t, e => { e.preventDefault(); fileWrap.classList.add('is-drag'); }));
+    ['dragleave', 'drop'].forEach(t => fileWrap.addEventListener(t, e => { e.preventDefault(); fileWrap.classList.remove('is-drag'); }));
+    fileWrap.addEventListener('drop', e => { if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
+
+    /* ---------- 입력 시 오류 해제 ---------- */
+    $$('#eventForm .inp, #eventForm input[type="checkbox"]').forEach(el =>
+      el.addEventListener('input', () => clearErr(el)));
+
+    /* ---------- 검증 + 제출 ---------- */
+    function setMsg(text, cls) {
+      msg.textContent = text;
+      msg.className = 'evform__msg' + (cls ? ' ' + cls : '');
+    }
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const bad = [];
+      const name = $('#ev-name'), agree = $('#ev-agree');
+      const type = $('input[name="type"]:checked');
+
+      if (!name.value.trim()) { markErr(name); bad.push(name); }
+      if (!/^01[016789]-?\d{3,4}-?\d{4}$/.test(tel.value.trim())) { markErr(tel); bad.push(tel); }
+      if (!type) { markErr($$('input[name="type"]')[0]); bad.push($('#ev-typeField')); }
+      if (org.required && !org.value.trim()) { markErr(org); bad.push(org); }
+      if (!zip.value.trim() || !addr1.value.trim()) {
+        markErr(zip); if (!addr1.value.trim()) addr1.classList.add('is-err');
+        bad.push(zip);
+      }
+      if (!files.length) { markErr(fileInput); bad.push($('#ev-fileField')); }
+      if (!agree.checked) { markErr(agree); bad.push(agree); }
+
+      if (bad.length) {
+        setMsg('입력하지 않은 항목이 있습니다. 확인 후 다시 신청해주세요', 'is-err');
+        const first = bad[0];
+        (first.focus ? first : first).scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+        if (first.focus) setTimeout(() => first.focus({ preventScroll: true }), 300);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      try {
+        /* 1) 업로드 URL 발급 */
+        setMsg('구매 인증 파일을 업로드하는 중입니다…');
+        const urlRes = await fetch(EVENT_ENDPOINT + '/upload-urls', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            files: files.map(f => ({ name: f.name, type: f.type, size: f.size }))
+          })
+        });
+        if (urlRes.status === 410) { setMsg('이벤트가 종료되어 신청을 받을 수 없습니다', 'is-err'); return; }
+        if (!urlRes.ok) {
+          const d = await urlRes.json().catch(() => null);
+          setMsg((d && d.error) || '파일 업로드 준비에 실패했습니다. 잠시 후 다시 시도해주세요', 'is-err');
+          return;
+        }
+        const { uploads } = await urlRes.json();
+
+        /* 2) 스토리지에 직접 업로드 */
+        for (let i = 0; i < files.length; i++) {
+          const up = await fetch(uploads[i].url, {
+            method: 'PUT',
+            headers: { 'Content-Type': files[i].type || 'application/octet-stream' },
+            body: files[i]
+          });
+          if (!up.ok) throw new Error('upload ' + up.status);
+        }
+
+        /* 3) 신청 접수 */
+        setMsg('신청을 접수하는 중입니다…');
+        const res = await fetch(EVENT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name.value.trim(),
+            tel: tel.value.trim(),
+            type: type.value,
+            org: org.value.trim(),
+            zip: zip.value.trim(),
+            addr1: addr1.value.trim(),
+            addr2: addr2.value.trim(),
+            agree: true,
+            files: uploads.map(u => u.path)
+          })
+        });
+        if (res.status === 409) { setMsg('이미 같은 연락처로 참여 신청이 접수되어 있습니다', 'is-err'); return; }
+        if (res.status === 410) { setMsg('이벤트가 종료되어 신청을 받을 수 없습니다', 'is-err'); return; }
+        if (!res.ok) throw new Error(res.status);
+        form.reset();
+        files = []; renderFiles();
+        orgReq.style.display = '';
+        setMsg('이벤트 참여 신청이 완료되었습니다. 당첨 시 입력해주신 연락처로 안내드리겠습니다', 'is-ok');
+      } catch (err) {
+        setMsg('신청 접수에 실패했습니다. 잠시 후 다시 시도해주세요', 'is-err');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
 })();
 </script>
 </body>
