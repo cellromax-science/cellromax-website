@@ -61,6 +61,14 @@ function csvField(value: string): string {
   return value;
 }
 
+/**
+ * 숫자로만 된 값을 Excel이 문자(텍스트)로 읽게 하는 CSV 표기 (="01012345678").
+ * 연락처·우편번호·면허번호처럼 앞자리 0이 사라지면 안 되는 값에 사용.
+ */
+function excelText(value: string): string {
+  return value ? `="${value}"` : "";
+}
+
 /** 구분 코드 → 한글 라벨 */
 const CATEGORY_LABELS: Record<string, string> = {
   pharmacist: "약사",
@@ -239,10 +247,10 @@ export function EventEntryListClient({
       item.event_title,
       item.name,
       categoryLabel(item),
-      item.license_number ?? "",
-      item.phone,
+      excelText(item.license_number ?? ""),
+      excelText(item.phone),
       item.pharmacy_name ?? item.affiliation ?? "",
-      item.zipcode ?? "",
+      excelText(item.zipcode ?? ""),
       item.address ?? "",
       item.address_detail ?? "",
       String(item.file_paths?.length ?? 0),
