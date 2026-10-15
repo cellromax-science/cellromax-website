@@ -609,10 +609,6 @@ export function EventEntryListClient({
             </h3>
             <p className="text-sm text-gray-500 mb-4">
               {attachTarget.name} · {attachTarget.phone}
-              <br />
-              <span className="text-xs text-gray-400">
-                링크는 10분간 유효합니다. 새 탭에서 열립니다.
-              </span>
             </p>
 
             {attachLoading ? (
