@@ -70,7 +70,7 @@ export default async function middleware(request: NextRequest) {
   // ─────────────────────────────────────────────────────────────────────────
   // API / ttsyrup 경로 조기 반환
   // ─────────────────────────────────────────────────────────────────────────
-  if (pathname.startsWith('/api/') || pathname === '/ttsyrup' || pathname.startsWith('/ttsyrup/') || pathname === '/jsc' || pathname.startsWith('/jsc/') || pathname === '/book' || pathname.startsWith('/book/')) {
+  if (pathname.startsWith('/api/') || pathname === '/ttsyrup' || pathname.startsWith('/ttsyrup/') || pathname === '/jsc' || pathname.startsWith('/jsc/') || pathname === '/book' || pathname.startsWith('/book/') || pathname === '/bookuni' || pathname.startsWith('/bookuni/')) {
     return NextResponse.next({ request })
   }
 

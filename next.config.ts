@@ -78,6 +78,10 @@ const nextConfig: NextConfig = {
         source: '/book',
         destination: '/book/index.html',
       },
+      {
+        source: '/bookuni',
+        destination: '/bookuni/index.html',
+      },
     ];
   },
   async redirects() {
