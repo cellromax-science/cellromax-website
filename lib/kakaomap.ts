@@ -200,3 +200,91 @@ export async function geocodeAddress(
     });
   });
 }
+
+// ---------------------------------------------------------------------------
+// 약국 주소 전용 지오코딩 — 정제 + 결과 검증
+// ---------------------------------------------------------------------------
+
+/**
+ * 지오코딩 전 주소 문자열을 정제한다.
+ *
+ * 약국 주소에는 "경기 용인시 수지구 고기로 80 105호 유진하나로약국 (동천동)"처럼
+ * 호수·상호명·법정동 괄호가 섞여 있어, 그대로 지오코딩하면 카카오가 엉뚱한
+ * 위치로 유사 매칭하는 사례가 있다 (2026-10 전수 검증에서 707건 발견).
+ *
+ * - 괄호와 그 내용 제거
+ * - 도로명("…로/길 + 건물번호") 또는 지번("…동/리/가 + 번지")까지만 잘라
+ *   그 뒤의 상세주소·상호를 버림
+ */
+export function cleanAddressForGeocoding(address: string): string {
+  const stripped = address.replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+  const roadMatch = stripped.match(/^(.*?(?:로|길)\s?\d+(?:-\d+)?)(?=\s|$|,)/);
+  if (roadMatch) return roadMatch[1];
+  const jibunMatch = stripped.match(/^(.*?(?:동|리|가)\s\d+(?:-\d+)?)(?=\s|$|,)/);
+  return jibunMatch ? jibunMatch[1] : stripped;
+}
+
+/** 검증을 통과한 지오코딩 결과 */
+export interface GeocodeMatch {
+  lat: number;
+  lng: number;
+  /** 카카오가 실제로 매칭한 주소 — 관리자 확인용 */
+  matchedAddress: string;
+}
+
+/**
+ * 약국 주소를 정제 후 지오코딩하고, 결과가 입력 주소와 일치하는지 검증한다.
+ *
+ * 카카오 Geocoder는 주소가 지저분하면 다른 도로·번지로 유사 매칭할 수 있으므로,
+ * 매칭된 주소의 시군구·도로명·건물번호 토큰이 입력 주소에 그대로 존재하는지
+ * 확인하고, 하나라도 다르면 실패(null)로 처리한다.
+ *
+ * @returns 좌표 + 매칭 주소, 또는 null (지오코딩 실패/검증 불일치 시)
+ */
+export async function geocodePharmacyAddress(
+  address: string
+): Promise<GeocodeMatch | null> {
+  await loadKakaoMap();
+
+  const query = cleanAddressForGeocoding(address);
+
+  return new Promise((resolve) => {
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.addressSearch(query, (result, status) => {
+      if (
+        status !== window.kakao.maps.services.Status.OK ||
+        result.length === 0
+      ) {
+        resolve(null);
+        return;
+      }
+
+      const matched = result[0];
+      const matchedTokens = matched.address_name.split(/\s+/);
+      const queryTokens = query.replace(/,/g, " ").split(/\s+/);
+
+      // 매칭 주소의 시군구(2번째 토큰)·도로명·건물번호(마지막 2개 토큰)가
+      // 입력 주소에 토큰 단위로 그대로 존재해야 한다.
+      const required = [
+        matchedTokens[1],
+        matchedTokens[matchedTokens.length - 2],
+        matchedTokens[matchedTokens.length - 1],
+      ].filter(Boolean);
+
+      const isConsistent = required.every((token) =>
+        queryTokens.includes(token)
+      );
+
+      if (!isConsistent) {
+        resolve(null);
+        return;
+      }
+
+      resolve({
+        lat: parseFloat(matched.y),
+        lng: parseFloat(matched.x),
+        matchedAddress: matched.address_name,
+      });
+    });
+  });
+}

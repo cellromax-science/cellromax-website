@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast";
 
 import { PharmacyCsvUploader } from "@/components/admin/PharmacyCsvUploader";
+import { PharmacyCoordAuditModal } from "@/components/admin/PharmacyCoordAuditModal";
 import type { Pharmacy } from "@/types/pharmacy";
 
 /* ==========================================================================
@@ -180,6 +181,7 @@ export function PharmacyListClient({ initialItems, initialTotal }: PharmacyListC
   const [deleteTarget, setDeleteTarget] = useState<Pharmacy | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCsvOpen, setIsCsvOpen] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
 
   // --------------------------------------------------------------------------
   // Fetch Items
@@ -307,19 +309,39 @@ export function PharmacyListClient({ initialItems, initialTotal }: PharmacyListC
           </p>
         </div>
 
-        <Button variant="primary" size="md" onClick={() => setIsCsvOpen(true)}>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-          CSV 업로드
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="md" onClick={() => setIsAuditOpen(true)}>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            좌표 검증
+          </Button>
+          <Button variant="primary" size="md" onClick={() => setIsCsvOpen(true)}>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            CSV 업로드
+          </Button>
+        </div>
       </div>
 
       {/* ================================================================
@@ -538,6 +560,15 @@ export function PharmacyListClient({ initialItems, initialTotal }: PharmacyListC
         isOpen={isCsvOpen}
         onClose={() => setIsCsvOpen(false)}
         onSuccess={handleCsvSuccess}
+      />
+
+      {/* ================================================================
+          좌표 검증 모달
+          ================================================================ */}
+      <PharmacyCoordAuditModal
+        isOpen={isAuditOpen}
+        onClose={() => setIsAuditOpen(false)}
+        onSuccess={() => fetchItems(search, page)}
       />
     </div>
   );

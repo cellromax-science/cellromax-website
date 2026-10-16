@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { toast } from "@/components/ui/Toast";
-import { geocodeAddress } from "@/lib/kakaomap";
+import { geocodePharmacyAddress } from "@/lib/kakaomap";
 
 /* ==========================================================================
    PharmacyCsvUploader — CSV 파일 업로드 + 카카오 지오코딩 + 일괄 등록
@@ -35,6 +35,8 @@ interface ParsedRow {
   phone: string | null;
   latitude: number | null;
   longitude: number | null;
+  /** 카카오가 실제로 매칭한 주소 — 입력 주소와 다른 곳이면 지오코딩 단계에서 걸러짐 */
+  matchedAddress: string | null;
   geocodeFailed: boolean;
 }
 
@@ -187,6 +189,7 @@ export function PharmacyCsvUploader({ isOpen, onClose, onSuccess }: PharmacyCsvU
       phone: phoneIdx !== -1 ? row[phoneIdx] || null : null,
       latitude: null,
       longitude: null,
+      matchedAddress: null,
       geocodeFailed: false,
     })).filter((row) => row.name && row.address);
 
@@ -206,12 +209,13 @@ export function PharmacyCsvUploader({ isOpen, onClose, onSuccess }: PharmacyCsvU
       if (abortRef.current) return;
 
       try {
-        const result = await geocodeAddress(geocodedRows[i].address);
+        const result = await geocodePharmacyAddress(geocodedRows[i].address);
         if (result) {
           geocodedRows[i] = {
             ...geocodedRows[i],
             latitude: result.lat,
             longitude: result.lng,
+            matchedAddress: result.matchedAddress,
             geocodeFailed: false,
           };
         } else {
@@ -493,8 +497,7 @@ export function PharmacyCsvUploader({ isOpen, onClose, onSuccess }: PharmacyCsvU
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500">상호명</th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500">주소</th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 hidden sm:table-cell">전화번호</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 hidden md:table-cell w-20">위도</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 hidden md:table-cell w-20">경도</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 hidden md:table-cell">변환 주소</th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 w-20">상태</th>
                   </tr>
                 </thead>
@@ -516,11 +519,8 @@ export function PharmacyCsvUploader({ isOpen, onClose, onSuccess }: PharmacyCsvU
                       <td className="px-3 py-2 text-gray-400 whitespace-nowrap hidden sm:table-cell">
                         {row.phone ?? "-"}
                       </td>
-                      <td className="px-3 py-2 text-gray-400 tabular-nums text-xs hidden md:table-cell">
-                        {row.latitude?.toFixed(4) ?? "-"}
-                      </td>
-                      <td className="px-3 py-2 text-gray-400 tabular-nums text-xs hidden md:table-cell">
-                        {row.longitude?.toFixed(4) ?? "-"}
+                      <td className="px-3 py-2 text-gray-400 text-xs whitespace-nowrap max-w-[200px] truncate hidden md:table-cell">
+                        {row.matchedAddress ?? "-"}
                       </td>
                       <td className="px-3 py-2">
                         {row.geocodeFailed ? (
@@ -537,7 +537,7 @@ export function PharmacyCsvUploader({ isOpen, onClose, onSuccess }: PharmacyCsvU
 
             {failCount > 0 && (
               <p className="mt-3 text-xs text-gray-400">
-                주소 변환에 실패한 행은 업로드에서 제외됩니다.
+                주소 변환에 실패했거나 변환된 주소가 입력 주소와 일치하지 않는 행은 업로드에서 제외됩니다.
               </p>
             )}
 
