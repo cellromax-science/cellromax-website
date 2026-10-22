@@ -101,6 +101,10 @@ export async function generateMetadata({
       shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
       apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
     },
+    // Meta(페이스북) 비즈니스 도메인 소유권 인증
+    other: {
+      "facebook-domain-verification": "wrz41uvseawe1v4h9bmtqoblmrb9rj",
+    },
   };
 }
 
